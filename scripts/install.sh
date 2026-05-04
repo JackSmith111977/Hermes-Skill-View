@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ===============================================================
-# SRA — Skill Runtime Advisor 一键安装脚本
+# SRA — Skill Runtime Advisor 一键安装脚本 v1.1.0
 # ===============================================================
 # 用法:
 #   curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
 #   或
-#   bash install.sh [--help] [--prefix=/path] [--agent=hermes]
+#   bash install.sh [--help] [--prefix=/path] [--agent=hermes] [--proxy]
 # ===============================================================
 
 set -e
@@ -28,6 +28,8 @@ AGENT_TYPE="${SRA_AGENT:-hermes}"
 SKILLS_DIR="${SRA_SKILLS_DIR:-$HOME/.hermes/skills}"
 INSTALL_SYSTEMD=false
 SKIP_PIP=false
+PROXY_MODE=false     # v1.1.0: Proxy 模式（消息前置推理中间件）
+PROXY_PORT=8536      # Proxy 默认端口
 
 # ── 参数解析 ──────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -37,17 +39,20 @@ while [[ $# -gt 0 ]]; do
         --skills=*) SKILLS_DIR="${1#*=}"; shift ;;
         --systemd)  INSTALL_SYSTEMD=true; shift ;;
         --skip-pip) SKIP_PIP=true; shift ;;
+        --proxy)    PROXY_MODE=true; shift ;;
+        --proxy-port=*) PROXY_PORT="${1#*=}"; shift ;;
         --help)
-            echo "SRA — Skill Runtime Advisor 一键安装脚本"
+            echo "SRA — Skill Runtime Advisor 一键安装脚本 v1.1.0"
             echo
             echo "选项:"
-            echo "  --prefix=PATH    安装前缀 (默认: ~/.local)"
-            echo "  --agent=TYPE     Agent 类型 (默认: hermes)"
-            echo "                  可选: hermes, claude, codex, opencode, generic"
-            echo "  --skills=PATH    技能目录路径 (默认: ~/.hermes/skills)"
-            echo "  --systemd        安装 systemd 服务（需要 sudo）"
-            echo "  --skip-pip       跳过 pip 安装（用于已安装的情况）"
-            echo "  --help           显示本帮助"
+            echo "  --prefix=PATH      安装前缀 (默认: ~/.local)"
+            echo "  --agent=TYPE       Agent 类型 (默认: hermes)"
+            echo "                    可选: hermes, claude, codex, opencode, generic"
+            echo "  --skills=PATH      技能目录路径 (默认: ~/.hermes/skills)"
+            echo "  --systemd          安装 systemd 服务（需要 sudo）"
+            echo "  --proxy            安装 Proxy 模式（消息前置推理中间件）"
+            echo "  --proxy-port=PORT  Proxy 端口 (默认: 8536)"
+            echo "  --skip-pip         跳过 pip 安装（用于已安装的情况）"
             exit 0
             ;;
         *) error "未知参数: $1"; exit 1 ;;
@@ -56,7 +61,7 @@ done
 
 # ── 步骤 1: 检查环境 ──────────────────────
 echo "=============================================="
-echo "  SRA — Skill Runtime Advisor 安装"
+echo "  SRA — Skill Runtime Advisor v1.1.0"
 echo "=============================================="
 echo
 
@@ -65,6 +70,10 @@ info "Python: $(python3 --version 2>&1)"
 info "安装前缀: $PREFIX"
 info "Agent 类型: $AGENT_TYPE"
 info "技能目录: $SKILLS_DIR"
+if [[ "$PROXY_MODE" == "true" ]]; then
+    info "安装模式: Proxy（消息前置推理中间件）"
+    info "Proxy 端口: $PROXY_PORT"
+fi
 echo
 
 # 检查 Python 版本
@@ -106,7 +115,7 @@ cat > "$SRA_HOME/config.json" << EOF
     "skills_dir": "$SKILLS_DIR",
     "data_dir": "$SRA_HOME/data",
     "socket_path": "$SRA_HOME/srad.sock",
-    "http_port": 8532,
+    "http_port": ${PROXY_PORT},
     "auto_refresh_interval": 3600,
     "enable_http": true,
     "enable_unix_socket": true,
@@ -115,6 +124,24 @@ cat > "$SRA_HOME/config.json" << EOF
 }
 EOF
 ok "配置文件已生成: $SRA_HOME/config.json"
+
+# ── 步骤 3b: 创建 Proxy 服务文件（Proxy 模式）──
+if [[ "$PROXY_MODE" == "true" ]]; then
+    info "创建 Proxy 服务..."
+    
+    # 创建 Proxy 入口脚本
+    SRA_BIN=$(which sra 2>/dev/null || echo "$PREFIX/bin/sra")
+    cat > "$SRA_HOME/sra-proxy.sh" << PROXYEOF
+#!/usr/bin/env bash
+# SRA Proxy — 消息前置推理中间件 (v1.1.0)
+# 用 sra daemon 的 HTTP API 直接提供 Proxy 服务
+export SRA_PROXY_ENABLED=true
+export SRA_PROXY_URL=http://127.0.0.1:${PROXY_PORT}
+exec python3 -m skill_advisor.runtime.daemon
+PROXYEOF
+    chmod +x "$SRA_HOME/sra-proxy.sh"
+    ok "Proxy 入口脚本已生成: $SRA_HOME/sra-proxy.sh"
+fi
 
 # ── 步骤 4: 启动守护进程 ──────────────────
 info "启动 SRA Daemon..."
@@ -146,6 +173,20 @@ fi
 if [[ -S "$SRA_HOME/srad.sock" ]]; then
     ok "SRA Daemon 运行中 (socket: $SRA_HOME/srad.sock)"
     sra status 2>/dev/null || true
+    # 测试 HTTP API
+    if command -v curl &>/dev/null; then
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:${PROXY_PORT}/health 2>/dev/null || echo "000")
+        if [[ "$HTTP_STATUS" == "200" ]]; then
+            ok "HTTP API: http://127.0.0.1:${PROXY_PORT} ✅"
+            # 测试 recommend
+            REC_RESULT=$(curl -s -X POST http://127.0.0.1:${PROXY_PORT}/recommend \
+                -H "Content-Type: application/json" \
+                -d '{"message": "test"}' 2>/dev/null)
+            if echo "$REC_RESULT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('sra_version',''))" 2>/dev/null; then
+                ok "POST /recommend API 正常 ✅"
+            fi
+        fi
+    fi
 else
     warn "SRA Daemon 未启动，请稍后运行: sra start"
 fi
@@ -153,9 +194,41 @@ fi
 # ── 步骤 6: 安装 systemd 服务 ────────────
 if [[ "$INSTALL_SYSTEMD" == "true" ]]; then
     info "安装 systemd 服务..."
-    sra install service 2>/dev/null || {
-        warn "systemd 服务安装失败，请手动安装: sra install service"
-    }
+    if [[ "$PROXY_MODE" == "true" ]]; then
+        # Proxy 模式 service
+        PROXY_SCRIPT="$SRA_HOME/sra-proxy.sh"
+        SERVICE_NAME="sra-proxy"
+        cat > /tmp/sra-proxy.service << SERVICEEOF
+[Unit]
+Description=SRA Proxy — 消息前置推理中间件 (v1.1.0)
+Documentation=https://github.com/JackSmith111977/Hermes-Skill-View
+After=network.target
+
+[Service]
+Type=simple
+User=$(whoami)
+ExecStart=$PROXY_SCRIPT
+Restart=always
+RestartSec=5
+Environment=SRA_PROXY_HOST=127.0.0.1
+Environment=SRA_PROXY_PORT=$PROXY_PORT
+Environment=PYTHONUNBUFFERED=1
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+SERVICEEOF
+        echo "  Proxy service 文件: /tmp/sra-proxy.service"
+        echo "  安装命令:"
+        echo "    sudo cp /tmp/sra-proxy.service /etc/systemd/system/sra-proxy.service"
+        echo "    sudo systemctl daemon-reload"
+        echo "    sudo systemctl enable --now sra-proxy"
+    else
+        sra install service 2>/dev/null || {
+            warn "systemd 服务安装失败，请手动安装: sra install service"
+        }
+    fi
 fi
 
 # ── 步骤 7: 集成到 Agent ─────────────────
@@ -165,13 +238,23 @@ info "将 SRA 集成到 $AGENT_TYPE Agent..."
 case "$AGENT_TYPE" in
     hermes)
         echo
-        echo "📝 将以下配置添加到 Hermes 的 learning-workflow 前置层:"
+        echo "📝 将以下配置添加到 Agent 的启动脚本或配置中:"
         echo
+        echo "  # Hermes Python SDK 方式:"
         echo "  from sra_agent.adapters import get_adapter"
         echo "  adapter = get_adapter('hermes')"
         echo "  recs = adapter.recommend(user_input)"
         echo "  if recs:"
         echo "      print(adapter.format_suggestion(recs))"
+        echo
+        echo "  # 或直接使用 HTTP API（消息前置推理）:"
+        echo "  curl -s -X POST http://127.0.0.1:${PROXY_PORT}/recommend \\"
+        echo "    -H 'Content-Type: application/json' \\"
+        echo "    -d '{\"message\": \"<用户消息>\"}'"
+        echo
+        echo "  # 设置环境变量（让 Agent 知道 SRA 可用）:"
+        echo "  export SRA_PROXY_ENABLED=true"
+        echo "  export SRA_PROXY_URL=http://127.0.0.1:${PROXY_PORT}"
         ;;
     claude)
         echo "📝 Claude Code 集成:"
@@ -192,7 +275,7 @@ esac
 # ── 完成 ──────────────────────────────────
 echo
 echo "=============================================="
-echo -e "${GREEN}  ✅ SRA 安装完成！${NC}"
+echo -e "${GREEN}  ✅ SRA v1.1.0 安装完成！${NC}"
 echo "=============================================="
 echo
 echo "快速使用:"
@@ -203,6 +286,14 @@ echo "  sra coverage           # 查看覆盖率"
 echo "  sra stats              # 查看统计"
 echo "  sra stop               # 停止守护进程"
 echo
+if [[ "$PROXY_MODE" == "true" ]]; then
+echo "Proxy 模式测试:"
+echo "  curl -s http://127.0.0.1:${PROXY_PORT}/health"
+echo "  curl -s -X POST http://127.0.0.1:${PROXY_PORT}/recommend \\"
+echo "    -H 'Content-Type: application/json' \\"
+echo "    -d '{\"message\": \"画个架构图\"}'"
+echo
+fi
 echo "日志: $SRA_HOME/srad.log"
 echo "Socket: $SRA_HOME/srad.sock"
 echo "配置: $SRA_HOME/config.json"

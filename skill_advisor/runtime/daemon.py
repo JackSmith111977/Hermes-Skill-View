@@ -48,7 +48,7 @@ DEFAULT_CONFIG = {
     "skills_dir": os.path.expanduser("~/.hermes/skills"),
     "data_dir": os.path.join(SRA_HOME, "data"),
     "socket_path": SOCKET_FILE,
-    "http_port": 8532,
+    "http_port": 8536,    # v1.1.0: Proxy 兼容端口
     "auto_refresh_interval": 3600,    # 自动刷新索引间隔（秒）
     "enable_http": True,
     "enable_unix_socket": True,
@@ -250,6 +250,22 @@ class SRaDDaemon:
                 if self.path == "/health":
                     stats = self.daemon.get_stats()
                     self._send_json({"status": "ok", **stats})
+                elif self.path == "/status":
+                    stats = self.daemon.get_stats()
+                    self._send_json({
+                        "status": "ok",
+                        "sra_engine": True,
+                        "version": "1.1.0",
+                        "stats": {
+                            "skills_scanned": stats.get("skills_count", 0),
+                        },
+                        "config": {
+                            "host": "0.0.0.0",
+                            "port": port,
+                            "high_threshold": 80,
+                            "medium_threshold": 40,
+                        },
+                    })
                 elif self.path == "/stats":
                     stats = self.daemon.get_stats()
                     self._send_json(stats)
@@ -278,12 +294,64 @@ class SRaDDaemon:
                     data = {}
 
                 if self.path == "/recommend":
-                    query = data.get("query", "")
-                    if query:
-                        result = self.daemon.advisor.recommend(query)
-                        self._send_json(result)
-                    else:
-                        self._send_json({"error": "missing query"}, 400)
+                    # 支持 query 和 message 两种字段（兼容 v1.0.0 和 v1.1.0）
+                    query = data.get("message", data.get("query", "")).strip()
+                    if not query:
+                        self._send_json({"error": "missing query or message"}, 400)
+                        return
+
+                    result = self.daemon.advisor.recommend(query)
+                    recs = result.get("recommendations", [])
+                    timing_ms = result.get("processing_ms", 0)
+
+                    # ── 构建 RAG 上下文（Proxy 兼容格式）────────────────
+                    top_skill = None
+                    should_auto_load = False
+                    rag_lines = []
+
+                    if recs:
+                        top = recs[0]
+                        top_skill = top["skill"]
+                        score = top["score"]
+                        should_auto_load = score >= 80
+
+                        rag_lines.append("── [SRA Skill 推荐] ──────────────────────────────")
+                        for i, r in enumerate(recs[:5]):
+                            flag = "⭐" if i == 0 else "  "
+                            conf = r["confidence"]
+                            s_name = r["skill"]
+                            s_score = r["score"]
+                            s_reasons = " | ".join(r.get("reasons", [])[:2])
+                            rag_lines.append(f"  {flag} [{conf:>6}] {s_name} ({s_score:.1f}分) — {s_reasons}")
+
+                        if should_auto_load:
+                            rag_lines.append(f"\n  ⚡ 强推荐自动加载: {top_skill}")
+                        else:
+                            rag_lines.append(f"\n  💡 建议: 可参考上述 skill")
+
+                        rag_lines.append("── ──────────────────────────────────────────────")
+
+                    rag_context = "\n".join(rag_lines)
+
+                    self._send_json({
+                        "rag_context": rag_context,
+                        "recommendations": [
+                            {
+                                "skill": r["skill"],
+                                "score": r["score"],
+                                "confidence": r["confidence"],
+                                "reasons": r.get("reasons", []),
+                                "description": r.get("description", ""),
+                            }
+                            for r in recs[:5]
+                        ],
+                        "top_skill": top_skill,
+                        "should_auto_load": should_auto_load,
+                        "timing_ms": timing_ms,
+                        "provider_latency_ms": timing_ms,
+                        "sra_available": True,
+                        "sra_version": "1.1.0",
+                    })
                 elif self.path == "/record":
                     skill = data.get("skill", "")
                     user_input = data.get("input", "")
@@ -389,7 +457,7 @@ class SRaDDaemon:
                 pass
 
         return {
-            "version": "1.0.0",
+            "version": "1.1.0",
             "status": "running" if self.running else "stopped",
             "uptime_seconds": uptime,
             "skills_count": len(self.advisor.indexer.get_skills()),

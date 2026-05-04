@@ -104,17 +104,80 @@ class HermesAdapter(BaseAdapter):
         stats = _sra_socket_request({"action": "stats"})
         if "error" in stats:
             return ""
-        
+
         s = stats.get("stats", stats)
         count = skills_count or s.get("skills_count", 0)
-        
+
         return (
-            f"\n## SRA Runtime ({s.get('version', '1.0.0')})\n"
+            f"\n## SRA Runtime ({s.get('version', '1.1.0')})\n"
             f"SRA 是一个独立运行的技能推荐引擎。\n"
             f"当前管理 {count} 个技能。\n"
-            f"API: Unix Socket ({SOCKET_FILE}) / HTTP (:{s.get('config', {}).get('http_port', 8532)})\n"
+            f"API: Unix Socket ({SOCKET_FILE}) / HTTP (:{s.get('config', {}).get('http_port', 8536)})\n"
             f"使用 'sra --query <输入>' 或 HTTP POST 查询推荐。\n"
         )
+
+    def to_proxy_format(self, message: str) -> dict:
+        """以 Proxy 格式获取推荐（消息前置推理用）
+        
+        POST /recommend 请求 {'message': msg} 的响应格式。
+        返回 rag_context + should_auto_load + recommendations。
+        """
+        result = _sra_socket_request({
+            "action": "recommend",
+            "params": {"query": message, "top_k": 5},
+        })
+        if "error" in result:
+            return {
+                "rag_context": "",
+                "recommendations": [],
+                "top_skill": None,
+                "should_auto_load": False,
+                "sra_available": False,
+            }
+
+        recs = result.get("result", {}).get("recommendations", [])
+        top_skill = None
+        should_auto_load = False
+        rag_lines = []
+
+        if recs:
+            top = recs[0]
+            top_skill = top["skill"]
+            score = top["score"]
+            should_auto_load = score >= 80
+
+            rag_lines.append("── [SRA Skill 推荐] ──────────────────────────────")
+            for i, r in enumerate(recs[:5]):
+                flag = "⭐" if i == 0 else "  "
+                conf = r["confidence"]
+                s_name = r["skill"]
+                s_score = r["score"]
+                s_reasons = " | ".join(r.get("reasons", [])[:2])
+                rag_lines.append(f"  {flag} [{conf:>6}] {s_name} ({s_score:.1f}分) — {s_reasons}")
+
+            if should_auto_load:
+                rag_lines.append(f"\n  ⚡ 强推荐自动加载: {top_skill}")
+            else:
+                rag_lines.append(f"\n  💡 建议: 可参考上述 skill")
+
+            rag_lines.append("── ──────────────────────────────────────────────")
+
+        return {
+            "rag_context": "\n".join(rag_lines),
+            "recommendations": [
+                {
+                    "skill": r["skill"],
+                    "score": r["score"],
+                    "confidence": r["confidence"],
+                    "reasons": r.get("reasons", []),
+                    "description": r.get("description", ""),
+                }
+                for r in recs[:5]
+            ],
+            "top_skill": top_skill,
+            "should_auto_load": should_auto_load,
+            "sra_available": True,
+        }
 
 
 # ── Claude Code 适配器 ──────────────────────
