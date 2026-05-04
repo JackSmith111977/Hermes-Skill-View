@@ -3,7 +3,7 @@
 # SRA — Skill Runtime Advisor 一键安装脚本
 # ===============================================================
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/YOUR_USER/sra-agent/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
 #   或
 #   bash install.sh [--help] [--prefix=/path] [--agent=hermes]
 # ===============================================================
@@ -87,8 +87,8 @@ if [[ "$SKIP_PIP" != "true" ]]; then
     else
         pip install --user sra-agent 2>/dev/null || pip install sra-agent 2>/dev/null || {
             warn "pip 安装失败，尝试从 GitHub 安装"
-            pip install --user git+https://github.com/YOUR_USER/sra-agent.git 2>/dev/null || {
-                error "安装失败。请确保 pip 可用: pip install sra-agent"
+            pip install --user git+https://github.com/JackSmith111977/Hermes-Skill-View.git 2>/dev/null || {
+                error "安装失败。请参照 README 从源码安装"
                 exit 1
             }
         }
