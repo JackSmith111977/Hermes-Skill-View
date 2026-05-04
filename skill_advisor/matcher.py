@@ -15,6 +15,9 @@ class SkillMatcher:
     WEIGHT_SCENE = 0.20
     WEIGHT_CATEGORY = 0.15
 
+    # 短查询自动提升因子（1-2个词 → 减轻权重稀释）
+    SHORT_QUERY_BOOST = 1.6
+
     def __init__(self, synonyms: Dict[str, List[str]]):
         self.synonyms = synonyms
 
@@ -41,6 +44,13 @@ class SkillMatcher:
             sce_score * self.WEIGHT_SCENE +
             cat_score * self.WEIGHT_CATEGORY
         )
+        
+        # ═══ 短查询自动提升 ═══
+        # 1-2个词的查询容易被权重稀释（如 "生图" trigger匹配25→加权后仅10分）
+        # 此时保留更多原始分，避免低于40分阈值
+        raw_word_count = len([w for w in input_words if len(w) >= 2])
+        if raw_word_count <= 2 and lex_score >= 20:
+            total = total * self.SHORT_QUERY_BOOST
         
         details = {
             "lexical": round(lex_score, 1),
@@ -84,18 +94,23 @@ class SkillMatcher:
         word_list.extend(list(extra_words))
         word_list.extend(list(multi_word_syns))
         
-        # 同义词反向匹配
+        # 同义词反向匹配（改进：区分精确匹配和宽泛匹配）
         for word in list(input_words):
             if word in self.synonyms:
                 for syn in self.synonyms[word]:
                     syn_lower = syn.lower()
                     if len(syn_lower) < 2:
                         continue
-                    if (syn_lower in skill_name or syn_lower in str(triggers) or 
-                        syn_lower in str(tags) or syn_lower in desc or syn_lower in match_text):
+                    # 精确匹配：在 name/trigger/tags 中
+                    if syn_lower in skill_name or syn_lower in str(triggers) or syn_lower in str(tags):
                         score += 25
                         if f"同义词'{word}'→'{syn_lower}'" not in str(reasons):
                             reasons.append(f"同义词'{word}'→'{syn_lower}'")
+                    # 宽泛匹配：只在 description/match_text 中（风险更低）
+                    elif syn_lower in desc or syn_lower in match_text:
+                        score += 12
+                        if f"同义词'{word}'→'{syn_lower}'" not in str(reasons):
+                            reasons.append(f"同义词(描述)'{word}'→'{syn_lower}'")
         
         # 逐词遍历
         for word in word_list:
