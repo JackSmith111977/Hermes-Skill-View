@@ -15,6 +15,9 @@ class SkillMatcher:
     WEIGHT_SCENE = 0.20
     WEIGHT_CATEGORY = 0.15
 
+    # 短查询自动提升因子（1-2个词 → 减轻权重稀释）
+    SHORT_QUERY_BOOST = 1.6
+
     def __init__(self, synonyms: Dict[str, List[str]]):
         self.synonyms = synonyms
 
@@ -41,6 +44,13 @@ class SkillMatcher:
             sce_score * self.WEIGHT_SCENE +
             cat_score * self.WEIGHT_CATEGORY
         )
+        
+        # ═══ 短查询自动提升 ═══
+        # 1-2个词的查询容易被权重稀释（如 "生图" trigger匹配25→加权后仅10分）
+        # 此时保留更多原始分，避免低于40分阈值
+        raw_word_count = len([w for w in input_words if len(w) >= 2])
+        if raw_word_count <= 2 and lex_score >= 20:
+            total = total * self.SHORT_QUERY_BOOST
         
         details = {
             "lexical": round(lex_score, 1),

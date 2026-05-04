@@ -90,12 +90,31 @@ SYNONYMS = {
     "游戏": ["game", "gaming", "minecraft", "pokemon", "游戏开发", "游戏设计", "gdd"],
     "minecraft": ["mc", "minecraft", "我的世界", "mod", "模组", "服务器"],
 
+    # === 额外缺失的同义词（Phase 1 覆盖修复） ===
+    "生图": ["image generation", "image-generation", "image gen", "生成图片", "图片生成", "image", "画图"],
+    "html": ["html", "html-guide", "css", "网页", "web page", "前端", "网页排版"],
+    "youtube": ["youtube", "youtube-content", "视频平台", "视频内容", "yt", "油管"],
+    "爬取": ["crawl", "scrape", "web-access", "爬虫", "抓取", "sra-crawl"],
+    "博客": ["blog", "blogwatcher", "订阅", "rss", "博客订阅"],
+    "av": ["av", "arxiv", "论文", "学术", "研究", "学术论文"],
+    "动漫": ["anime", "bangumi", "番剧", "动漫推荐", "番组表"],
+    "提醒": ["remind", "notification", "smart-broadcast", "通知", "推送", "广播", "定时提醒"],
+    "总结": ["summary", "总结", "日报", "周报", "月报", "报告", "report", "review"],
+    "定时": ["schedule", "cron", "cronjob", "timer", "定时任务", "定时", "周期性"],
+    "飞书": ["feishu", "lark", "飞书", "开放平台"],
+    "视频": ["video", "animation", "manim", "manim-video", "动画", "视频", "movie", "youtube-content"],
+    "微信": ["wechat", "weixin", "微信", "公众号", "wx", "企业微信"],
+    "文档": ["document", "doc", "pdf", "word", "docx", "报告", "文档生成", "documentation"],
+    "画图": ["draw", "diagram", "chart", "graph", "可视化", "图表", "绘图", "制图", "excalidraw", "mermaid", "architecture diagram"],
+    "查资料": ["搜索", "联网", "查资料", "web search", "search", "fetch", "查询", "web"],
+    "爬网页": ["crawl", "scrape", "爬取", "爬虫", "抓取", "web-access", "sra-crawl", "网页抓取", "采集"],
+    "发微信": ["发消息", "wechat", "weixin", "微信", "feishu", "lark", "飞书", "消息推送"],
+
     # === Hermes 自身 ===
     "技能": ["skill", "hermes skill", "工作流", "workflow", "学习流程", "boku"],
     "记忆": ["memory", "记忆", "长期记忆", "persistent memory", "remember"],
     "hermes": ["hermes", "小玛", "艾玛", "emma", "小喵", "猫娘", "女仆"],
     "播报": ["broadcast", "播报", "广播", "通知", "播报状态", "智能播报"],
-    "飞书": ["feishu", "lark", "飞书"],
 }
 
 # 构建反向索引（同义词值 → 同义词键）
