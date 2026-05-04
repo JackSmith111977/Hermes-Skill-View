@@ -509,10 +509,12 @@ def cmd_start(args=None):
     # 启动守护进程
     pid = os.fork()
     if pid > 0:
-        # 父进程
+        # 父进程 — 读取配置获取实际端口
+        config = load_config()
+        http_port = config.get("http_port", 8536)
         print(f"✅ SRA Daemon 已启动 (PID: {pid})")
         print(f"   Unix Socket: {SOCKET_FILE}")
-        print(f"   HTTP API: http://localhost:8532")
+        print(f"   HTTP API: http://localhost:{http_port}")
         print(f"   日志: {LOG_FILE}")
         with open(PID_FILE, 'w') as f:
             f.write(str(pid))
@@ -601,7 +603,7 @@ def cmd_status(args=None):
             hours, remainder = divmod(uptime, 3600)
             minutes, seconds = divmod(remainder, 60)
             print(f"   运行时长: {hours}时{minutes}分{seconds}秒")
-            print(f"   HTTP 端口: {stats.get('config', {}).get('http_port', 8532)}")
+            print(f"   HTTP 端口: {stats.get('config', {}).get('http_port', 8536)}")
             return stats
         except Exception as e:
             print(f"✅ SRA Daemon 运行中 (PID: {pid})")
