@@ -1,28 +1,25 @@
-
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3.8%2B-blue?style=flat-square&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/tests-38%20passed-brightgreen?style=flat-square"/>
-  <img src="https://img.shields.io/badge/coverage-86.6%25-yellow?style=flat-square"/>
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square"/>
-  <img src="https://img.shields.io/badge/latency-~5ms-orange?style=flat-square"/>
-  <img src="https://img.shields.io/badge/memory-~8MB-purple?style=flat-square"/>
+  <img src="https://img.shields.io/badge/python-3.8%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.8+"/>
+  <img src="https://img.shields.io/badge/tests-38%20passed-brightgreen?style=flat-square" alt="Tests"/>
+  <img src="https://img.shields.io/badge/coverage-86.6%25-yellow?style=flat-square" alt="Coverage"/>
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
+  <img src="https://img.shields.io/badge/latency-%3C50ms-orange?style=flat-square" alt="Latency"/>
+  <img src="https://img.shields.io/badge/memory-%3C8MB-purple?style=flat-square" alt="Memory"/>
 </p>
 
 <h1 align="center">🏆 SRA · Skill Runtime Advisor</h1>
 
 <p align="center">
   <b>让 AI Agent 实时感知自己有什么能力，以及什么时候该用什么能力。</b><br>
-  一个独立于 LLM 推理的轻量级运行时技能推荐引擎 · 零依赖 · 超低延迟 · 即插即用
+  一个独立于 LLM 推理的轻量级运行时技能推荐引擎 · 即插即用
 </p>
 
 <p align="center">
-  <b>
-    <a href="#-为什么需要-sra">为什么需要</a> •
-    <a href="#-快速开始-10秒">快速开始</a> •
-    <a href="#-架构">架构</a> •
-    <a href="#-与-hermes-原生集成">Hermes 集成</a> •
-    <a href="#-基准测试">基准测试</a>
-  </b>
+  <a href="#-为什么需要-sra">为什么需要</a> •
+  <a href="#-快速开始-10秒">快速开始</a> •
+  <a href="#-架构">架构</a> •
+  <a href="#-与-hermes-原生集成">Hermes 集成</a> •
+  <a href="#-基准测试">基准测试</a>
 </p>
 
 ---
@@ -37,7 +34,7 @@ AI Agent（如 Hermes、Claude Code、OpenAI Codex）虽然拥有大量 skill，
 | ❌ **不知道何时该用什么 skill** | 安装的新 skill 从未被使用 | 🟢 四维匹配引擎主动推荐 |
 | ❌ **Agent 文档中的规则被忽略** | SOUL.md/AGENTS.md 的规则会被上下文压缩掉 | 🟢 **代码层强制注入，永不丢失** |
 
-> **SRA 是一个"图书管理员"——它清楚地知道书架上每本书在哪里、讲什么内容、适合谁看。**
+> **SRA 就像一个图书管理员——清楚地知道书架上每本书在哪里、讲什么内容、适合谁看。**
 
 ---
 
@@ -45,7 +42,7 @@ AI Agent（如 Hermes、Claude Code、OpenAI Codex）虽然拥有大量 skill，
 
 ```bash
 # 1. 安装
-pip install --user sra-agent  # 或从源码安装
+pip install sra-agent
 
 # 2. 启动守护进程
 sra start
@@ -63,111 +60,70 @@ sra recommend 帮我画个架构图
 
 SRA 采用**分层轻量架构**，总代码量仅 **95KB**，运行内存占用不到 **8MB**：
 
-```
-┌─ 用户输入 ─────────────────────────────────────┐
-│  "帮我画个架构图"                                │
-└────────────────────┬────────────────────────────┘
-                     ↓
-┌────────────────────┴────────────────────────────┐
-│           SRA 四维匹配引擎 (～50ms)               │
-│                                                   │
-│  ┌──────────┐  ┌──────────┐  ┌────────┐  ┌────┐ │
-│  │  词法匹配   │  语义匹配   │  场景记忆  │  类别  │ │
-│  │ triggers  │  description│  历史记录  │ tags │ │
-│  │   40%     │    25%     │   20%    │ 15% │ │
-│  └──────────┘  └──────────┘  └────────┘  └────┘ │
-│                         ↓                        │
-│              综合推荐决策器                        │
-│         → architecture-diagram (得分: 90)         │
-└────────────────────┬────────────────────────────┘
-                     ↓
-┌────────────────────┴────────────────────────────┐
-│  Agent → skill_view(architecture-diagram) → 执行   │
-└──────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    A["用户输入<br/>'帮我画个架构图'"]
+    B["SRA 四维匹配引擎<br/><br/>词法(40%) | 语义(25%)<br/>场景(20%) | 类别(15%)"]
+    C["推荐决策器<br/>→ architecture-diagram (得分: 90)"]
+    D["Agent → skill_view() → 执行"]
+
+    A --> B --> C --> D
 ```
 
 ### 进程架构
 
-```
-┌──────────────────────────────────────────────────┐
-│               SRA Daemon (sra start)               │
-│                                                    │
-│  ┌──────────┐  ┌──────────┐  ┌─────────────────┐  │
-│  │ Unix Socket│  │ HTTP API │  │ Auto Refresher  │  │
-│  │  (primary) │  │ (:8536)  │  │  (every 1h)     │  │
-│  └─────┬─────┘  └────┬─────┘  └─────────────────┘  │
-│        └──────┬──────┘                              │
-│               ↓                                     │
-│  ┌──────────────────────────────────────────────┐  │
-│  │              推荐引擎                          │  │
-│  │  Indexer + Matcher + Memory + Synonyms        │  │
-│  └──────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────┘
-         ↓          ↓            ↓
-    ┌────────┐ ┌────────┐ ┌────────────┐
-    │ Hermes │ │ Claude │ │ OpenAI     │
-    │ Adapter│ │ Adapter│ │ Codex Adpt │
-    └────────┘ └────────┘ └────────────┘
+```mermaid
+flowchart TB
+    subgraph daemon["SRA Daemon (sra start)"]
+        direction LR
+        SOCK["Unix Socket<br/>(primary)"]
+        HTTP["HTTP API<br/>(:8536)"]
+        REF["Auto Refresher<br/>(every 1h)"]
+    end
+
+    subgraph engine["推荐引擎"]
+        IDX["Indexer"]
+        MTC["Matcher"]
+        MEM["Memory"]
+        SYN["Synonyms"]
+    end
+
+    subgraph adapters["Agent 适配器"]
+        H["Hermes<br/>Adapter"]
+        C["Claude<br/>Adapter"]
+        CX["Codex<br/>Adapter"]
+    end
+
+    daemon --> engine
+    engine --> adapters
 ```
 
 ---
 
 ## ✨ 核心能力
 
-<table>
-<tr>
-  <td width="50%">
-    <h3>🔍 实时技能感知</h3>
-    <p>自动扫描技能目录，构建完整索引（含 triggers / tags / description），新增 skill 即时发现</p>
-  </td>
-  <td width="50%">
-    <h3>🧠 四维匹配引擎</h3>
-    <p>词法(40%) + 语义(25%) + 场景记忆(20%) + 类别(15%) 加权推荐，中英文互通</p>
-  </td>
-</tr>
-<tr>
-  <td>
-    <h3>🌐 中英文互通</h3>
-    <p>30+ 大类同义词映射，"画图"自动匹配 "draw/diagram"，中文输入通吃英文 skill</p>
-  </td>
-  <td>
-    <h3>📊 场景记忆</h3>
-    <p>记录"什么输入→推荐了什么 skill"，持续优化匹配，越用越准</p>
-  </td>
-</tr>
-<tr>
-  <td>
-    <h3>⚡ 超低延迟</h3>
-    <p>扫描 268 个 skill 仅 ~50ms，HTTP API 开销 ~5ms，适合嵌入实时推理循环</p>
-  </td>
-  <td>
-    <h3>🔌 多 Agent 支持</h3>
-    <p>Hermes、Claude Code、OpenAI Codex、OpenCode、通用 CLI 即插即用</p>
-  </td>
-</tr>
-<tr>
-  <td>
-    <h3>🏠 守护进程模式</h3>
-    <p>后台运行 + HTTP API + Unix Socket + 自动刷新索引，可集成 systemd</p>
-  </td>
-  <td>
-    <h3>🎯 代码层强制注入</h3>
-    <p>直接注入 Hermes 消息管道，每轮消息自动触发 SRA，不依赖模型遵循自然语言指令</p>
-  </td>
-</tr>
-</table>
+| 能力 | 说明 |
+|------|------|
+| 🔍 **实时技能感知** | 自动扫描技能目录，构建完整索引，新增 skill 即时发现 |
+| 🧠 **四维匹配引擎** | 词法(40%) + 语义(25%) + 场景记忆(20%) + 类别(15%) 加权推荐 |
+| 🌐 **中英文互通** | 30+ 大类同义词映射，"画图"自动匹配 "draw/diagram" |
+| 📊 **场景记忆** | 记录"什么输入→推荐了什么 skill"，持续优化，越用越准 |
+| ⚡ **超低延迟** | 扫描 268 个 skill 仅 ~50ms，适合嵌入实时推理循环 |
+| 🔌 **多 Agent 支持** | Hermes、Claude Code、OpenAI Codex、通用 CLI 即插即用 |
+| 🏠 **守护进程模式** | 后台运行 + HTTP API + Unix Socket + 自动刷新索引 |
+| 🎯 **代码层强制注入** | 直接注入 Hermes 消息管道，不依赖模型遵循自然语言指令 |
 
 ---
 
 ## 🚀 安装指南
 
-### 方式一：pip 安装（PyPI）
+### pip 安装（PyPI）
 
 ```bash
 pip install sra-agent
 ```
 
-### 方式二：从源码安装（推荐）
+### 从源码安装
 
 ```bash
 git clone https://github.com/JackSmith111977/Hermes-Skill-View.git
@@ -175,13 +131,13 @@ cd Hermes-Skill-View
 pip install -e .
 ```
 
-### 方式三：一键安装脚本
+### 一键安装脚本
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
 ```
 
-### 安装后验证
+### 验证
 
 ```bash
 sra version
@@ -236,7 +192,7 @@ curl -X POST http://localhost:8536/recommend \
 
 # → 返回格式：
 # {
-#   "rag_context": "── [SRA Skill 推荐] ──\n  ⭐ architecture-diagram (90分)",
+#   "rag_context": "── [SRA Skill 推荐] ──\\n  ⭐ architecture-diagram (90分)",
 #   "recommendations": [...],
 #   "top_skill": "architecture-diagram",
 #   "should_auto_load": true,
@@ -286,16 +242,16 @@ print(adapter.format_suggestion(recs))
 
 ## 🧩 与 Hermes 原生集成
 
-**这是 SRA 的独有杀手锏 🎯** — 直接注入 Hermes 的消息管道，**每轮消息自动触发 SRA，代码层强制拦截**，不依赖任何自然语言指令。
+**这是 SRA 的独有杀手锏 🎯** — 直接注入 Hermes 的消息管道，**每轮消息自动触发 SRA，代码层强制拦截**。
 
 ```mermaid
 flowchart LR
-    A[用户消息] --> B[Hermes run_conversation]
-    B --> C{自动触发 SRA}
-    C --> D[POST :8536/recommend]
-    D --> E[SRA 返回推荐]
-    E --> F[注入 [SRA] 上下文到消息前]
-    F --> G[LLM 感知推荐 → 回复]
+    A["用户消息"] --> B["Hermes run_conversation()"]
+    B --> C{"_query_sra_context()"}
+    C --> D["POST :8536/recommend"]
+    D --> E["返回 rag_context"]
+    E --> F["注入 [SRA] 标记到消息前"]
+    F --> G["LLM 感知推荐 → 回复"]
 ```
 
 ### 一键安装
@@ -311,7 +267,7 @@ bash scripts/install-hermes-integration.sh
 
 [SRA] Skill Runtime Advisor 推荐:
 ── [SRA Skill 推荐] ──────────────────────────────
-  ⭐ [high] architecture-diagram (90.0分) — 
+  ⭐ [high] architecture-diagram (90.0分) —
      Generate dark-themed SVG diagrams...
   ⚡ 强推荐自动加载: architecture-diagram
 ── ──────────────────────────────────────────────
@@ -331,7 +287,7 @@ bash scripts/install-hermes-integration.sh
 | 守护进程内存占用 | **~8MB** |
 | HTTP API 延迟 | **~5ms** |
 | 代码总量 | **95KB** |
-| 安装依赖 | **仅 pyyaml**（轻量级） |
+| 安装依赖 | **仅 pyyaml** |
 | 有 trigger 的 skill 识别率 | **90.6%** |
 | 总体识别率 | **86.6%** |
 | 测试通过 | **38/38 ✅** |
@@ -363,7 +319,7 @@ sra config set http_port 8536
 sra config set skills_dir ~/.hermes/skills
 ```
 
-**环境变量：**
+### 环境变量
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
@@ -376,12 +332,13 @@ sra config set skills_dir ~/.hermes/skills
 ## ❓ 常见问题
 
 <details>
-<summary><b>Q: SRA 和 skill_view 有什么区别？</b></summary>
-<p><code>skill_view</code> 是文件读取器（打开书本看内容），SRA 是推荐引擎（图书管理员推荐哪本书）。两者互补：SRA 告诉你<em>该用什么</em>，<code>skill_view</code> 告诉你<em>怎么用</em>。</p>
+<summary><b>SRA 和 skill_view 有什么区别？</b></summary>
+
+<code>skill_view</code> 是文件读取器（打开书本看内容），SRA 是推荐引擎（图书管理员推荐哪本书）。两者互补：SRA 告诉你<em>该用什么</em>，<code>skill_view</code> 告诉你<em>怎么用</em>。
 </details>
 
 <details>
-<summary><b>Q: 守护进程起不来怎么办？</b></summary>
+<summary><b>守护进程起不来怎么办？</b></summary>
 
 ```bash
 # 检查日志
@@ -396,7 +353,8 @@ lsof -i :8536
 </details>
 
 <details>
-<summary><b>Q: 推荐结果为空？</b></summary>
+<summary><b>推荐结果为空？</b></summary>
+
 1. 确保技能目录不为空：<code>ls ~/.hermes/skills</code>
 2. 手动刷新索引：<code>sra refresh</code>
 3. 检查覆盖率：<code>sra coverage</code>
@@ -404,12 +362,13 @@ lsof -i :8536
 </details>
 
 <details>
-<summary><b>Q: 升级 Hermes 后集成失效？</b></summary>
+<summary><b>升级 Hermes 后集成失效？</b></summary>
+
 升级后重新运行：<code>bash scripts/install-hermes-integration.sh</code>
 </details>
 
 <details>
-<summary><b>Q: 国内服务器访问 GitHub 慢？</b></summary>
+<summary><b>国内服务器访问 GitHub 慢？</b></summary>
 
 ```bash
 git config --global http.proxy http://127.0.0.1:7890
@@ -432,32 +391,31 @@ pytest tests/ -v  # 38 个测试全部通过
 
 # 覆盖率
 pytest tests/test_coverage.py -v
-
-# 项目结构
 ```
 
 ### 项目结构
 
-```diff
- sra-agent/
- ├── skill_advisor/           # 核心源码
- │   ├── advisor.py           # 技能推荐引擎
- │   ├── cli.py               # CLI 入口
- │   ├── indexer.py           # 技能索引器
- │   ├── matcher.py           # 四维匹配引擎
- │   ├── memory.py            # 场景记忆
- │   ├── synonyms.py          # 中英文同义词映射
- │   ├── adapters/            # 多 Agent 适配器
- │   └── runtime/             # 守护进程
-+├── .github/                 # Issue/PR 模板
-+├── pyproject.toml           # 构建配置 (PEP 621)
-+├── setup.py                 # 安装配置（兼容）
- ├── tests/                   # 测试（38 tests）
- ├── scripts/                 # 部署脚本
- ├── patches/                 # Hermes 集成补丁
-+├── CONTRIBUTING.md          # 贡献指南
-+├── SECURITY.md              # 安全策略
- └── docs/                    # 文档
+```
+sra-agent/
+├── skill_advisor/           # 核心源码
+│   ├── advisor.py           # 技能推荐引擎
+│   ├── cli.py               # CLI 入口
+│   ├── indexer.py           # 技能索引器
+│   ├── matcher.py           # 四维匹配引擎
+│   ├── memory.py            # 场景记忆
+│   ├── synonyms.py          # 中英文同义词映射
+│   ├── adapters/            # 多 Agent 适配器
+│   └── runtime/             # 守护进程
+├── .github/                 # Issue/PR 模板
+├── pyproject.toml           # 构建配置 (PEP 621)
+├── setup.py                 # 安装配置（兼容）
+├── tests/                   # 测试（38 tests）
+├── scripts/                 # 部署脚本
+├── patches/                 # Hermes 集成补丁
+├── CONTRIBUTING.md          # 贡献指南
+├── CODE_OF_CONDUCT.md       # 行为准则
+├── SECURITY.md              # 安全策略
+└── docs/                    # 文档
 ```
 
 ---
@@ -466,7 +424,6 @@ pytest tests/test_coverage.py -v
 
 欢迎任何形式的贡献！请先阅读 [CONTRIBUTING.md](CONTRIBUTING.md)
 
-**贡献方式：**
 - 🐛 报告 Bug → [创建 Issue](https://github.com/JackSmith111977/Hermes-Skill-View/issues/new)
 - 💡 建议新功能 → 开启 Discussion
 - 🔧 提交 PR → Fork + Branch + PR
