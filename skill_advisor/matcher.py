@@ -84,18 +84,23 @@ class SkillMatcher:
         word_list.extend(list(extra_words))
         word_list.extend(list(multi_word_syns))
         
-        # 同义词反向匹配
+        # 同义词反向匹配（改进：区分精确匹配和宽泛匹配）
         for word in list(input_words):
             if word in self.synonyms:
                 for syn in self.synonyms[word]:
                     syn_lower = syn.lower()
                     if len(syn_lower) < 2:
                         continue
-                    if (syn_lower in skill_name or syn_lower in str(triggers) or 
-                        syn_lower in str(tags) or syn_lower in desc or syn_lower in match_text):
+                    # 精确匹配：在 name/trigger/tags 中
+                    if syn_lower in skill_name or syn_lower in str(triggers) or syn_lower in str(tags):
                         score += 25
                         if f"同义词'{word}'→'{syn_lower}'" not in str(reasons):
                             reasons.append(f"同义词'{word}'→'{syn_lower}'")
+                    # 宽泛匹配：只在 description/match_text 中（风险更低）
+                    elif syn_lower in desc or syn_lower in match_text:
+                        score += 12
+                        if f"同义词'{word}'→'{syn_lower}'" not in str(reasons):
+                            reasons.append(f"同义词(描述)'{word}'→'{syn_lower}'")
         
         # 逐词遍历
         for word in word_list:
