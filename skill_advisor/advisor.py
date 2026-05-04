@@ -30,11 +30,11 @@ class SkillAdvisor:
         
         Args:
             skills_dir: 技能目录路径。默认为 ~/.hermes/skills
-            data_dir: 数据持久化目录。默认为 ~/.sra_agent/data
+            data_dir: 数据持久化目录。默认为 ~/.sra/data
         """
         self.skills_dir = skills_dir or os.path.expanduser("~/.hermes/skills")
         self.data_dir = data_dir or os.path.expanduser(
-            os.environ.get("SRA_DATA_DIR", "~/.sra_agent/data")
+            os.environ.get("SRA_DATA_DIR", "~/.sra/data")
         )
         
         # 确保数据目录存在
