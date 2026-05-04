@@ -1,46 +1,75 @@
-# Epic: SRA v2.0 — Hermes 原生集成
+# Epic: SRA v1.1.0 — Hermes 原生集成（已实现 ✅）
 
 > **Epic ID:** SRA-EPIC-001
-> **状态:** 📋 规划中
-> **优先级:** 🔴 高
+> **状态:** ✅ **已实现 (v1.1.0)**
+> **实现版本:** SRA v1.1.0 + Hermes 集成补丁
 
 ## 概述
 
-将 SRA (Skill Runtime Advisor) 从"独立运行的 API 服务"升级为"Hermes Agent 的原生消息前置推理层"。
+将 SRA (Skill Runtime Advisor) 从"独立运行的 API 服务"升级为"Hermes Agent 的原生消息前置推理层"——每次用户消息自动触发 SRA 推荐，**代码层强制拦截，不依赖 AGENTS.md 或 SOUL.md 的自然语言指令**。
 
-## 目标
-
-用户每次发消息时，在 LLM 处理前自动调 SRA 获取技能推荐，将 `rag_context` 注入到系统提示中，让 boku 知道自己该用什么技能。
-
-## 架构
+## 最终架构（实现方案）
 
 ```
 用户消息
     ↓
-┌─ Gateway / CLI ─────────────────────┐
-│  hooks.emit("agent:start")          │
-│     ↓                                │
-│  SRA Hook (自动触发)                 │
-│  ┌─────────────────────────────┐    │
-│  │ POST :8536/recommend        │    │
-│  │  → rag_context              │    │
-│  │  → should_auto_load         │    │
-│  │  → top_skill                │    │
-│  └──────────┬──────────────────┘    │
-│             ↓ 注入 rag_context      │
-│  System Prompt + SRA 上下文          │
-│     ↓                                │
-│  boku (LLM) 感知推荐                 │
-└────────────────────────────────────┘
+Hermes AIAgent.run_conversation()
     ↓
-回复用户
+_query_sra_context(user_message)  ← 自动触发（代码层硬编码）
+    ↓
+HTTP POST :8536/recommend  →  SRA Daemon
+    ↓
+[SRA] context 注入到 user_message 前
+    ↓
+消息 + SRA 上下文 → LLM 处理 → 回复
 ```
 
-## 验收标准
+## 实现位置
 
-- [ ] Gateway 模式：每次消息自动调 SRA，rag_context 注入系统提示
-- [ ] CLI 模式：每次消息自动调 SRA，rag_context 注入系统提示
-- [ ] SRA Daemon 不可用时优雅降级（不阻塞消息）
-- [ ] should_auto_load≥80 时自动加载对应 skill
-- [ ] 所有 38 个现有测试通过
-- [ ] 新增 10+ 个测试覆盖 Hook + CLI 集成
+- **修改文件:** `~/.hermes/hermes-agent/run_agent.py`
+- **注入点 1:** `_query_sra_context()` 函数（模块级，`class AIAgent` 前）
+- **注入点 2:** `run_conversation()` 方法中 `# Add user message` 前
+- **补丁文件:** `patches/hermes-sra-integration.patch`
+- **安装脚本:** `scripts/install-hermes-integration.sh`
+
+## 关键设计决策
+
+### 为什么不是 Hook 方案？
+
+Hermes 的 Hook 系统（`hooks.emit("agent:start")`）是**异步非阻塞**的。第 170 行源码明确注释：
+```python
+# errors are caught and logged but never block
+```
+Hook 可以"感知"到消息事件，但无法修改 system prompt 或消息内容。因此纯 Hook 方案不可行。
+
+### 为什么注入 user_message 而不是 system prompt？
+
+`_build_system_prompt()` 在每个 session 中**只调用一次并缓存**。如果注入到 system prompt 中，后续消息的推荐不会更新。注入到 `user_message` 前保证每次消息都有最新的技能推荐。
+
+### 为什么用模块级缓存？
+
+防止 LLM 因 API 失败重试消息时重复调 SRA。用 MD5 hash 作为缓存 key，只对相同内容的消息命中。
+
+## 验收状态
+
+- [x] Gateway 模式：每次消息自动调 SRA，上下文注入到消息前
+- [x] CLI 模式：每次消息自动调 SRA，上下文注入到消息前
+- [x] SRA Daemon 不可用时优雅降级（try/except 静默，不阻塞）
+- [x] should_auto_load≥80 时在 [SRA] 上下文标记建议加载的 skill
+- [x] 所有 38 个现有测试通过
+- [x] 2 秒超时保护
+- [x] 模块级缓存（MD5 hash）避免重复请求
+
+## 安装方式
+
+```bash
+# 方式一：一键脚本
+bash scripts/install-hermes-integration.sh
+
+# 方式二：打补丁
+cd ~/.hermes/hermes-agent
+patch -p1 < /path/to/sra/patches/hermes-sra-integration.patch
+
+# 卸载
+bash scripts/install-hermes-integration.sh --uninstall
+```

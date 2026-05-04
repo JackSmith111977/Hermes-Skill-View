@@ -746,9 +746,14 @@ sra-agent/
 │   ├── test_coverage.py     # 覆盖率测试
 │   └── test_benchmark.py    # 基准测试
 ├── scripts/                 # 部署脚本
-│   └── install.sh           # 一键安装脚本
+│   ├── install.sh           # 一键安装脚本
+│   └── install-hermes-integration.sh  # Hermes 原生集成安装/卸载脚本
+├── patches/                 # 补丁文件
+│   └── hermes-sra-integration.patch   # Hermes run_agent.py SRA 注入补丁
 ├── docs/                    # 文档
 │   ├── DESIGN.md            # 设计文档
+│   ├── EPIC-001-hermes-integration.md # Hermes 集成 Epic
+│   ├── STORIES-001-003.md   # Hermes 集成 Story
 │   └── INTEGRATION.md       # 集成指南
 ├── data/                    # 运行时数据（gitignore）
 ├── pyproject.toml           # 项目元数据
