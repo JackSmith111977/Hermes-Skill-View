@@ -1,56 +1,54 @@
-# 贡献指南
+# SRA — Skill Runtime Advisor
 
-感谢你考虑为 SRA 做贡献！
+感谢你对 SRA 的关注！以下是如何参与贡献的指南。
 
-## 开发环境
+## 🐛 报告 Bug
 
-```bash
-git clone https://github.com/yourname/sra-agent
-cd sra-agent
-pip install -e ".[dev]"
-```
+1. 使用 [Bug Report 模板](https://github.com/JackSmith111977/Hermes-Skill-View/issues/new?template=bug_report.md)
+2. 提供完整的环境信息（OS、Python 版本、SRA 版本）
+3. 附上复现步骤和期望行为
 
-## 代码规范
+## 💡 提出新功能
 
-- 遵循 PEP 8
-- 所有公开函数需要有类型注解和 docstring
-- 新增同义词时确保中英文都有映射
-- 不要破坏现有测试
+1. 先搜索 [已有的 Issue/Discussion](https://github.com/JackSmith111977/Hermes-Skill-View/issues) 确认是否已有人提过
+2. 使用 [Feature Request 模板](https://github.com/JackSmith111977/Hermes-Skill-View/issues/new?template=feature_request.md)
+3. 清晰描述解决的问题和你的方案
 
-## 测试
-
-所有贡献必须附带测试：
-
-```bash
-# 运行全部测试
-pytest tests/ -v
-
-# 只跑覆盖率测试
-pytest tests/test_coverage.py -v
-
-# 运行基准测试
-pytest tests/test_benchmark.py -v
-```
-
-**覆盖率要求**：
-- 有 trigger 的 skill 识别率 ≥ 85%
-- 所有 skill 综合识别率 ≥ 50%
-- 常见用户查询通过率 ≥ 60%
-
-## 提交 PR
+## 🔧 提交代码
 
 1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m 'Add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
+2. 创建特性分支：`git checkout -b feature/amazing-feature`
+3. 提交改动：`git commit -m 'feat: add amazing feature'`
+4. 推送到分支：`git push origin feature/amazing-feature`
 5. 创建 Pull Request
 
-## 发布流程
+### 代码规范
 
-```bash
-# 更新版本号
-# 更新 CHANGELOG
-git tag v1.0.0
-git push origin v1.0.0
-# GitHub Actions 会自动发布到 PyPI
-```
+- 确保测试通过：`pytest tests/ -v`
+- 新功能请添加测试覆盖
+- 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范
+
+### 匹配引擎改动
+
+如果修改了 `matcher.py`，请确保：
+1. 更新基准测试数据
+2. 新增同义词时中英文都映射
+3. 所有覆盖率测试通过
+
+## 📖 完善文档
+
+- README 可以增加使用示例
+- 文档改进可以单独提交 PR
+- 中英文文档都欢迎
+
+## ❓ 问题咨询
+
+请使用 [GitHub Discussions](https://github.com/JackSmith111977/Hermes-Skill-View/discussions) 进行问题咨询。
+
+## 行为准则
+
+请保持友好、尊重、包容的交流氛围。
+
+---
+
+**感谢你为 SRA 做的贡献！❤️**
