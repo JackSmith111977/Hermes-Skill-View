@@ -141,9 +141,8 @@ curl -s -X POST http://127.0.0.1:8536/recommend \
 
 | 限制 | 说明 | 影响 |
 |------|------|------|
-| watch_skills_dir 待优化 | 文件监听机制依赖定时刷新（file-watch已修复但稳定性待验证） | 新加 SKILL.md 后最多等 1 小时才被感知 |
 | 语义理解待改进 | 自然语言长查询（L3）召回偏低（26.7/100） | 复杂自然语言描述的任务匹配不精准 |
-| 部分 skill 只有英文 trigger | "image-generation"等48个skill仅中文trigger，"html-guide"等74个完全无中文trigger | 纯中文查询需要同义词映射桥接 |
+| 部分 skill 只有英文 trigger | "html-guide"等74个skill完全没有中文trigger | 纯中文查询需要同义词映射桥接 |
 | Hermes 集成依赖手动配置 | 需要手动修改 AGENTS.md | 不是开箱即用 |
 
 ✅ Phase 1 已修复：同义词映射补充（生图/html/youtube/查资料/动漫/博客/提醒等）、短查询自动提升因子
