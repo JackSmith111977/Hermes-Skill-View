@@ -161,10 +161,10 @@ SRA 采用**分层轻量架构**，总代码量仅 **95KB**，运行内存占用
 
 ## 🚀 安装指南
 
-### 方式一：pip 安装
+### 方式一：pip 安装（PyPI）
 
 ```bash
-pip install --user sra-agent
+pip install sra-agent
 ```
 
 ### 方式二：从源码安装（推荐）
@@ -201,6 +201,7 @@ sra version
 | `sra status` | 查看状态 |
 | `sra restart` | 重启 |
 | `sra attach` | 前台运行（调试用） |
+| `srad` | 守护进程底层命令（`srad --help`） |
 
 ### 技能推荐
 
@@ -330,7 +331,7 @@ bash scripts/install-hermes-integration.sh
 | 守护进程内存占用 | **~8MB** |
 | HTTP API 延迟 | **~5ms** |
 | 代码总量 | **95KB** |
-| 安装依赖 | **零（纯 Python 标准库）** |
+| 安装依赖 | **仅 pyyaml**（轻量级） |
 | 有 trigger 的 skill 识别率 | **90.6%** |
 | 总体识别率 | **86.6%** |
 | 测试通过 | **38/38 ✅** |
@@ -437,21 +438,26 @@ pytest tests/test_coverage.py -v
 
 ### 项目结构
 
-```
-sra-agent/
-├── skill_advisor/           # 核心源码
-│   ├── advisor.py           # 技能推荐引擎
-│   ├── cli.py               # CLI 入口
-│   ├── indexer.py           # 技能索引器
-│   ├── matcher.py           # 四维匹配引擎
-│   ├── memory.py            # 场景记忆
-│   ├── synonyms.py          # 中英文同义词映射
-│   ├── adapters/            # 多 Agent 适配器
-│   └── runtime/             # 守护进程
-├── tests/                   # 测试（38 tests）
-├── scripts/                 # 部署脚本
-├── patches/                 # Hermes 集成补丁
-└── docs/                    # 文档
+```diff
+ sra-agent/
+ ├── skill_advisor/           # 核心源码
+ │   ├── advisor.py           # 技能推荐引擎
+ │   ├── cli.py               # CLI 入口
+ │   ├── indexer.py           # 技能索引器
+ │   ├── matcher.py           # 四维匹配引擎
+ │   ├── memory.py            # 场景记忆
+ │   ├── synonyms.py          # 中英文同义词映射
+ │   ├── adapters/            # 多 Agent 适配器
+ │   └── runtime/             # 守护进程
++├── .github/                 # Issue/PR 模板
++├── pyproject.toml           # 构建配置 (PEP 621)
++├── setup.py                 # 安装配置（兼容）
+ ├── tests/                   # 测试（38 tests）
+ ├── scripts/                 # 部署脚本
+ ├── patches/                 # Hermes 集成补丁
++├── CONTRIBUTING.md          # 贡献指南
++├── SECURITY.md              # 安全策略
+ └── docs/                    # 文档
 ```
 
 ---
