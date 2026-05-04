@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+
+# SRA 数据
+*.sra_agent/
+data/
+skill_usage_stats.json
+skill_full_index.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+venv/
+.venv/
+
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage
