@@ -620,6 +620,75 @@ print(result["top_skill"])        # 最佳匹配 skill
 
 ---
 
+## 🧩 Hermes 原生集成（v1.1.0+）
+
+SRA 可以直接注入到 Hermes Agent 的消息管道中，**每次用户消息自动调 SRA 获取技能推荐**，无需手动触发。
+
+### 集成原理
+
+```
+用户消息
+    ↓
+Hermes AIAgent.run_conversation()
+    ↓
+_query_sra_context(user_message)  ← 自动触发
+    ↓
+POST :8536/recommend  →  SRA Daemon
+    ↓
+[SRA] Skill Runtime Advisor 推荐:
+── [SRA Skill 推荐] ──────────────────────────────
+  ⭐ [medium] architecture-diagram (47.2分) — ...
+── ──────────────────────────────────────────────
+
+用户消息原文...  ← 注入到消息前
+    ↓
+LLM 感知推荐 → 自动加载 skill → 回复
+```
+
+### 一键安装
+
+```bash
+# 从 SRA 源码目录运行
+bash scripts/install-hermes-integration.sh
+
+# 卸载
+bash scripts/install-hermes-integration.sh --uninstall
+```
+
+### 手动安装
+
+```bash
+# 1. 备份原文件
+cp ~/.hermes/hermes-agent/run_agent.py ~/.hermes/hermes-agent/run_agent.py.bak
+
+# 2. 打补丁
+cd ~/.hermes/hermes-agent
+patch -p1 < /path/to/sra/patches/hermes-sra-integration.patch
+```
+
+### 验证集成
+
+```bash
+# 1. 确保 SRA Daemon 运行
+curl http://127.0.0.1:8536/health
+
+# 2. 启动 Hermes
+hermes
+
+# 3. 发一条消息，回复开头会看到 [SRA] 标记
+#    每次消息会自动调 SRA 推荐 skill
+```
+
+### 降级行为
+
+| 状况 | 行为 |
+|------|------|
+| SRA Daemon 正常运行 | 注入推荐上下文到每次消息 |
+| SRA Daemon 不可用 | 完全静默降级，不阻塞消息，不影响正常使用 |
+| 相同消息重试 | 模块级缓存避免重复 HTTP 调用 |
+
+---
+
 ## 🛠️ 开发
 
 ### 设置开发环境
