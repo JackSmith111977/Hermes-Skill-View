@@ -4,10 +4,10 @@
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 [![CLI](https://img.shields.io/badge/CLI-sra-orange)](https://github.com/JackSmith111977/Hermes-Skill-View)
 
-**让 AI Agent 拥有运行时技能推荐能力的轻量级引擎。**  
-运行时检测用户意图，自动推荐最匹配的技能文件（SKILL.md），无需开发者手动配置。
+**为 Hermes Agent 解决技能发现痛点的运行时消息前置推理中间件。**  
+每次用户消息到达 Agent 之前，先经过 SRA Proxy 语义分析，自动注入最匹配技能（SKILL.md）的 RAG 上下文——让 Agent 永远知道当前任务该用什么能力。
 
-[📖 设计详解](#设计哲学) · [⚡ 快速安装](#安装)
+[📖 运行时设计](./RUNTIME.md) · [⚡ 快速安装](#安装) · [🩺 集成指南](./docs/INTEGRATION.md)
 
 ---
 
@@ -15,11 +15,11 @@
 
 | 能力 | 说明 |
 |------|------|
-| **语义推荐** | 分析用户输入，按语义匹配技能 |
-| **Proxy 模式** | 消息前置推理，自动注入 RAG 上下文 |
-| **守护进程** | 后台运行，实时更新技能索引 |
-| **多 Agent 适配** | Hermes / Claude / Codex / 通用 |
-| **覆盖率分析** | 统计技能触发分布，发现知识盲区 |
+| **消息前置推理** | 每次用户消息到达 Agent，自动查询最匹配的技能并注入 RAG 上下文 |
+| **语义匹配引擎** | 同义词扩展 + TF-IDF + 共现矩阵混合匹配，不是简单的关键词搜索 |
+| **守护进程** | 7x24 后台运行，Unix Socket + HTTP 双协议，自动定时刷新技能索引 |
+| **覆盖率分析** | 统计哪些技能能被识别、哪些是盲区，驱动技能库质量改进 |
+| **Agent 适配器** | 为 Hermes / Claude / Codex 等 Agent 提供原生格式的输出 |
 
 ---
 
@@ -127,11 +127,13 @@ sra config: ok (~/.sra/config.json)
 
 ## 设计哲学
 
-SRA 遵循三个设计原则：
+SRA 以三个原则指导其作为运行时的设计：
 
-1. **AI 可观测性优先** — 每个组件必须有状态反馈（ok / warn / error），AI 永远知道"当前状态是什么"和"下一步该怎么做"
-2. **哲学 + 技术事实** — 不仅告诉 AI "做什么"，更要注意"为什么"，讲清 tradeoff 让 Agent 自己推理
-3. **渐进式披露** — README（入口）→ SKILL.md（Agent 世界观）→ docs/（详细文档），AI 按需深入
+1. **消息优先于工具** — SRA 不是 Agent 主动加载的"技能"，而是 Agent 收到每条消息时**被动触发**的中间件。它不改变 Agent 的行为，只增强 Agent 的上下文。
+2. **AI 可观测性优先** — 每个组件必须有状态反馈（ok / warn / error），AI 永远知道"当前状态是什么"和"下一步该怎么做"
+3. **渐进式披露** — README（入口）→ RUNTIME.md（运行时设计）→ docs/（详细文档），按需深入
+
+> 📖 完整的运行时设计文档请看 [RUNTIME.md](./RUNTIME.md)
 
 ---
 
