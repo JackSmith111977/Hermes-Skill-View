@@ -1,0 +1,19 @@
+{
+  "name": "sra-agent",
+  "display_name": "SRA — Skill Runtime Advisor",
+  "version": "1.1.0",
+  "description": "运行时技能推荐引擎 — 让 AI Agent 拥有自动技能推荐能力",
+  "author": "Emma (小喵)",
+  "license": "MIT",
+  "homepage": "https://github.com/JackSmith111977/Hermes-Skill-View",
+  "documentation": "https://github.com/JackSmith111977/Hermes-Skill-View#readme",
+  "commands": {
+    "start": "sra start",
+    "stop": "sra stop",
+    "check": "python3 scripts/check-sra.py",
+    "recommend": "curl -s -X POST http://127.0.0.1:8536/recommend -H 'Content-Type: application/json' -d '{\"message\": \"<query>\"}'"
+  },
+  "tags": ["skill-recommendation", "rag", "ai-agent", "runtime"],
+  "platform": ["linux", "macos"],
+  "python_version": ">=3.8"
+}

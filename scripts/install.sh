@@ -83,26 +83,39 @@ if [[ $(echo "$PY_VERSION < 3.8" | bc) -eq 1 ]]; then
     exit 1
 fi
 
-# ── 步骤 2: 安装 Python 包 ────────────────
+# ── 步骤 2: 安装 Python 包（多路径降级策略）──
 if [[ "$SKIP_PIP" != "true" ]]; then
     info "安装 SRA Python 包..."
+    info "尝试方式 1/3: 源码安装（最稳定）..."
     
     # 检查是否在源码目录
     if [[ -f "setup.py" ]]; then
-        pip install --user -e . 2>/dev/null || pip install -e . 2>/dev/null || {
+        info "检测到源码目录，使用 editable install..."
+        pip install --user -e . || pip install -e . || {
             warn "editable install 失败，尝试普通安装"
-            pip install --user . 2>/dev/null || pip install . 2>/dev/null
+            pip install --user . || pip install . || {
+                error "Python 包安装失败，请检查 pip 和 Python 版本"
+                exit 1
+            }
         }
     else
-        pip install --user sra-agent 2>/dev/null || pip install sra-agent 2>/dev/null || {
-            warn "pip 安装失败，尝试从 GitHub 安装"
-            pip install --user git+https://github.com/JackSmith111977/Hermes-Skill-View.git 2>/dev/null || {
-                error "安装失败。请参照 README 从源码安装"
+        info "尝试方式 2/3: PyPI 安装..."
+        pip install --user sra-agent || pip install sra-agent || {
+            warn "PyPI 安装失败，尝试方式 3/3: GitHub 源码安装..."
+            pip install --user git+https://github.com/JackSmith111977/Hermes-Skill-View.git || {
+                error "所有安装方式均失败。请手动运行: pip install sra-agent"
                 exit 1
             }
         }
     fi
-    ok "SRA Python 包安装完成"
+    
+    # 安装后验证
+    if command -v sra &>/dev/null; then
+        ok "sra CLI 安装成功: $(sra version 2>/dev/null || echo 'v1.1.0')"
+    else
+        warn "sra 命令未在 PATH 中找到，可能是 ~/.local/bin 未加入 PATH"
+        info "运行: export PATH=\$PATH:\$HOME/.local/bin"
+    fi
 fi
 
 # ── 步骤 3: 创建配置 ──────────────────────
@@ -231,7 +244,19 @@ SERVICEEOF
     fi
 fi
 
-# ── 步骤 7: 集成到 Agent ─────────────────
+# ── 步骤 7b: 运行环境检查 ─────────────────
+echo
+info "运行环境检查..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$SCRIPT_DIR/check-sra.py" ]]; then
+    python3 "$SCRIPT_DIR/check-sra.py" --port "${PROXY_PORT}" || {
+        warn "环境检查未全部通过，请查看上方输出并修复"
+    }
+else
+    warn "check-sra.py 未找到，跳过环境检查"
+fi
+
+# ── 步骤 8: 集成到 Agent ─────────────────
 echo
 info "将 SRA 集成到 $AGENT_TYPE Agent..."
 
@@ -278,23 +303,31 @@ echo "=============================================="
 echo -e "${GREEN}  ✅ SRA v1.1.0 安装完成！${NC}"
 echo "=============================================="
 echo
-echo "快速使用:"
+echo "📋 安装后自检："
+echo "  python3 scripts/check-sra.py     # 一键环境检查"
+echo
+echo "📋 快速使用："
 echo "  sra start              # 启动守护进程"
-echo "  sra recommend 画架构图  # 查询推荐"
-echo "  sra status             # 查看状态"
-echo "  sra coverage           # 查看覆盖率"
-echo "  sra stats              # 查看统计"
+echo "  sra status             # 查看运行状态"
+echo "  sra recommend 画架构图  # 查询技能推荐"
 echo "  sra stop               # 停止守护进程"
 echo
+echo "📋 更多命令："
+echo "  sra coverage           # 查看技能覆盖率"
+echo "  sra stats              # 查看统计"
+echo "  sra version            # 版本信息"
+echo
 if [[ "$PROXY_MODE" == "true" ]]; then
-echo "Proxy 模式测试:"
+echo "📋 Proxy 模式测试："
 echo "  curl -s http://127.0.0.1:${PROXY_PORT}/health"
 echo "  curl -s -X POST http://127.0.0.1:${PROXY_PORT}/recommend \\"
 echo "    -H 'Content-Type: application/json' \\"
 echo "    -d '{\"message\": \"画个架构图\"}'"
 echo
 fi
-echo "日志: $SRA_HOME/srad.log"
-echo "Socket: $SRA_HOME/srad.sock"
-echo "配置: $SRA_HOME/config.json"
+echo "📋 资源路径："
+echo "  日志:     $SRA_HOME/srad.log"
+echo "  Socket:   $SRA_HOME/srad.sock"
+echo "  配置:     $SRA_HOME/config.json"
+echo "  GitHub:   https://github.com/JackSmith111977/Hermes-Skill-View"
 echo
