@@ -50,40 +50,132 @@ cd sra-agent
 pip install -e .
 ```
 
-### 基本用法
-
-```python
-from sra_agent import SkillAdvisor
-
-# 初始化（自动扫描技能目录）
-advisor = SkillAdvisor(skills_dir="~/.hermes/skills")
-
-# 推荐匹配
-result = advisor.recommend("帮我画个架构图")
-print(result.recommendations)
-# → [Skill(name='architecture-diagram', score=47.5, confidence='medium')]
-
-# 记录使用场景（供下次学习）
-advisor.record_usage("architecture-diagram", "帮我画个架构图", accepted=True)
-
-# 查看统计
-advisor.show_stats()
-```
-
-### CLI 使用
+### 启动守护进程
 
 ```bash
-# 推荐匹配
-sra --query "帮我画个架构图"
+# 启动后台守护进程（推荐）
+sra start
 
-# 刷新索引
-sra --refresh
+# 查看状态
+sra status
+
+# 前台运行（调试）
+sra attach
+```
+
+### 基本用法
+
+```bash
+# 查询推荐（自动连接守护进程）
+sra recommend 帮我画个架构图
+
+# 如果守护进程未运行，会自动降级为本地模式
+```
+
+## 🔌 多 Agent 集成
+
+SRA 支持多种 AI Agent 系统：
+
+| Agent | 适配器 | 集成方式 |
+|-------|--------|----------|
+| **Hermes Agent** | `HermesAdapter` | 原生 Skill 集成 |
+| **Claude Code** | `ClaudeCodeAdapter` | Tool Use 格式 |
+| **OpenAI Codex** | `CodexAdapter` | Function Calling |
+| **OpenCode** | `GenericCLIAdapter` | CLI 输出 |
+| **通用** | `GenericCLIAdapter` | 纯文本格式 |
+
+```python
+from sra_agent.adapters import get_adapter
+
+# Hermes
+adapter = get_adapter("hermes")
+recs = adapter.recommend("帮我画个架构图")
+print(adapter.format_suggestion(recs))
+
+# Claude Code — 获取 Tool Use 格式
+adapter = get_adapter("claude")
+tools = adapter.to_claude_tool_format(recs)
+```
+
+## ⚙️ 守护进程管理
+
+```bash
+# 启动（后台）
+sra start          # 或: srad
+
+# 停止
+sra stop
+
+# 查看状态
+sra status
+
+# 重启
+sra restart
+
+# 安装 systemd 服务（开机自启）
+sra install service
 
 # 查看统计
-sra --stats
+sra stats
 
-# 生成增强版技能提示
-sra --enhanced-prompt
+# 查看技能覆盖率
+sra coverage
+
+# 刷新索引
+sra refresh
+```
+
+## 🌐 HTTP API
+
+Daemon 启动后提供 HTTP API：
+
+```bash
+# 健康检查
+curl http://localhost:8532/health
+
+# 推荐查询
+curl -X POST http://localhost:8532/recommend \
+  -H "Content-Type: application/json" \
+  -d '{"query": "帮我画个架构图"}'
+
+# 记录使用
+curl -X POST http://localhost:8532/record \
+  -H "Content-Type: application/json" \
+  -d '{"skill": "architecture-diagram", "input": "画架构图", "accepted": true}'
+
+# 刷新索引
+curl -X POST http://localhost:8532/refresh
+
+# 统计
+curl http://localhost:8532/stats
+```
+
+## 🔩 架构
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    SRA Daemon (srad)                      │
+│                                                          │
+│  ┌────────────┐  ┌────────────┐  ┌────────────────────┐ │
+│  │ Unix Socket │  │  HTTP API  │  │  Auto Refresher    │ │
+│  │  (primary)  │  │  (:8532)   │  │  (every 1h)        │ │
+│  └──────┬─────┘  └──────┬─────┘  └────────────────────┘ │
+│         │               │                                 │
+│         └───────┬───────┘                                 │
+│                 ▼                                         │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │              SRA Recommendation Engine              │  │
+│  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌─────────┐  │  │
+│  │  │Indexer │  │Matcher │  │ Memory │  │Synonyms │  │  │
+│  │  └────────┘  └────────┘  └────────┘  └─────────┘  │  │
+│  └────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+           │              │              │
+           ▼              ▼              ▼
+     ┌──────────┐ ┌──────────┐ ┌──────────────┐
+     │ Hermes   │ │ Claude   │ │ OpenAI Codex │
+     │ Adapter  │ │ Adapter  │ │ Adapter      │
+     └──────────┘ └──────────┘ └──────────────┘
 ```
 
 ## 📊 基准测试
@@ -91,78 +183,11 @@ sra --enhanced-prompt
 | 指标 | 值 |
 |------|-----|
 | 扫描 268 个技能 | ~50ms |
-| 内存占用 | ~5MB |
-| 首次索引构建 | ~1s |
-| 技能识别率（有 trigger 的） | 98% |
-| 零 trigger 技能识别率 | 70% |
-
-## 🔌 集成方式
-
-### 作为 Hermes 插件
-
-SRA 设计为 Hermes Agent 的 learning-workflow 前置层：
-
-```
-用户输入 → SRA 推荐 → 
-├─ 得分 ≥ 80 → 自动加载 skill（跳过 skill_finder）
-├─ 得分 ≥ 40 → 弱推荐提示
-└─ 得分 < 40 → 回退 skill_finder / learning-workflow
-```
-
-### 作为独立服务
-
-```bash
-# 启动守护模式
-sra --daemon
-
-# 通过 HTTP 查询（后续版本）
-curl -X POST http://localhost:8532/recommend \
-  -H "Content-Type: application/json" \
-  -d '{"query": "帮我画个架构图"}'
-```
-
-## 🧪 测试
-
-```bash
-# 运行所有测试
-pytest tests/ -v
-
-# 只运行基准测试
-pytest tests/test_benchmark.py -v
-
-# 测试特定 skill 识别率
-pytest tests/test_skill_coverage.py -v
-```
-
-## 📦 项目结构
-
-```
-sra-agent/
-├── skill_advisor/
-│   ├── __init__.py         # 主入口 SkillAdvisor 类
-│   ├── advisor.py          # SRA 核心引擎
-│   ├── matcher.py          # 四维匹配引擎
-│   ├── indexer.py          # 技能索引构建
-│   ├── memory.py           # 场景记忆持久化
-│   ├── synonyms.py         # 30+ 大类同义词映射
-│   └── cli.py              # CLI 入口
-├── tests/
-│   ├── test_matcher.py     # 匹配引擎测试
-│   ├── test_indexer.py     # 索引测试
-│   ├── test_synonyms.py    # 同义词测试
-│   ├── test_coverage.py    # 技能覆盖率测试
-│   └── test_benchmark.py   # 性能基准测试
-├── data/
-│   └── sample_skills/      # 示例技能目录（测试用）
-├── docs/
-│   ├── DESIGN.md           # 设计文档
-│   └── INTEGRATION.md      # 集成指南
-├── setup.py
-├── pyproject.toml
-├── README.md
-├── LICENSE
-└── CONTRIBUTING.md
-```
+| 守护进程内存占用 | ~8MB |
+| HTTP API 延迟 | ~5ms (overhead) |
+| 技能识别率（有 trigger） | 90.6% |
+| 总体技能识别率 | 86.6% |
+| 常见查询通过率 | 67.5% |
 
 ## 🤝 贡献
 

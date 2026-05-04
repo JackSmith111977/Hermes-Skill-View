@@ -5,13 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sra-agent"
 version = "1.0.0"
-description = "Skill Runtime Advisor — 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力"
+description = "Skill Runtime Advisor — 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力。带守护进程、多 Agent 适配器、完整 CLI。"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
     {name = "Emma (SRA Team)"},
 ]
-keywords = ["ai-agent", "skill-management", "runtime-advisor", "hermes", "llm"]
+keywords = ["ai-agent", "skill-management", "runtime-advisor", "hermes", "llm", "daemon"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -36,6 +36,7 @@ dev = [
 
 [project.scripts]
 sra = "skill_advisor.cli:main"
+srad = "skill_advisor.runtime.daemon:cmd_start"
 
 [tool.setuptools.packages.find]
 include = ["skill_advisor", "skill_advisor.*"]
