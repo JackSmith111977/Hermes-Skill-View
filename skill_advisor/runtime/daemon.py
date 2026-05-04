@@ -383,17 +383,74 @@ class SRaDDaemon:
                 break
 
     def _auto_refresh_loop(self):
-        """自动刷新循环"""
+        """自动刷新循环 — 双模式：定时刷新 + 文件变更检测"""
         interval = self.config.get("auto_refresh_interval", 3600)
+        
+        # 文件变更检测：每 30 秒检查技能目录的校验和
+        watch_enabled = self.config.get("watch_skills_dir", True)
+        watch_interval = 30  # 每 30 秒检测一次
+        
+        # 初始化文件校验和
+        last_checksum = self._compute_skills_checksum()
+        
+        last_timer_refresh = time.time()
+        
         while self.running:
-            time.sleep(interval)
-            try:
-                logger.info("自动刷新技能索引...")
-                count = self.advisor.refresh_index()
-                logger.info(f"索引刷新完成: {count} 个 skill")
-                self._last_refresh = time.time()
-            except Exception as e:
-                logger.error(f"索引刷新失败: {e}")
+            # 模式1: 定时刷新（优先级高）
+            if time.time() - last_timer_refresh >= interval:
+                try:
+                    logger.info("定时刷新技能索引...")
+                    count = self.advisor.refresh_index()
+                    logger.info(f"索引刷新完成: {count} 个 skill")
+                    self._last_refresh = time.time()
+                    last_timer_refresh = time.time()
+                    # 刷新后更新校验和
+                    last_checksum = self._compute_skills_checksum()
+                except Exception as e:
+                    logger.error(f"索引刷新失败: {e}")
+            
+            # 模式2: 文件变更检测（仅当 watch_skills_dir 启用时）
+            if watch_enabled and time.time() - self._last_refresh >= watch_interval:
+                current_checksum = self._compute_skills_checksum()
+                if current_checksum != last_checksum:
+                    logger.info("检测到技能目录变更，自动刷新索引...")
+                    try:
+                        count = self.advisor.refresh_index()
+                        logger.info(f"变更刷新完成: {count} 个 skill")
+                        self._last_refresh = time.time()
+                        last_checksum = current_checksum
+                    except Exception as e:
+                        logger.error(f"变更刷新失败: {e}")
+            
+            time.sleep(5)  # 每 5 秒检查一次循环条件
+
+    def _compute_skills_checksum(self):
+        """计算技能目录的校验和（文件数量 + 所有 SKILL.md 的 mtime + 大小）
+        
+        用于快速检测技能目录是否有新增/删除/修改。
+        零额外依赖，纯 Python 实现。
+        """
+        import hashlib
+        import glob
+        
+        skills_dir = self.config.get("skills_dir", "")
+        if not skills_dir or not os.path.exists(skills_dir):
+            return ""
+        
+        try:
+            files = sorted(glob.glob(os.path.join(skills_dir, '**/SKILL.md'), recursive=True))
+            # 计算稳健的校验和：文件名 + mtime + 文件大小
+            checksum_parts = []
+            for f in files:
+                try:
+                    stat = os.stat(f)
+                    checksum_parts.append(f"{f}:{stat.st_mtime}:{stat.st_size}")
+                except:
+                    checksum_parts.append(f)
+            return hashlib.md5("|".join(checksum_parts).encode()).hexdigest()
+        except Exception as e:
+            logger.warning(f"计算技能目录校验和失败: {e}")
+            return ""
 
     # ── 请求处理 ──────────────────────────────
 
