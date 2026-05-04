@@ -6,7 +6,7 @@ SYNONYMS = {
     # === 画图/可视化 ===
     "画图": ["draw", "diagram", "chart", "graph", "可视化", "图表", "绘图", "制图"],
     "架构图": ["architecture diagram", "架构图", "系统架构图", "架构设计图"],
-    "架构": ["architecture", "design", "system", "结构", "设计", "体系"],
+    "架构": ["architecture", "framework", "system", "结构", "体系", "架构图"],
     "手绘": ["excalidraw", "hand-drawn", "手绘风格", "草图", "whiteboard"],
     "信息图": ["infographic", "baoyu", "信息图", "可视化摘要", "infographics"],
     "像素": ["pixel", "pixel-art", "像素画", "retro", "像素风"],
@@ -44,7 +44,7 @@ SYNONYMS = {
     "测试": ["test", "verify", "check", "validate", "验证", "单元测试", "自动化测试", "testing"],
     "部署": ["deploy", "publish", "upload", "发布", "上传", "同步", "ci/cd"],
     "prd": ["product requirement", "产品需求", "prd", "产品文档", "需求文档"],
-    "计划": ["plan", "planning", "规划", "设计", "方案", "architecture"],
+    "计划": ["plan", "planning", "规划", "方案", "schedule", "安排"],
 
     # === 工具/操作 ===
     "文件": ["file", "organize", "manage", "整理", "管理", "分类", "文件操作"],
@@ -58,6 +58,7 @@ SYNONYMS = {
     # === 数据/分析 ===
     "金融": ["stock", "finance", "股票", "基金", "akshare", "金融数据", "行情"],
     "数据": ["data", "dataset", "数据分析", "analysis", "数据处理", "pandas", "统计"],
+    "数据库": ["database", "db", "sql", "table", "数据表", "datastore", "存储"],
     "excel": ["spreadsheet", "excel", "表格", "xlsx", "电子表格", "openpyxl"],
 
     # === 多媒体 ===
