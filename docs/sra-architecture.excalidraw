@@ -1,0 +1,51 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {"type":"rectangle","id":"bg1","x":-40,"y":-20,"width":1280,"height":160,"roundness":{"type":3},"backgroundColor":"#fff3bf","fillStyle":"solid","strokeColor":"#e6c200","strokeWidth":1,"opacity":30},
+    {"type":"text","id":"t_bg1","x":480,"y":10,"width":280,"height":24,"text":"SRA Zone (Pre-Message Reasoning Layer)","fontSize":20,"fontFamily":1,"strokeColor":"#7c6a00","textAlign":"center","verticalAlign":"middle","containerId":"bg1","originalText":"SRA Zone (Pre-Message Reasoning Layer)","autoResize":true},
+
+    {"type":"rectangle","id":"r_user","x":40,"y":200,"width":180,"height":80,"roundness":{"type":3},"backgroundColor":"#a5d8ff","fillStyle":"solid","strokeColor":"#1e1e1e","strokeWidth":2,"boundElements":[{"id":"t_user","type":"text"},{"id":"a1","type":"arrow"}]},
+    {"type":"text","id":"t_user","x":50,"y":220,"width":160,"height":50,"text":"User Message\n\"Draw an architecture diagram\"","fontSize":16,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"middle","containerId":"r_user","originalText":"User Message\n\"Draw an architecture diagram\"","autoResize":true},
+
+    {"type":"rectangle","id":"r_sra","x":320,"y":160,"width":220,"height":160,"roundness":{"type":3},"backgroundColor":"#d0bfff","fillStyle":"solid","strokeColor":"#1e1e1e","strokeWidth":2,"boundElements":[{"id":"t_sra","type":"text"},{"id":"a1","type":"arrow"},{"id":"a2","type":"arrow"}]},
+    {"type":"text","id":"t_sra","x":330,"y":170,"width":200,"height":140,"text":"SRA Proxy (Port 8536)\n\n① Semantic Match (TF-IDF)\n② Synonym Expansion\n③ Co-occurrence Matrix\n④ Score & Rank\n\n→ rag_context + top_skill","fontSize":14,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"top","containerId":"r_sra","originalText":"SRA Proxy (Port 8536)\n\n① Semantic Match (TF-IDF)\n② Synonym Expansion\n③ Co-occurrence Matrix\n④ Score & Rank\n\n→ rag_context + top_skill","autoResize":true},
+
+    {"type":"arrow","id":"a1","x":220,"y":240,"width":100,"height":0,"points":[[0,0],[100,0]],"endArrowhead":"arrow","strokeColor":"#1e1e1e","strokeWidth":2,"strokeStyle":"solid","startBinding":{"elementId":"r_user","fixedPoint":[1,0.5]},"endBinding":{"elementId":"r_sra","fixedPoint":[0,0.5]}},
+    {"type":"text","id":"t_a1","x":230,"y":215,"width":80,"height":20,"text":"POST /recommend","fontSize":14,"fontFamily":1,"strokeColor":"#495057","textAlign":"center","verticalAlign":"middle","containerId":"a1","originalText":"POST /recommend","autoResize":true},
+
+    {"type":"rectangle","id":"r_index","x":320,"y":380,"width":220,"height":90,"roundness":{"type":3},"backgroundColor":"#c3fae8","fillStyle":"solid","strokeColor":"#1e1e1e","strokeWidth":2,"boundElements":[{"id":"t_index","type":"text"},{"id":"a_idx","type":"arrow"}]},
+    {"type":"text","id":"t_index","x":330,"y":395,"width":200,"height":60,"text":"Skill Index Store\n\nTF-IDF Matrix + Synonyms\nCo-occurrence Graph\n(275+ skills indexed)","fontSize":14,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"middle","containerId":"r_index","originalText":"Skill Index Store\n\nTF-IDF Matrix + Synonyms\nCo-occurrence Graph\n(275+ skills indexed)","autoResize":true},
+    {"type":"arrow","id":"a_idx","x":430,"y":320,"width":0,"height":60,"points":[[0,0],[0,60]],"endArrowhead":"arrow","strokeColor":"#087f5b","strokeWidth":2,"strokeStyle":"dashed","startBinding":{"elementId":"r_sra","fixedPoint":[0.5,1]},"endBinding":{"elementId":"r_index","fixedPoint":[0.5,0]}},
+    {"type":"text","id":"t_idx","x":440,"y":340,"width":50,"height":20,"text":"lookup","fontSize":14,"fontFamily":1,"strokeColor":"#087f5b","textAlign":"center","verticalAlign":"middle","containerId":"a_idx","originalText":"lookup","autoResize":true},
+
+    {"type":"rectangle","id":"r_skills","x":50,"y":400,"width":200,"height":80,"roundness":{"type":3},"backgroundColor":"#e8e8e8","fillStyle":"solid","strokeColor":"#868e96","strokeWidth":1,"boundElements":[{"id":"t_skills","type":"text"},{"id":"a_scan","type":"arrow"}]},
+    {"type":"text","id":"t_skills","x":60,"y":415,"width":180,"height":50,"text":"~/.hermes/skills/\n\n62 SKILL.md files\n(auto-scanned every 1h)","fontSize":14,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"middle","containerId":"r_skills","originalText":"~/.hermes/skills/\n\n62 SKILL.md files\n(auto-scanned every 1h)","autoResize":true},
+    {"type":"arrow","id":"a_scan","x":250,"y":440,"width":70,"height":0,"points":[[70,0],[0,0]],"endArrowhead":"arrow","strokeColor":"#868e96","strokeWidth":2,"strokeStyle":"dashed","startBinding":{"elementId":"r_index","fixedPoint":[0,0.5]},"endBinding":{"elementId":"r_skills","fixedPoint":[1,0.5]}},
+    {"type":"text","id":"t_scan","x":255,"y":420,"width":60,"height":20,"text":"scan","fontSize":14,"fontFamily":1,"strokeColor":"#868e96","textAlign":"center","verticalAlign":"middle","containerId":"a_scan","originalText":"scan","autoResize":true},
+
+    {"type":"arrow","id":"a2","x":540,"y":240,"width":140,"height":0,"points":[[0,0],[140,0]],"endArrowhead":"arrow","strokeColor":"#1e1e1e","strokeWidth":2,"strokeStyle":"solid","startBinding":{"elementId":"r_sra","fixedPoint":[1,0.5]}},
+    {"type":"text","id":"t_a2","x":555,"y":215,"width":110,"height":20,"text":"rag_context + top_skill","fontSize":14,"fontFamily":1,"strokeColor":"#495057","textAlign":"center","verticalAlign":"middle","containerId":"a2","originalText":"rag_context + top_skill","autoResize":true},
+
+    {"type":"rectangle","id":"r_hermes","x":680,"y":160,"width":260,"height":160,"roundness":{"type":3},"backgroundColor":"#b2f2bb","fillStyle":"solid","strokeColor":"#1e1e1e","strokeWidth":2,"boundElements":[{"id":"t_hermes","type":"text"},{"id":"a2","type":"arrow"},{"id":"a3","type":"arrow"}]},
+    {"type":"text","id":"t_hermes","x":690,"y":170,"width":240,"height":140,"text":"Hermes Agent\n\n✓ Inject rag_context into prompt\n✓ should_auto_load? → load skill\n✓ Execute task with enhanced context\n✓ Tool calls (terminal, file, web...)\n\n[Agent runs normally — SRA is invisible]","fontSize":14,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"top","containerId":"r_hermes","originalText":"Hermes Agent\n\n✓ Inject rag_context into prompt\n✓ should_auto_load? → load skill\n✓ Execute task with enhanced context\n✓ Tool calls (terminal, file, web...)\n\n[Agent runs normally — SRA is invisible]","autoResize":true},
+
+    {"type":"rectangle","id":"r_output","x":680,"y":380,"width":260,"height":90,"roundness":{"type":3},"backgroundColor":"#ffd8a8","fillStyle":"solid","strokeColor":"#1e1e1e","strokeWidth":2,"boundElements":[{"id":"t_output","type":"text"},{"id":"a3","type":"arrow"}]},
+    {"type":"text","id":"t_output","x":690,"y":400,"width":240,"height":50,"text":"Agent Response\n\n\"Here's your architecture diagram...\"\n+ correct tools used","fontSize":14,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"middle","containerId":"r_output","originalText":"Agent Response\n\n\"Here's your architecture diagram...\"\n+ correct tools used","autoResize":true},
+    {"type":"arrow","id":"a3","x":810,"y":320,"width":0,"height":60,"points":[[0,0],[0,60]],"endArrowhead":"arrow","strokeColor":"#1e1e1e","strokeWidth":2,"startBinding":{"elementId":"r_hermes","fixedPoint":[0.5,1]},"endBinding":{"elementId":"r_output","fixedPoint":[0.5,0]}},
+
+    {"type":"rectangle","id":"r_curl","x":40,"y":40,"width":200,"height":50,"roundness":{"type":3},"backgroundColor":"#fff9db","fillStyle":"hachure","strokeColor":"#e6c200","strokeWidth":2,"boundElements":[{"id":"t_curl","type":"text"},{"id":"a_curl","type":"arrow"}]},
+    {"type":"text","id":"t_curl","x":50,"y":50,"width":180,"height":30,"text":"curl POST /recommend {\"message\": ...}","fontSize":14,"fontFamily":1,"strokeColor":"#7c6a00","textAlign":"center","verticalAlign":"middle","containerId":"r_curl","originalText":"curl POST /recommend {\"message\": ...}","autoResize":true},
+    {"type":"arrow","id":"a_curl","x":240,"y":65,"width":80,"height":95,"points":[[80,95],[0,0]],"endArrowhead":"arrow","strokeColor":"#e6c200","strokeWidth":2,"strokeStyle":"dashed","startBinding":{"elementId":"r_curl","fixedPoint":[1,0.5]},"endBinding":{"elementId":"r_sra","fixedPoint":[0,0.15]}},
+
+    {"type":"text","id":"title","x":100,"y":540,"width":300,"height":30,"text":"SRA Architecture — Pre-Message Skill Reasoning Middleware","fontSize":20,"fontFamily":1,"strokeColor":"#1e1e1e","textAlign":"center","verticalAlign":"middle","originalText":"SRA Architecture — Pre-Message Skill Reasoning Middleware","autoResize":true},
+
+    {"type":"text","id":"legend","x":960,"y":160,"width":250,"height":200,"text":"Legend:\n\n●  Input (User)\n●  SRA Proxy (Middleware)\n●  Skill Index (Storage)\n●  Hermes Agent (Consumer)\n●  Output (Response)\n\n---  Scan / Lookup\n──→  Request / Response\n\nMIT License | sra-agent v1.1.0","fontSize":14,"fontFamily":1,"strokeColor":"#868e96","textAlign":"left","verticalAlign":"top","originalText":"Legend:\n\n●  Input (User)\n●  SRA Proxy (Middleware)\n●  Skill Index (Storage)\n●  Hermes Agent (Consumer)\n●  Output (Response)\n\n---  Scan / Lookup\n──→  Request / Response\n\nMIT License | sra-agent v1.1.0","autoResize":true}
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "gridSize": 20,
+    "gridModeEnabled": false
+  }
+}
