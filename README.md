@@ -34,7 +34,6 @@ sequenceDiagram
     Note over H: 注入 RAG 上下文到系统提示
     H-->>-U: "好的，为你生成架构图..." + 正确工具调用
 ```
-
 ### 组件架构图
 
 ```mermaid
@@ -43,7 +42,7 @@ flowchart LR
         U[User Message<br/>自然语言查询]
     end
 
-    subgraph SRA["🎯 SRA 中间件层"]
+    subgraph SRA_MW["🎯 SRA 中间件层"]
         direction TB
         P[SRA Proxy :8536<br/>Unix Socket + HTTP]
         M[匹配引擎<br/>TF-IDF + 同义词 + 共现矩阵]
@@ -60,10 +59,12 @@ flowchart LR
         R[Agent Response<br/>正确的技能 + 工具调用]
     end
 
+    SK[~/.hermes/skills/<br/>SKILL.md files]
+
     U -->|POST /recommend| P
     P -->|lookup| M
     M -->|query| I
-    I -->|scan| SK[~/.hermes/skills/<br/>SKILL.md files]
+    I -->|scan| SK
     P -->|rag_context + top_skill| H
     H -->|enhanced context| T
     T --> R
@@ -75,9 +76,9 @@ flowchart LR
     classDef storage fill:#f3e8ff,stroke:#9333ea,color:#581c87
 
     class U input
-    class P,M,SRA sra
+    class P,M sra
     class I,SK storage
-    class H,T Agent agent
+    class H,T agent
     class R output
 ```
 

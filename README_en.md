@@ -43,7 +43,7 @@ flowchart LR
         U[User Message<br/>Natural language query]
     end
 
-    subgraph SRA["🎯 SRA Middleware Layer"]
+    subgraph SRA_MW["🎯 SRA Middleware Layer"]
         direction TB
         P[SRA Proxy :8536<br/>Unix Socket + HTTP]
         M[Matching Engine<br/>TF-IDF + Synonyms + Co-occurrence]
@@ -60,10 +60,12 @@ flowchart LR
         R[Agent Response<br/>Correct skill + tool call]
     end
 
+    SK[~/.hermes/skills/<br/>SKILL.md files]
+
     U -->|POST /recommend| P
     P -->|lookup| M
     M -->|query| I
-    I -->|scan| SK[~/.hermes/skills/<br/>SKILL.md files]
+    I -->|scan| SK
     P -->|rag_context + top_skill| H
     H -->|enhanced context| T
     T --> R
@@ -75,9 +77,9 @@ flowchart LR
     classDef storage fill:#f3e8ff,stroke:#9333ea,color:#581c87
 
     class U input
-    class P,M,SRA sra
+    class P,M sra
     class I,SK storage
-    class H,T Agent agent
+    class H,T agent
     class R output
 ```
 
