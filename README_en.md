@@ -14,13 +14,71 @@
 
 ## 📐 Architecture
 
+### Message Flow (Sequence Diagram)
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant SRA as 🎯 SRA Proxy :8536
+    participant IDX as 📚 Skill Index
+    participant H as 🤖 Hermes Agent
+    participant SK as 📁 ~/.hermes/skills/
+
+    U->>+H: "Draw an architecture diagram"
+    H->>+SRA: POST /recommend {"message":"..."}
+    SRA->>+IDX: Semantic Match (TF-IDF + Synonyms)
+    IDX-->>-SRA: architecture-diagram (score: 92)
+    SRA->>+SK: Read SKILL.md metadata
+    SK-->>-SRA: triggers, description, usage
+    SRA-->>-H: rag_context + top_skill + should_auto_load
+    Note over H: Inject RAG context into system prompt
+    H-->>-U: "Here's your diagram..." + correct tool usage
 ```
-User Message ──→ [SRA Proxy :8536] ──→ rag_context ──→ [Hermes Agent] ──→ Response
-                     │                                      │
-                     │  lookup                              │  execute with
-                     ▼                                      │  enhanced context
-            [Skill Index Store]                             ▼
-         (TF-IDF + Synonyms + Co-occurrence)          [~/.hermes/skills/]
+
+### Component Architecture
+
+```mermaid
+flowchart LR
+    subgraph Input["📥 Input Layer"]
+        U[User Message<br/>Natural language query]
+    end
+
+    subgraph SRA["🎯 SRA Middleware Layer"]
+        direction TB
+        P[SRA Proxy :8536<br/>Unix Socket + HTTP]
+        M[Matching Engine<br/>TF-IDF + Synonyms + Co-occurrence]
+        I[(Skill Index Store<br/>275+ skills indexed)]
+    end
+
+    subgraph Agent["🤖 Agent Consumption Layer"]
+        direction TB
+        H[Hermes Agent<br/>Injects rag_context]
+        T[Tool Execution<br/>terminal / file / web]
+    end
+
+    subgraph Output["📤 Output Layer"]
+        R[Agent Response<br/>Correct skill + tool call]
+    end
+
+    U -->|POST /recommend| P
+    P -->|lookup| M
+    M -->|query| I
+    I -->|scan| SK[~/.hermes/skills/<br/>SKILL.md files]
+    P -->|rag_context + top_skill| H
+    H -->|enhanced context| T
+    T --> R
+
+    classDef input fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef sra fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    classDef agent fill:#fefce8,stroke:#ca8a04,color:#713f12
+    classDef output fill:#fce7f3,stroke:#db2777,color:#831843
+    classDef storage fill:#f3e8ff,stroke:#9333ea,color:#581c87
+
+    class U input
+    class P,M,SRA sra
+    class I,SK storage
+    class H,T Agent agent
+    class R output
 ```
 
 **In one sentence**: User says "draw an architecture diagram" → SRA finds the `architecture-diagram` skill in < 5ms → injects the skill's triggers and usage guide into the Agent's context → Agent immediately knows which tool to use.

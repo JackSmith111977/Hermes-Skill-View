@@ -14,16 +14,74 @@
 
 ## 📐 架构总览
 
-```
-User Message ──→ [SRA Proxy :8536] ──→ rag_context ──→ [Hermes Agent] ──→ Response
-                     │                                      │
-                     │  lookup                              │  execute with
-                     ▼                                      │  enhanced context
-            [Skill Index Store]                             ▼
-         (TF-IDF + Synonyms + Co-occurrence)          [~/.hermes/skills/]
+### 消息流时序图
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant SRA as 🎯 SRA Proxy :8536
+    participant IDX as 📚 Skill Index
+    participant H as 🤖 Hermes Agent
+    participant SK as 📁 ~/.hermes/skills/
+
+    U->>+H: "画个架构图"
+    H->>+SRA: POST /recommend {"message":"..."}
+    SRA->>+IDX: 语义匹配 (TF-IDF + 同义词)
+    IDX-->>-SRA: architecture-diagram (score: 92)
+    SRA->>+SK: 读取 SKILL.md 元数据
+    SK-->>-SRA: triggers, description, usage
+    SRA-->>-H: rag_context + top_skill + should_auto_load
+    Note over H: 注入 RAG 上下文到系统提示
+    H-->>-U: "好的，为你生成架构图..." + 正确工具调用
 ```
 
-**一句话解释**：用户说"画个架构图" → SRA 在 5ms 内找到 `architecture-diagram` 技能 → 把技能的触发词和使用方法注入到 Agent 的上下文 → Agent 立刻知道该用哪个工具。
+### 组件架构图
+
+```mermaid
+flowchart LR
+    subgraph Input["📥 输入层"]
+        U[User Message<br/>自然语言查询]
+    end
+
+    subgraph SRA["🎯 SRA 中间件层"]
+        direction TB
+        P[SRA Proxy :8536<br/>Unix Socket + HTTP]
+        M[匹配引擎<br/>TF-IDF + 同义词 + 共现矩阵]
+        I[(Skill Index Store<br/>275+ skills indexed)]
+    end
+
+    subgraph Agent["🤖 Agent 消费层"]
+        direction TB
+        H[Hermes Agent<br/>注入 rag_context]
+        T[工具执行<br/>terminal / file / web]
+    end
+
+    subgraph Output["📤 输出层"]
+        R[Agent Response<br/>正确的技能 + 工具调用]
+    end
+
+    U -->|POST /recommend| P
+    P -->|lookup| M
+    M -->|query| I
+    I -->|scan| SK[~/.hermes/skills/<br/>SKILL.md files]
+    P -->|rag_context + top_skill| H
+    H -->|enhanced context| T
+    T --> R
+
+    classDef input fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef sra fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    classDef agent fill:#fefce8,stroke:#ca8a04,color:#713f12
+    classDef output fill:#fce7f3,stroke:#db2777,color:#831843
+    classDef storage fill:#f3e8ff,stroke:#9333ea,color:#581c87
+
+    class U input
+    class P,M,SRA sra
+    class I,SK storage
+    class H,T Agent agent
+    class R output
+```
+
+**一句话解释**：用户说"画个架构图" → SRA 在 < 5ms 内找到 `architecture-diagram` 技能 → 把技能的触发词和使用方法注入到 Agent 的上下文 → Agent 立刻知道该用哪个工具。
 
 ---
 
