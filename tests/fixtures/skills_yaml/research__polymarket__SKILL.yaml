@@ -1,0 +1,19 @@
+_source_name: polymarket
+_source_path: research/polymarket/SKILL.md
+author: Hermes Agent + Teknium
+category: research
+description: Query Polymarket prediction market data — search markets, get prices,
+  order...
+metadata:
+  hermes:
+    tags: []
+name: polymarket
+tags:
+- polymarket
+- prediction-markets
+- market-data
+- trading
+triggers:
+- polymarket
+- polymarket
+version: 1.0.0

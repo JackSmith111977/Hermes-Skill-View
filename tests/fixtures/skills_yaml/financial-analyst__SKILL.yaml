@@ -1,0 +1,25 @@
+_source_name: financial-analyst
+_source_path: financial-analyst/SKILL.md
+category: financial-analyst
+depends_on:
+- web-access
+- pdf-layout-weasyprint
+description: 金融数据分析与研报生成技能。使用 akshare 获取行情，ta 库计算指标，matplotlib 绘制图表，LLM 生成研报。
+metadata:
+  hermes:
+    category: data-science
+    design_pattern: pipeline
+    skill_type: generator
+    tags:
+    - finance
+    - analysis
+    - report
+name: financial-analyst
+triggers:
+- 股票分析
+- 行情查询
+- 研报生成
+- financial analysis
+- stock report
+- 大盘走势
+version: 1.0.0

@@ -1,0 +1,43 @@
+---
+name: image-to-image-guide
+description: 按已知信息生图的完整指南 — IP-Adapter + ControlNet 组合、17 种 ControlNet 模型分类、固定角色大法、风格迁移工作流。涵盖从参考图生成新图的全流程，解决
+  AI 绘图随机性太强的问题。
+version: 1.0.0
+triggers:
+- 按已知信息生图
+- 图生图
+- ControlNet
+- IP-Adapter
+- 风格迁移
+- 固定角色
+- 参考图生图
+- 姿势控制
+- 线稿上色
+- 角色一致性
+- image-to-image
+- 参考图
+- 原图生新图
+depends_on:
+- image-prompt-guide
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- browser_navigate
+- browser_snapshot
+metadata:
+  hermes:
+    tags:
+    - image-generation
+    - controlnet
+    - ip-adapter
+    - style-transfer
+    - character-consistency
+    category: creative
+    skill_type: workflow
+    design_pattern: pipeline
+category: creative
+---
+# image-to-image-guide
+
+按已知信息生图的完整指南 — IP-Adapter + ControlNet 组合、17 种 ControlNet 模型分类、固定角色大法、风格迁移工作流。涵盖从参考图生成新图的全流程，解决 AI 绘图随机性太强的问题。

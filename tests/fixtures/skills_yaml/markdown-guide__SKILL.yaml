@@ -1,0 +1,18 @@
+_source_name: markdown-guide
+_source_path: markdown-guide/SKILL.md
+category: markdown-guide
+description: Markdown 写作与转换原子技能。语法指南 + pandoc 转换 + 最佳实践。
+metadata:
+  hermes:
+    category: productivity
+    format: markdown
+    skill_type: doc-generation
+    tags:
+    - markdown
+    - pandoc
+    - writing
+    - documentation
+name: markdown-guide
+triggers:
+- markdown guide
+- markdown-guide

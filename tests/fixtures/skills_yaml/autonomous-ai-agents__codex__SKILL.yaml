@@ -1,0 +1,22 @@
+_source_name: codex
+_source_path: autonomous-ai-agents/codex/SKILL.md
+author: Hermes Agent
+category: autonomous-ai-agents
+description: Delegate coding tasks to OpenAI Codex CLI agent. Use for building features,...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - claude-code
+    - hermes-agent
+    tags:
+    - Coding-Agent
+    - Codex
+    - OpenAI
+    - Code-Review
+    - Refactoring
+name: codex
+triggers:
+- codex
+- codex
+version: 1.0.0

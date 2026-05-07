@@ -1,0 +1,6 @@
+_source_name: bmad-product-brief
+_source_path: bmad-method/workflows/bmad-product-brief/SKILL.md
+category: bmad-method
+description: Create or update product briefs through guided or autonomous discovery.
+  Use when the user requests to create or update a Product Brief.
+name: bmad-product-brief

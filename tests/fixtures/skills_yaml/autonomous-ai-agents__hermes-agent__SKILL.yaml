@@ -1,0 +1,27 @@
+_source_name: hermes-agent
+_source_path: autonomous-ai-agents/hermes-agent/SKILL.md
+author: Hermes Agent + Teknium
+category: autonomous-ai-agents
+description: Complete guide to using and extending Hermes Agent — CLI usage, setup,
+  configuration, spawning additional agents, gateway platforms, skills, voice, tools,
+  profiles, and a concise contributor reference. Load this skill when helping users
+  configure Hermes, troubleshoot issues, spawn agent instances, or make code contributions.
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/NousResearch/hermes-agent
+    related_skills:
+    - claude-code
+    - codex
+    - opencode
+    tags:
+    - hermes
+    - setup
+    - configuration
+    - multi-agent
+    - spawning
+    - cli
+    - gateway
+    - development
+name: hermes-agent
+version: 2.0.0

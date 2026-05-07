@@ -1,0 +1,18 @@
+_source_name: xlsx-guide
+_source_path: xlsx-guide/SKILL.md
+category: xlsx-guide
+description: Excel (.xlsx) 电子表格操作原子技能。使用 openpyxl 创建带样式和图表的表格。
+metadata:
+  hermes:
+    category: productivity
+    format: xlsx
+    skill_type: doc-generation
+    tags:
+    - excel
+    - xlsx
+    - spreadsheet
+    - data
+name: xlsx-guide
+triggers:
+- xlsx guide
+- xlsx-guide

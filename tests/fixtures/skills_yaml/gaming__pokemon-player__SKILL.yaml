@@ -1,0 +1,19 @@
+_source_name: pokemon-player
+_source_path: gaming/pokemon-player/SKILL.md
+category: gaming
+description: Play Pokemon games autonomously via headless emulation. Starts a game
+  serve...
+metadata:
+  hermes:
+    tags: []
+name: pokemon-player
+tags:
+- gaming
+- pokemon
+- emulator
+- pyboy
+- gameplay
+- gameboy
+triggers:
+- pokemon player
+- pokemon-player

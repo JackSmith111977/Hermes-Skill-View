@@ -1,0 +1,6 @@
+_source_name: gds-generate-project-context
+_source_path: bmad-method/all-skills/gds-generate-project-context/SKILL.md
+category: bmad-method
+description: Create optimized project-context.md for AI agent consistency. Use when
+  the user says "project context" or "generate context"
+name: gds-generate-project-context

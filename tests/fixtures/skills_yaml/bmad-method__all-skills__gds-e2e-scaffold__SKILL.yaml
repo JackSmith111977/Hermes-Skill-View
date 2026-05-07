@@ -1,0 +1,6 @@
+_source_name: gds-e2e-scaffold
+_source_path: bmad-method/all-skills/gds-e2e-scaffold/SKILL.md
+category: bmad-method
+description: Scaffold end-to-end testing infrastructure. Use when the user says "e2e
+  scaffold" or "set up e2e testing"
+name: gds-e2e-scaffold

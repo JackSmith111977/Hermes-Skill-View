@@ -1,0 +1,26 @@
+_source_name: godmode
+_source_path: red-teaming/godmode/SKILL.md
+author: Hermes Agent + Teknium
+category: red-teaming
+description: Jailbreak API-served LLMs using G0DM0D3 techniques — Parseltongue input
+  obf...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - obliteratus
+    tags:
+    - jailbreak
+    - red-teaming
+    - G0DM0D3
+    - Parseltongue
+    - GODMODE
+    - uncensoring
+    - safety-bypass
+    - prompt-engineering
+    - L1B3RT4S
+name: godmode
+triggers:
+- godmode
+- godmode
+version: 1.0.0

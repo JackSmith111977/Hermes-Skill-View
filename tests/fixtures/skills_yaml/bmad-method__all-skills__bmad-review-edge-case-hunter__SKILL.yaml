@@ -1,0 +1,7 @@
+_source_name: bmad-review-edge-case-hunter
+_source_path: bmad-method/all-skills/bmad-review-edge-case-hunter/SKILL.md
+category: bmad-method
+description: Walk every branching path and boundary condition in content, report only
+  unhandled edge cases. Orthogonal to adversarial review - method-driven not attitude-driven.
+  Use when you need exhaustive edge-case analysis of code, specs, or diffs.
+name: bmad-review-edge-case-hunter

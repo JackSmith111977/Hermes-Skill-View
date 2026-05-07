@@ -1,0 +1,36 @@
+_source_name: axolotl
+_source_path: mlops/training/axolotl/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- axolotl
+- torch
+- transformers
+- datasets
+- peft
+- accelerate
+- deepspeed
+description: Expert guidance for fine-tuning LLMs with Axolotl - YAML configs, 100+
+  mode...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Fine-Tuning
+    - Axolotl
+    - LLM
+    - LoRA
+    - QLoRA
+    - DPO
+    - KTO
+    - ORPO
+    - GRPO
+    - YAML
+    - HuggingFace
+    - DeepSpeed
+    - Multimodal
+name: axolotl
+triggers:
+- axolotl
+- axolotl
+version: 1.0.0

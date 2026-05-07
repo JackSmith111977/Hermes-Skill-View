@@ -1,0 +1,34 @@
+_source_name: obliteratus
+_source_path: mlops/inference/obliteratus/SKILL.md
+author: Hermes Agent
+category: mlops
+dependencies:
+- obliteratus
+- torch
+- transformers
+- bitsandbytes
+- accelerate
+- safetensors
+description: Remove refusal behaviors from open-weight LLMs using OBLITERATUS — mechanis...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - vllm
+    - gguf
+    - huggingface-tokenizers
+    tags:
+    - Abliteration
+    - Uncensoring
+    - Refusal-Removal
+    - LLM
+    - Weight-Projection
+    - SVD
+    - Mechanistic-Interpretability
+    - HuggingFace
+    - Model-Surgery
+name: obliteratus
+triggers:
+- obliteratus
+- obliteratus
+version: 2.0.0

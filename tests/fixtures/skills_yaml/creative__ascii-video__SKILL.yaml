@@ -1,0 +1,11 @@
+_source_name: ascii-video
+_source_path: creative/ascii-video/SKILL.md
+category: creative
+description: Production pipeline for ASCII art video — any format. Converts video/audio/...
+metadata:
+  hermes:
+    tags: []
+name: ascii-video
+triggers:
+- ascii video
+- ascii-video

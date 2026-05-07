@@ -1,0 +1,27 @@
+_source_name: linux-ops-guide
+_source_path: devops/linux-ops-guide/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- search_files
+category: devops
+description: Hermes 服务器（Ubuntu）日常运维指南。涵盖 systemd 服务管理、日志分析、端口排查、磁盘监控、进程管理、快速排查流程。
+metadata:
+  hermes:
+    category: devops
+    design_pattern: tool-wrapper
+    skill_type: library-reference
+    tags:
+    - linux
+    - ops
+    - systemd
+    - monitoring
+    - troubleshooting
+name: linux-ops-guide
+triggers:
+- linux
+- 运维
+- systemd
+- 命令
+- ops
+version: 1.0.0

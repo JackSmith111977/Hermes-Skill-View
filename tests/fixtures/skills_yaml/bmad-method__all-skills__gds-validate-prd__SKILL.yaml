@@ -1,0 +1,6 @@
+_source_name: gds-validate-prd
+_source_path: bmad-method/all-skills/gds-validate-prd/SKILL.md
+category: bmad-method
+description: Validate a PRD against standards for external tool compatibility. Use
+  when the user says "validate this PRD" or "run PRD validation".
+name: gds-validate-prd

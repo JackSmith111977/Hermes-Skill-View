@@ -1,0 +1,27 @@
+---
+name: knowledge-routing
+description: 'Guide for classifying new knowledge: Memory vs Skills. Use when absorbing
+  experience or updating knowledge base.'
+version: 1.1.0
+triggers:
+- 经验吸收
+- 知识分类
+- 记忆管理
+- skill更新
+- knowledge routing
+- 经验沉淀
+- 总结
+- 总结经验
+- 复盘
+- 踩坑
+- 教训
+- 经验教训
+- 记下来
+- 存入Memory
+- 存入Skill
+- 知识路由
+category: knowledge-routing
+---
+# knowledge-routing
+
+Guide for classifying new knowledge: Memory vs Skills. Use when absorbing experience or updating knowledge base.

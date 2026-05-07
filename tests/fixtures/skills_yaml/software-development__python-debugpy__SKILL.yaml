@@ -1,0 +1,22 @@
+_source_name: python-debugpy
+_source_path: software-development/python-debugpy/SKILL.md
+author: Hermes Agent
+category: software-development
+description: 'Debug Python: pdb REPL + debugpy remote (DAP).'
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - systematic-debugging
+    - node-inspect-debugger
+    - debugging-hermes-tui-commands
+    tags:
+    - debugging
+    - python
+    - pdb
+    - debugpy
+    - breakpoints
+    - dap
+    - post-mortem
+name: python-debugpy
+version: 1.0.0

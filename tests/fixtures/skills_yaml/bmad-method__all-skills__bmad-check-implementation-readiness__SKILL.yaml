@@ -1,0 +1,6 @@
+_source_name: bmad-check-implementation-readiness
+_source_path: bmad-method/all-skills/bmad-check-implementation-readiness/SKILL.md
+category: bmad-method
+description: Validate PRD, UX, Architecture and Epics specs are complete. Use when
+  the user says "check implementation readiness".
+name: bmad-check-implementation-readiness

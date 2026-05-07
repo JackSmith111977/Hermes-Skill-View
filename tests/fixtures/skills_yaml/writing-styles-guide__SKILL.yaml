@@ -1,0 +1,20 @@
+_source_name: writing-styles-guide
+_source_path: writing-styles-guide/SKILL.md
+category: writing-styles-guide
+depends_on:
+- learning-workflow
+description: 去 AI 味写作指南。包含文本自检规则、风格调色板、Prompt 模板及复杂场景应对策略。用于生成具有人类质感（Perplexity/Burstiness）的多样化内容。
+design_pattern: Generator
+name: writing-styles-guide
+skill_type: Reference
+triggers:
+- 风格
+- 语气
+- 去 ai 味
+- 人话
+- 写作风格
+- tone
+- style
+- 换个说法
+- 像个人
+version: 1.0.0

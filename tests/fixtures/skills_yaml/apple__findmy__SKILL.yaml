@@ -1,0 +1,23 @@
+_source_name: findmy
+_source_path: apple/findmy/SKILL.md
+author: Hermes Agent
+category: apple
+description: Track Apple devices and AirTags via FindMy.app on macOS using AppleScript
+  a...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - FindMy
+    - AirTag
+    - location
+    - tracking
+    - macOS
+    - Apple
+name: findmy
+platforms:
+- macos
+triggers:
+- findmy
+- findmy
+version: 1.0.0

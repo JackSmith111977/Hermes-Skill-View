@@ -1,0 +1,21 @@
+_source_name: debugging-hermes-tui-commands
+_source_path: software-development/debugging-hermes-tui-commands/SKILL.md
+author: Hermes Agent
+category: software-development
+description: 'Debug Hermes TUI slash commands: Python, gateway, Ink UI.'
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - python-debugpy
+    - node-inspect-debugger
+    - systematic-debugging
+    tags:
+    - debugging
+    - hermes-agent
+    - tui
+    - slash-commands
+    - typescript
+    - python
+name: debugging-hermes-tui-commands
+version: 1.0.0

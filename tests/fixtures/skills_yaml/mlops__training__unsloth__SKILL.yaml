@@ -1,0 +1,33 @@
+_source_name: unsloth
+_source_path: mlops/training/unsloth/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- unsloth
+- torch
+- transformers
+- trl
+- datasets
+- peft
+description: Expert guidance for fast fine-tuning with Unsloth - 2-5x faster training,
+  5...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Fine-Tuning
+    - Unsloth
+    - Fast Training
+    - LoRA
+    - QLoRA
+    - Memory-Efficient
+    - Optimization
+    - Llama
+    - Mistral
+    - Gemma
+    - Qwen
+name: unsloth
+triggers:
+- unsloth
+- unsloth
+version: 1.0.0

@@ -1,0 +1,21 @@
+_source_name: huggingface-hub
+_source_path: mlops/huggingface-hub/SKILL.md
+author: Hugging Face
+category: mlops
+description: Hugging Face Hub CLI (hf) — search, download, and upload models and dataset...
+license: MIT
+metadata:
+  hermes:
+    tags: []
+name: huggingface-hub
+tags:
+- huggingface
+- hf
+- models
+- datasets
+- hub
+- mlops
+triggers:
+- huggingface hub
+- huggingface-hub
+version: 1.0.0

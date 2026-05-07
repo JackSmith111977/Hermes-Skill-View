@@ -1,0 +1,6 @@
+_source_name: bmad-testarch-framework
+_source_path: bmad-method/all-skills/bmad-testarch-framework/SKILL.md
+category: bmad-method
+description: Initialize test framework with Playwright or Cypress. Use when the user
+  says "lets setup test framework" or "I want to initialize testing framework"
+name: bmad-testarch-framework

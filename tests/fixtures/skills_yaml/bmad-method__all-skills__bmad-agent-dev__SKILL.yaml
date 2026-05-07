@@ -1,0 +1,6 @@
+_source_name: bmad-agent-dev
+_source_path: bmad-method/all-skills/bmad-agent-dev/SKILL.md
+category: bmad-method
+description: Senior software engineer for story execution and code implementation.
+  Use when the user asks to talk to Amelia or requests the developer agent.
+name: bmad-agent-dev

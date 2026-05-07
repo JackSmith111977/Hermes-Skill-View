@@ -1,0 +1,23 @@
+_source_name: heartmula
+_source_path: media/heartmula/SKILL.md
+category: media
+description: Set up and run HeartMuLa, the open-source music generation model family
+  (Su...
+metadata:
+  hermes:
+    related_skills:
+    - audiocraft
+    tags:
+    - music
+    - audio
+    - generation
+    - ai
+    - heartmula
+    - heartcodec
+    - lyrics
+    - songs
+name: heartmula
+triggers:
+- heartmula
+- heartmula
+version: 1.0.0

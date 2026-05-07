@@ -1,0 +1,28 @@
+_source_name: xurl
+_source_path: social-media/xurl/SKILL.md
+author: xdevplatform + openclaw + Hermes Agent
+category: social-media
+description: Interact with X/Twitter via xurl, the official X API CLI. Use for posting,
+  ...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/xdevplatform/xurl
+    tags:
+    - twitter
+    - x
+    - social-media
+    - xurl
+    - official-api
+    upstream_skill: https://github.com/openclaw/openclaw/blob/main/skills/xurl/SKILL.md
+name: xurl
+platforms:
+- linux
+- macos
+prerequisites:
+  commands:
+  - xurl
+triggers:
+- xurl
+- xurl
+version: 1.1.0

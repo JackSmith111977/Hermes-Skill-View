@@ -1,0 +1,6 @@
+_source_name: bmad-distillator
+_source_path: bmad-method/all-skills/bmad-distillator/SKILL.md
+category: bmad-method
+description: Lossless LLM-optimized compression of source documents. Use when the
+  user requests to 'distill documents' or 'create a distillate'.
+name: bmad-distillator

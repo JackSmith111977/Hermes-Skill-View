@@ -1,0 +1,13 @@
+_source_name: powerpoint
+_source_path: productivity/powerpoint/SKILL.md
+category: productivity
+description: Use this skill any time a .pptx file is involved in any way — as input,
+  out...
+license: Proprietary. LICENSE.txt has complete terms
+metadata:
+  hermes:
+    tags: []
+name: powerpoint
+triggers:
+- powerpoint
+- powerpoint

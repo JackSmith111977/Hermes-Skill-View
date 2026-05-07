@@ -1,0 +1,16 @@
+_source_name: baoyu-comic
+_source_path: creative/baoyu-comic/SKILL.md
+author: 宝玉 (JimLiu)
+category: creative
+description: 'Knowledge comics (知识漫画): educational, biography, tutorial.'
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-comic
+    tags:
+    - comic
+    - knowledge-comic
+    - creative
+    - image-generation
+name: baoyu-comic
+version: 1.56.1

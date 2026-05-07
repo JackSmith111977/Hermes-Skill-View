@@ -1,0 +1,24 @@
+_source_name: apple-reminders
+_source_path: apple/apple-reminders/SKILL.md
+author: Hermes Agent
+category: apple
+description: Manage Apple Reminders via remindctl CLI (list, add, complete, delete).
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Reminders
+    - tasks
+    - todo
+    - macOS
+    - Apple
+name: apple-reminders
+platforms:
+- macos
+prerequisites:
+  commands:
+  - remindctl
+triggers:
+- apple reminders
+- apple-reminders
+version: 1.0.0

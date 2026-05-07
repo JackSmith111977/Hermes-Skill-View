@@ -1,0 +1,24 @@
+_source_name: notion
+_source_path: productivity/notion/SKILL.md
+author: community
+category: productivity
+description: Notion API for creating and managing pages, databases, and blocks via
+  curl....
+license: MIT
+metadata:
+  hermes:
+    homepage: https://developers.notion.com
+    tags:
+    - Notion
+    - Productivity
+    - Notes
+    - Database
+    - API
+name: notion
+prerequisites:
+  env_vars:
+  - NOTION_API_KEY
+triggers:
+- notion
+- notion
+version: 1.0.0

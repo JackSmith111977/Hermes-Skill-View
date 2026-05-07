@@ -1,0 +1,22 @@
+_source_name: yuanbao
+_source_path: yuanbao/SKILL.md
+category: yuanbao
+description: Yuanbao (元宝) group interaction — @mention users, query group info and
+  members
+metadata:
+  hermes:
+    related_skills: []
+    tags:
+    - yuanbao
+    - mention
+    - at
+    - group
+    - members
+    - 元宝
+    - 派
+    - 艾特
+name: yuanbao
+triggers:
+- yuanbao
+- yuanbao
+version: 1.0.0

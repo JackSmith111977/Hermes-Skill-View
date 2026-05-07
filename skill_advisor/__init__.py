@@ -3,7 +3,7 @@
 # License: MIT
 
 __version__ = "1.1.0"
-__author__ = "Emma (SRA Team)"
+__author__ = "Emma (SRA Team), Kei"
 
 from .advisor import SkillAdvisor
 from .runtime.daemon import SRaDDaemon

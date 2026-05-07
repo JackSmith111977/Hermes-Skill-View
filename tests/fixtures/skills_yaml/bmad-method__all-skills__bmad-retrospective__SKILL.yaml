@@ -1,0 +1,6 @@
+_source_name: bmad-retrospective
+_source_path: bmad-method/all-skills/bmad-retrospective/SKILL.md
+category: bmad-method
+description: Post-epic review to extract lessons and assess success. Use when the
+  user says "run a retrospective" or "lets retro the epic [epic]"
+name: bmad-retrospective

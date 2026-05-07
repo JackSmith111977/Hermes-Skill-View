@@ -1,0 +1,11 @@
+_source_name: obsidian
+_source_path: note-taking/obsidian/SKILL.md
+category: note-taking
+description: Read, search, and create notes in the Obsidian vault.
+metadata:
+  hermes:
+    tags: []
+name: obsidian
+triggers:
+- obsidian
+- obsidian

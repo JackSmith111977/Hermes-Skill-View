@@ -1,0 +1,27 @@
+_source_name: weights-and-biases
+_source_path: mlops/evaluation/weights-and-biases/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- wandb
+description: Track ML experiments with automatic logging, visualize training in real-tim...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - MLOps
+    - Weights And Biases
+    - WandB
+    - Experiment Tracking
+    - Hyperparameter Tuning
+    - Model Registry
+    - Collaboration
+    - Real-Time Visualization
+    - PyTorch
+    - TensorFlow
+    - HuggingFace
+name: weights-and-biases
+triggers:
+- weights and biases
+- weights-and-biases
+version: 1.0.0

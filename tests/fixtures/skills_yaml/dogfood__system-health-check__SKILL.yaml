@@ -1,0 +1,23 @@
+_source_name: system-health-check
+_source_path: dogfood/system-health-check/SKILL.md
+category: dogfood
+description: Hermes Agent 系统健康检查、LLM 可观测性与自动修复指南。涵盖 429 限流降级、Fallback 链断裂、辅助模型配置、日志分析、Ci...
+metadata:
+  hermes:
+    category: dogfood
+    design_pattern: inversion
+    skill_type: diagnosis
+    tags:
+    - health-check
+    - diagnostics
+    - fallback
+    - observability
+    - circuit-breaker
+name: system-health-check
+triggers:
+- 健康检查
+- 诊断
+- 报错
+- '429'
+- health check
+version: 2.0.0

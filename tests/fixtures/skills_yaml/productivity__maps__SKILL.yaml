@@ -1,0 +1,32 @@
+_source_name: maps
+_source_path: productivity/maps/SKILL.md
+author: Mibayy
+category: productivity
+description: Location intelligence — geocode a place, reverse-geocode coordinates,
+  find ...
+license: MIT
+metadata:
+  hermes:
+    category: productivity
+    requires_toolsets:
+    - terminal
+    supersedes:
+    - find-nearby
+    tags:
+    - maps
+    - geocoding
+    - places
+    - routing
+    - distance
+    - directions
+    - nearby
+    - location
+    - openstreetmap
+    - nominatim
+    - overpass
+    - osrm
+name: maps
+triggers:
+- maps
+- maps
+version: 1.2.0

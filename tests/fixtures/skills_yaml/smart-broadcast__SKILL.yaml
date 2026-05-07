@@ -1,0 +1,18 @@
+_source_name: smart-broadcast
+_source_path: smart-broadcast/SKILL.md
+category: smart-broadcast
+depends_on: []
+description: Hermes 智能播报引擎 v2.0 管理指南。涵盖状态检查、数据源配置、静默管理、故障排查及扩展开发。
+design_pattern: Tool Wrapper
+name: smart-broadcast
+skill_type: Tool Wrapper
+triggers:
+- 播报
+- 广播
+- 通知
+- 播报状态
+- 智能播报
+- 广播配置
+- 添加播报源
+- 广播测试
+version: 1.0.0

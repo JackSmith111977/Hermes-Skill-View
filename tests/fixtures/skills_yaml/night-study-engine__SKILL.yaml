@@ -1,0 +1,51 @@
+_source_name: night-study-engine
+_source_path: night-study-engine/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- patch
+- cronjob
+- mcp_tavily_tavily_search
+- mcp_tavily_tavily_extract
+- mcp_tavily_tavily_crawl
+- delegate_task
+author: 小喵 (Emma)
+category: night-study-engine
+depends_on:
+- learning-workflow
+- learning-review-cycle
+- web-access
+- skill-creator
+description: Hermes 夜间自习引擎 v2.0 — 自驱动学习系统。涵盖动态领域引擎、学习质量门禁、知识追踪、间隔复习、结构化日志、晨间汇报增强、Artifact
+  产出门禁。v2.0 核心升级：从简单批处理升级为完整学习系统。
+license: MIT
+metadata:
+  hermes:
+    category: meta
+    design_pattern: pipeline
+    skill_type: pipeline
+    tags:
+    - autonomous-learning
+    - knowledge-tracking
+    - spaced-repetition
+    - quality-gate
+name: night-study-engine
+triggers:
+- 夜间学习
+- night study
+- 夜间自习
+- 自主学习
+- 自动学习
+- 知识更新
+- skill 维护
+- 学习系统
+- 间隔复习
+- 知识追踪
+- 知识门禁
+- 学习质量
+- 自习改造
+- self-driven learning
+- autonomous study
+- knowledge update
+version: 2.0.0

@@ -1,0 +1,7 @@
+_source_name: bmad-create-story
+_source_path: bmad-method/workflows/bmad-create-story/SKILL.md
+category: bmad-method
+description: Creates a dedicated story file with all the context the agent will need
+  to implement it later. Use when the user says "create the next story" or "create
+  story [story identifier]"
+name: bmad-create-story

@@ -1,0 +1,24 @@
+_source_name: openhue
+_source_path: smart-home/openhue/SKILL.md
+author: community
+category: smart-home
+description: Control Philips Hue lights, rooms, and scenes via the OpenHue CLI. Turn
+  lig...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://www.openhue.io/cli
+    tags:
+    - Smart-Home
+    - Hue
+    - Lights
+    - IoT
+    - Automation
+name: openhue
+prerequisites:
+  commands:
+  - openhue
+triggers:
+- openhue
+- openhue
+version: 1.0.0

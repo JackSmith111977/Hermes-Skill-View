@@ -1,0 +1,26 @@
+_source_name: git-advanced-ops
+_source_path: github/git-advanced-ops/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+category: github
+description: Git 和 GitHub 高级操作指南，特别包含代理环境下的配置。涵盖 interactive rebase、stash、冲突解决、force
+  pus...
+metadata:
+  hermes:
+    category: github
+    design_pattern: tool-wrapper
+    skill_type: library-reference
+    tags:
+    - git
+    - github
+    - rebase
+    - proxy
+    - collaboration
+name: git-advanced-ops
+triggers:
+- git
+- rebase
+- stash
+- 冲突
+version: 1.0.0

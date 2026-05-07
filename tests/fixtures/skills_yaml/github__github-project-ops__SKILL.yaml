@@ -1,0 +1,76 @@
+_source_name: github-project-ops
+_source_path: github/github-project-ops/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- search_files
+- patch
+category: github
+description: GitHub 项目运维完整指南 — 仓库管理、分支保护、Issue/PR 工作流、CI/CD (Actions)、安全 (Secret Scanning/Dependabot/CodeQL)、Release
+  (SemVer/semantic-release)、社区运营、备份迁移。
+metadata:
+  hermes:
+    category: github
+    design_pattern: domain-guide
+    related_skills:
+    - git-advanced-ops
+    - github-auth
+    - github-pr-workflow
+    - github-code-review
+    - github-issues
+    - github-repo-management
+    - linux-ops-guide
+    skill_type: library-reference
+    tags:
+    - GitHub
+    - Repository Management
+    - Branch Protection
+    - CI/CD
+    - GitHub Actions
+    - Security
+    - Dependabot
+    - Code Scanning
+    - Release
+    - SemVer
+    - semantic-release
+    - Community
+    - Open Source
+name: github-project-ops
+triggers:
+- github
+- 项目运维
+- 分支保护
+- branch protection
+- rulesets
+- ci/cd
+- github actions
+- dependabot
+- codeql
+- code scanning
+- secret scanning
+- semantic release
+- semver
+- 版本管理
+- release
+- pull request
+- code review
+- issues
+- issue triage
+- 社区运营
+- open source
+- 开源
+- contributing guide
+- stale bot
+- 备份仓库
+- repository management
+- 文档一致性
+- 代码审计
+- 文档飘移
+- doc drift
+- 发布前准备
+- pre-release
+- 项目现状分析
+- 代码文档对比
+- documentation audit
+version: 1.1.0

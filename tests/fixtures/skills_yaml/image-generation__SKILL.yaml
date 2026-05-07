@@ -1,0 +1,21 @@
+_source_name: image-generation
+_source_path: image-generation/SKILL.md
+category: image-generation
+description: 生成高质量配图（支持 gpt-image-2, Stable Diffusion, Dashscope），含 Prompt 模板与 API
+  接入指南。
+metadata:
+  hermes:
+    category: creative
+    design_pattern: generator
+    skill_type: library
+    tags:
+    - image
+    - generative-ai
+    - design
+    - prompt-engineering
+name: image-generation
+triggers:
+- 生图
+- 配图
+- image gen
+- 画图

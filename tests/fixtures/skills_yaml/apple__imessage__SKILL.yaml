@@ -1,0 +1,24 @@
+_source_name: imessage
+_source_path: apple/imessage/SKILL.md
+author: Hermes Agent
+category: apple
+description: Send and receive iMessages/SMS via the imsg CLI on macOS.
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - iMessage
+    - SMS
+    - messaging
+    - macOS
+    - Apple
+name: imessage
+platforms:
+- macos
+prerequisites:
+  commands:
+  - imsg
+triggers:
+- imessage
+- imessage
+version: 1.0.0

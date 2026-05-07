@@ -1,0 +1,57 @@
+_source_name: web-access
+_source_path: web-access/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- patch
+- web_search
+- web_extract
+- web_crawl
+- browser_navigate
+- browser_snapshot
+- browser_click
+- browser_type
+- browser_scroll
+- browser_back
+- browser_press
+- browser_get_images
+- browser_vision
+- browser_console
+- mcp_tavily_tavily_search
+- mcp_tavily_tavily_extract
+- mcp_tavily_tavily_crawl
+- mcp_tavily_tavily_map
+author: 一泽Eze (adapted & upgraded by 小喵)
+category: web-access
+description: 所有联网操作的统一入口。搜索、网页抓取、浏览器自动化、Tavily MCP 等都必须先经过此 skill，由它根据任务类型决策最优工具。
+github: https://github.com/eze-is/web-access
+license: MIT
+metadata:
+  hermes:
+    category: web-access
+    design_pattern: pipeline
+    related_skills:
+    - clash-config
+    - doc-design
+    - skill-creator
+    skill_type: product-verification
+    tags:
+    - web
+    - browser
+    - scraping
+    - search
+    - automation
+    - tavily
+name: web-access
+triggers:
+- 联网
+- 搜索
+- 查资料
+- web search
+- crawl
+- 爬取
+- 抓取
+- 提取
+- 浏览器
+version: 6.4.0-hermes

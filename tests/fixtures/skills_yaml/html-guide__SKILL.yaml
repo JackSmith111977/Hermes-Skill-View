@@ -1,0 +1,18 @@
+_source_name: html-guide
+_source_path: html-guide/SKILL.md
+category: html-guide
+description: HTML/CSS 网页排版原子技能。创建可打印的网页文档。
+metadata:
+  hermes:
+    category: productivity
+    format: html
+    skill_type: doc-generation
+    tags:
+    - html
+    - css
+    - web
+    - print
+name: html-guide
+triggers:
+- html guide
+- html-guide

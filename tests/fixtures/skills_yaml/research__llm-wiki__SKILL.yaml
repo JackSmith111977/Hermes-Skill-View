@@ -1,0 +1,25 @@
+_source_name: llm-wiki
+_source_path: research/llm-wiki/SKILL.md
+author: Hermes Agent
+category: research
+description: Karpathy's LLM Wiki — build and maintain a persistent, interlinked markdown...
+license: MIT
+metadata:
+  hermes:
+    category: research
+    related_skills:
+    - obsidian
+    - arxiv
+    - agentic-research-ideas
+    tags:
+    - wiki
+    - knowledge-base
+    - research
+    - notes
+    - markdown
+    - rag-alternative
+name: llm-wiki
+triggers:
+- llm wiki
+- llm-wiki
+version: 2.0.0

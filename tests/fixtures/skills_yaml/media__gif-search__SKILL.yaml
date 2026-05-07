@@ -1,0 +1,26 @@
+_source_name: gif-search
+_source_path: media/gif-search/SKILL.md
+author: Hermes Agent
+category: media
+description: Search and download GIFs from Tenor using curl. No dependencies beyond
+  curl...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - GIF
+    - Media
+    - Search
+    - Tenor
+    - API
+name: gif-search
+prerequisites:
+  commands:
+  - curl
+  - jq
+  env_vars:
+  - TENOR_API_KEY
+triggers:
+- gif search
+- gif-search
+version: 1.1.0

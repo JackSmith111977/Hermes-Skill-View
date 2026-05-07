@@ -1,0 +1,19 @@
+_source_name: dogfood
+_source_path: dogfood/SKILL.md
+category: dogfood
+description: Systematic exploratory QA testing of web applications — find bugs, capture
+  ...
+metadata:
+  hermes:
+    related_skills: []
+    tags:
+    - qa
+    - testing
+    - browser
+    - web
+    - dogfood
+name: dogfood
+triggers:
+- dogfood
+- dogfood
+version: 1.0.0

@@ -1,0 +1,18 @@
+_source_name: feishu-batch-send
+_source_path: feishu-batch-send/SKILL.md
+category: feishu-batch-send
+depends_on:
+- feishu
+- feishu-send-file
+description: 飞书批量发送文件/图片技能。支持一次发送多个文件到同一个或多个聊天，自动处理 token 刷新、错误重试、速率限制。 包含批量发送脚本和速率控制策略。
+design_pattern: Pipeline
+name: feishu-batch-send
+skill_type: generator
+triggers:
+- 批量发送飞书
+- 飞书批量发送
+- feishu batch send
+- 发送多个文件到飞书
+- 飞书多发
+- 批量发文件
+version: 1.0.0

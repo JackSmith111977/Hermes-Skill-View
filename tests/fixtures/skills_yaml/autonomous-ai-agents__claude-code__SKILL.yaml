@@ -1,0 +1,28 @@
+_source_name: claude-code
+_source_path: autonomous-ai-agents/claude-code/SKILL.md
+author: Hermes Agent + Teknium
+category: autonomous-ai-agents
+description: Delegate coding tasks to Claude Code (Anthropic's CLI agent). Use for
+  build...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - codex
+    - hermes-agent
+    - opencode
+    tags:
+    - Coding-Agent
+    - Claude
+    - Anthropic
+    - Code-Review
+    - Refactoring
+    - PTY
+    - Automation
+name: claude-code
+triggers:
+- claude code
+- codex
+- agent
+- 编程助手
+version: 2.2.0

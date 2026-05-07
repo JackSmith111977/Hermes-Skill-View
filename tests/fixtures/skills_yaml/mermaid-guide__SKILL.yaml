@@ -1,0 +1,28 @@
+_source_name: mermaid-guide
+_source_path: mermaid-guide/SKILL.md
+allowed-tools:
+- write_file
+- read_file
+author: Emma
+category: mermaid-guide
+description: Mermaid 图表生成指南。包含语法速查、场景模板（流程图、时序图、类图、状态图） 以及排版最佳实践。用于在 Markdown/PDF/文档中快速生...
+license: MIT
+metadata:
+  hermes:
+    category: documentation
+    design_pattern: generator
+    related_skills:
+    - doc-design
+    - markdown-guide
+    skill_type: library-reference
+    tags:
+    - diagram
+    - uml
+    - mermaid
+    - documentation
+    - visualization
+name: mermaid-guide
+triggers:
+- mermaid guide
+- mermaid-guide
+version: 1.0.0

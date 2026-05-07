@@ -1,0 +1,26 @@
+_source_name: sketch
+_source_path: creative/sketch/SKILL.md
+author: Hermes Agent (adapted from gsd-build/get-shit-done)
+category: creative
+description: 'Throwaway HTML mockups: 2-3 design variants to compare.'
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - spike
+    - claude-design
+    - popular-web-designs
+    - excalidraw
+    tags:
+    - sketch
+    - mockup
+    - design
+    - ui
+    - prototype
+    - html
+    - variants
+    - exploration
+    - wireframe
+    - comparison
+name: sketch
+version: 1.0.0

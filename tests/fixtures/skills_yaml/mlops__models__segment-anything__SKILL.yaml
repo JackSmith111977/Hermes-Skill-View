@@ -1,0 +1,28 @@
+_source_name: segment-anything
+_source_path: mlops/models/segment-anything/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- segment-anything
+- transformers>=4.30.0
+- torch>=1.7.0
+description: Foundation model for image segmentation with zero-shot transfer. Use
+  when y...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Multimodal
+    - Image Segmentation
+    - Computer Vision
+    - SAM
+    - Zero-Shot
+name: segment-anything-model
+triggers:
+- segment anything model
+- segment-anything-model
+- sam
+- 图像分割
+- 抠图
+- SAM模型
+version: 1.0.0

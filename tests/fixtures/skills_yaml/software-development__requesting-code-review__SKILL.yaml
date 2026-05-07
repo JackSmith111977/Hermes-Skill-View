@@ -1,0 +1,26 @@
+_source_name: requesting-code-review
+_source_path: software-development/requesting-code-review/SKILL.md
+author: Hermes Agent (adapted from obra/superpowers + MorAlekss)
+category: software-development
+description: Pre-commit verification pipeline — static security scan, baseline-aware
+  qua...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - subagent-driven-development
+    - writing-plans
+    - test-driven-development
+    - github-code-review
+    tags:
+    - code-review
+    - security
+    - verification
+    - quality
+    - pre-commit
+    - auto-fix
+name: requesting-code-review
+triggers:
+- requesting code review
+- requesting-code-review
+version: 2.0.0

@@ -1,0 +1,31 @@
+_source_name: vllm
+_source_path: mlops/inference/vllm/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- vllm
+- torch
+- transformers
+description: Serves LLMs with high throughput using vLLM's PagedAttention and continuous...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - vLLM
+    - Inference Serving
+    - PagedAttention
+    - Continuous Batching
+    - High Throughput
+    - Production
+    - OpenAI API
+    - Quantization
+    - Tensor Parallelism
+name: serving-llms-vllm
+triggers:
+- serving llms vllm
+- serving-llms-vllm
+- vllm
+- 模型部署
+- 推理加速
+- LLM推理
+version: 1.0.0

@@ -1,0 +1,21 @@
+_source_name: bangumi-recommender
+_source_path: bangumi-recommender/SKILL.md
+category: bangumi-recommender
+description: Bangumi API integration for anime recommendation, calendars, and search.
+metadata:
+  hermes:
+    category: entertainment
+    design_pattern: tool_wrapper
+    skill_type: generator
+    tags:
+    - anime
+    - bangumi
+    - recommendation
+name: bangumi-recommender
+triggers:
+- 番剧推荐
+- 新番
+- Bangumi
+- Anime
+- 番组表
+version: 1.0.0

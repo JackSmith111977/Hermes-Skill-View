@@ -1,0 +1,24 @@
+_source_name: songsee
+_source_path: media/songsee/SKILL.md
+author: community
+category: media
+description: Generate spectrograms and audio feature visualizations (mel, chroma,
+  MFCC, ...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/steipete/songsee
+    tags:
+    - Audio
+    - Visualization
+    - Spectrogram
+    - Music
+    - Analysis
+name: songsee
+prerequisites:
+  commands:
+  - songsee
+triggers:
+- songsee
+- songsee
+version: 1.0.0

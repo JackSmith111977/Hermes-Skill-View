@@ -1,0 +1,24 @@
+_source_name: himalaya
+_source_path: email/himalaya/SKILL.md
+author: community
+category: email
+description: CLI to manage emails via IMAP/SMTP. Use himalaya to list, read, write,
+  repl...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/pimalaya/himalaya
+    tags:
+    - Email
+    - IMAP
+    - SMTP
+    - CLI
+    - Communication
+name: himalaya
+prerequisites:
+  commands:
+  - himalaya
+triggers:
+- himalaya
+- himalaya
+version: 1.0.0

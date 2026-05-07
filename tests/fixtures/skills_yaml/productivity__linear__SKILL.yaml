@@ -1,0 +1,26 @@
+_source_name: linear
+_source_path: productivity/linear/SKILL.md
+author: Hermes Agent
+category: productivity
+description: Manage Linear issues, projects, and teams via the GraphQL API. Create,
+  upda...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Linear
+    - Project Management
+    - Issues
+    - GraphQL
+    - API
+    - Productivity
+name: linear
+prerequisites:
+  commands:
+  - curl
+  env_vars:
+  - LINEAR_API_KEY
+triggers:
+- linear
+- linear
+version: 1.0.0

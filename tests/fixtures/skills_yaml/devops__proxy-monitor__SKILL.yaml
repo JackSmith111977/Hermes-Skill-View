@@ -1,0 +1,23 @@
+_source_name: proxy-monitor
+_source_path: devops/proxy-monitor/SKILL.md
+category: devops
+description: 代理节点健康监控与工业级部署流水线。涵盖活性/依赖性检查、熔断策略、安全部署（Secrets 扫描/原子同步/回滚）。
+metadata:
+  hermes:
+    category: devops
+    design_pattern: tool_wrapper
+    skill_type: operational
+    tags:
+    - proxy
+    - monitoring
+    - deployment
+    - github
+    - circuit-breaker
+name: proxy-monitor
+triggers:
+- 代理
+- mihomo
+- 监控
+- deploy
+- 部署
+version: 2.0.0

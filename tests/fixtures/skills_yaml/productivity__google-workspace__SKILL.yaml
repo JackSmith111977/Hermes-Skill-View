@@ -1,0 +1,27 @@
+_source_name: google-workspace
+_source_path: productivity/google-workspace/SKILL.md
+author: Nous Research
+category: productivity
+description: Gmail, Calendar, Drive, Contacts, Sheets, and Docs integration for Hermes.
+  ...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/NousResearch/hermes-agent
+    related_skills:
+    - himalaya
+    tags:
+    - Google
+    - Gmail
+    - Calendar
+    - Drive
+    - Sheets
+    - Docs
+    - Contacts
+    - Email
+    - OAuth
+name: google-workspace
+triggers:
+- google workspace
+- google-workspace
+version: 1.0.0

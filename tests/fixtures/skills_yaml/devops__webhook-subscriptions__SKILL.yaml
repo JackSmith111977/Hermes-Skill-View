@@ -1,0 +1,19 @@
+_source_name: webhook-subscriptions
+_source_path: devops/webhook-subscriptions/SKILL.md
+category: devops
+description: Create and manage webhook subscriptions for event-driven agent activation,
+  ...
+metadata:
+  hermes:
+    tags:
+    - webhook
+    - events
+    - automation
+    - integrations
+    - notifications
+    - push
+name: webhook-subscriptions
+triggers:
+- webhook subscriptions
+- webhook-subscriptions
+version: 1.1.0
