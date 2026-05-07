@@ -1,21 +1,22 @@
 """
 SRA 技能覆盖率测试 — 验证每个 skill 是否能被 trigger 机制识别
 
-目标是至少 50% 的 skill 能被 SRA 通过 trigger/name/description 识别。
+使用 tests/fixtures/skills/ 中的测试用技能库，不依赖外部环境。
 """
 
 import sys
 import os
-import json
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from skill_advisor import SkillAdvisor
 
+FIXTURES_DIR = os.path.join(os.path.dirname(__file__), "fixtures", "skills")
+
 
 def get_all_skills_with_triggers():
     """获取所有 skill 的 trigger 信息，用于生成测试用例"""
-    advisor = SkillAdvisor()
+    advisor = SkillAdvisor(skills_dir=FIXTURES_DIR)
     advisor.refresh_index()
     skills = advisor.indexer.get_skills()
     
@@ -64,14 +65,10 @@ class TestSkillCoverage:
 
     @classmethod
     def setup_class(cls):
-        cls.advisor = SkillAdvisor()
-        cls.skills_dir = os.path.expanduser("~/.hermes/skills")
-        if os.path.exists(cls.skills_dir):
-            count = cls.advisor.refresh_index()
-            print(f"\n📊 技能索引已加载: {count} 个 skill")
-            cls.has_skills = True
-        else:
-            cls.has_skills = False
+        cls.advisor = SkillAdvisor(skills_dir=FIXTURES_DIR)
+        count = cls.advisor.refresh_index()
+        print(f"\n📊 技能索引已加载: {count} 个 skill")
+        cls.has_skills = True
 
     def test_overall_coverage_rate(self):
         """整体覆盖率应 ≥ 50%"""
@@ -159,55 +156,36 @@ class TestCoverageWithCommonQueries:
 
     @classmethod
     def setup_class(cls):
-        cls.advisor = SkillAdvisor()
-        if os.path.exists(os.path.expanduser("~/.hermes/skills")):
-            cls.advisor.refresh_index()
-            cls.has_skills = True
-        else:
-            cls.has_skills = False
+        cls.advisor = SkillAdvisor(skills_dir=FIXTURES_DIR)
+        cls.advisor.refresh_index()
+        cls.has_skills = True
 
-    # 常见用户查询 → 期望的 skill 类别
+    # 常见用户查询 → 期望匹配的技能（基于 tests/fixtures/skills/）
     COMMON_QUERIES = [
-        ("帮我画个架构图", "architecture"),
-        ("画系统架构图", "architecture"),
         ("生成PDF文档", "pdf"),
         ("帮我做个PPT", "ppt"),
         ("写演示文稿", "ppt"),
-        ("发飞书文件", "feishu"),
+        ("发飞书消息", "feishu"),
         ("飞书怎么用", "feishu"),
         ("搜索最新AI新闻", "ai"),
-        ("帮我review代码", "code"),
+        ("帮我 review 代码", "code"),
         ("代码审查", "code"),
-        ("部署服务到服务器", "deploy"),
-        ("测试一下这个功能", "test"),
-        ("学习Python新特性", "learn"),
-        ("查资料", "search"),
-        ("帮我做个Excel表格", "excel"),
-        ("怎么做数据分析", "data"),
-        ("帮我翻译这段话", "translate"),
+        ("画个架构图", "architecture"),
+        ("画系统设计图", "architecture"),
+        ("用 mermaid 画时序图", "mermaid"),
         ("画个流程图", "diagram"),
-        ("做信息图", "infographic"),
-        ("播放音乐", "music"),
-        ("帮我写邮件", "email"),
-        ("设置定时任务", "schedule"),
-        ("怎么配置代理", "proxy"),
-        ("检查服务器状态", "health"),
-        ("git操作用哪个命令", "git"),
-        ("帮我发微信消息", "wechat"),
-        ("游戏服务器怎么搭", "game"),
-        ("做视频", "video"),
-        ("帮我画个时序图", "mermaid"),
-        ("怎么用markdown", "markdown"),
-        ("写LaTeX论文", "latex"),
-        ("监控系统状态", "monitor"),
-        ("配置clash代理", "clash"),
-        ("打开浏览器自动化", "browser"),
-        ("做像素画", "pixel art"),
-        ("搞个字符画", "ascii art"),
-        ("帮我复盘今天的工作", "review"),
-        ("帮我总结一下", "summary"),
-        ("怎么发通知", "notify"),
-        ("帮我查股票", "stock"),
+        ("怎么做 Excel 报表", "excel"),
+        ("编辑 Word 文档", "word"),
+        ("Git 操作", "git"),
+        ("github 怎么用", "git"),
+        ("数据库设计", "sql"),
+        ("AI 生图", "image"),
+        ("Stable Diffusion 出图", "image"),
+        ("番剧推荐", "bangumi"),
+        ("微信机器人", "wechat"),
+        ("微信公众号", "weixin"),
+        ("网页搜索", "web"),
+        ("联网查资料", "web"),
     ]
 
     def test_common_queries(self):

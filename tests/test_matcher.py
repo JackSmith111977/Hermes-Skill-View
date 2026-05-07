@@ -149,25 +149,12 @@ class TestMatcher:
 
 class TestAdvisor:
     """SkillAdvisor 集成测试"""
+    SKILLS_FIXTURE = os.path.join(os.path.dirname(__file__), "fixtures", "skills")
 
     def setup_method(self):
-        # 使用 Hermes 的真实技能目录（CI 环境可能不存在）
-        skills_dir = os.path.expanduser("~/.hermes/skills")
-        if os.path.exists(skills_dir):
-            self.advisor = SkillAdvisor(skills_dir=skills_dir)
-            self.advisor.refresh_index()
-            self.has_real_skills = True
-        else:
-            # CI 环境：用临时空目录初始化（确保 advisor 对象创建成功）
-            import tempfile
-            self._tmp_skills = tempfile.mkdtemp()
-            self.advisor = SkillAdvisor(skills_dir=self._tmp_skills)
-            self.has_real_skills = False
-
-    def teardown_method(self):
-        if hasattr(self, '_tmp_skills') and os.path.exists(self._tmp_skills):
-            import shutil
-            shutil.rmtree(self._tmp_skills, ignore_errors=True)
+        self.advisor = SkillAdvisor(skills_dir=self.SKILLS_FIXTURE)
+        self.advisor.refresh_index()
+        self.has_real_skills = True
 
     def test_initialization(self):
         """初始化测试"""
