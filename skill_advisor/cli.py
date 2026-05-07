@@ -317,7 +317,7 @@ def cmd_version(args: List[str]):
     print(f"SRA — Skill Runtime Advisor v{__version__}")
     print("让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力")
     print()
-    print("作者: Emma (SRA Team)")
+    print("作者: Emma (SRA Team) / Kei")
     print("许可: MIT")
     print()
     # 检查 Daemon 状态
