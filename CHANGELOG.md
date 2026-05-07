@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### 🛠️ Changed
+
+- **CI/CD**: 添加 GitHub Actions 自动测试流水线（pytest × Python 3.10/3.11/3.12 + 构建验证）
+- **文档**: README 添加 CI 徽章、补全 CLI 命令表和 API 端点表
+- **文档**: RUNTIME.md 更新 watch_skills_dir 状态（已修复，30s 感知）
+- **元数据**: pyproject.toml 添加 license 字段和 project.urls
+- **元数据**: 版本号硬编码修复（cli.py help/stats 默认值）
+- **签名**: 增加 Kei 为共同作者
+
 ## [1.1.0] — 2026-05-04
 
 ### 🚀 Added

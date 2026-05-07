@@ -1,0 +1,75 @@
+# SRA Agent CI — 自动测试流水线
+#
+# 每次 push 或 PR 到 master 时自动运行：
+#   • pytest 测试套件（38 个用例）
+#   • 构建验证（sdist + wheel）
+#
+# 配置参考: https://docs.github.com/en/actions/automating-builds-and-tests
+
+name: CI
+
+on:
+  push:
+    branches: [master, "prepare-release-*"]
+  pull_request:
+    branches: [master]
+
+# 最小权限原则
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: "pytest (${{ matrix.python-version }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: 安装依赖
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: 运行测试
+        run: pytest tests/ -v --tb=short -q
+
+      - name: 测试摘要
+        run: |
+          echo "✅ Python ${{ matrix.python-version }} 测试完成"
+          pytest tests/ --tb=no -q --no-header 2>/dev/null || true
+
+  build:
+    name: "构建验证 (sdist + wheel)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [test]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装构建工具
+        run: pip install build twine
+
+      - name: 构建 sdist + wheel
+        run: python3 -m build
+
+      - name: 验证构建产物
+        run: python3 -m twine check dist/*

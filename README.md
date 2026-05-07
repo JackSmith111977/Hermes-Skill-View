@@ -1,6 +1,7 @@
 # SRA — Skill Runtime Advisor 🎯
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
+[![CI](https://github.com/JackSmith111977/Hermes-Skill-View/actions/workflows/ci.yml/badge.svg)](https://github.com/JackSmith111977/Hermes-Skill-View/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 [![CLI](https://img.shields.io/badge/CLI-sra-orange)](https://github.com/JackSmith111977/Hermes-Skill-View)
 [![PyPI](https://img.shields.io/badge/PyPI-sra--agent-0073e0)](https://pypi.org/project/sra-agent/)
