@@ -1,0 +1,6 @@
+_source_name: bmad-testarch-automate
+_source_path: bmad-method/all-skills/bmad-testarch-automate/SKILL.md
+category: bmad-method
+description: Expand test automation coverage for codebase. Use when user says "lets
+  expand test coverage" or "I want to automate tests"
+name: bmad-testarch-automate

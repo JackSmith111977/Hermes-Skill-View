@@ -1,0 +1,29 @@
+_source_name: dspy
+_source_path: mlops/research/dspy/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- dspy
+- openai
+- anthropic
+description: Build complex AI systems with declarative programming, optimize prompts
+  aut...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Prompt Engineering
+    - DSPy
+    - Declarative Programming
+    - RAG
+    - Agents
+    - Prompt Optimization
+    - LM Programming
+    - Stanford NLP
+    - Automatic Optimization
+    - Modular AI
+name: dspy
+triggers:
+- dspy
+- dspy
+version: 1.0.0

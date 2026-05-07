@@ -1,0 +1,71 @@
+---
+name: learning
+description: 当你需要从零开始学习一个新主题、研究新技术、了解陌生领域时使用此 skill。涵盖：联网上下文补充引擎、过滤高质量信息、清洗冗余内容、精炼核心知识、最终通过
+  skill-creator 沉淀为可复用的 skill。v2.6 核心升级：强制联网补充协议，内置信息源分级、时效性门禁与交叉验证机制。
+version: 2.7.0
+triggers:
+- 学习
+- 研究
+- 调研
+- 最佳实践
+- learn
+- 学学
+- 深入了解
+- 查一下
+- 沉淀
+- 总结复盘
+- 学习总结
+- 自驱动
+- 帮我搞懂
+- 我想学
+- 这是什么
+- 怎么用
+- 怎么用XXX
+- 搞懂
+- 了解
+- 了解一下
+- 看看
+- 探索
+- 掌握
+- 熟悉
+- 入门
+- 新手教程
+- 从零开始
+- 快速上手
+author: 小喵
+license: MIT
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- patch
+- skill_manage
+- skills_list
+- skill_view
+metadata:
+  hermes:
+    tags:
+    - learning
+    - research
+    - meta-skill
+    - knowledge-integration
+    - reflection
+    - self-driven
+    related_skills:
+    - web-access
+    - skill-creator
+    - learning-workflow
+    - learning-review-cycle
+    category: learning
+    skill_type: research
+    design_pattern: pipeline
+depends_on:
+- web-access
+- skill-creator
+- learning-workflow
+- learning-review-cycle
+category: learning
+---
+# learning
+
+当你需要从零开始学习一个新主题、研究新技术、了解陌生领域时使用此 skill。涵盖：联网上下文补充引擎、过滤高质量信息、清洗冗余内容、精炼核心知识、最终通过 skill-creator 沉淀为可复用的 skill。v2.6 核心升级：强制联网补充协议，内置信息源分级、时效性门禁与交叉验证机制。

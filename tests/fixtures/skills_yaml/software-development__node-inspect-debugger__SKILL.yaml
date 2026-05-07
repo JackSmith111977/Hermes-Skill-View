@@ -1,0 +1,21 @@
+_source_name: node-inspect-debugger
+_source_path: software-development/node-inspect-debugger/SKILL.md
+author: Hermes Agent
+category: software-development
+description: Debug Node.js via --inspect + Chrome DevTools Protocol CLI.
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - systematic-debugging
+    - python-debugpy
+    - debugging-hermes-tui-commands
+    tags:
+    - debugging
+    - nodejs
+    - node-inspect
+    - cdp
+    - breakpoints
+    - ui-tui
+name: node-inspect-debugger
+version: 1.0.0

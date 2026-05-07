@@ -1,0 +1,18 @@
+_source_name: docx-guide
+_source_path: docx-guide/SKILL.md
+category: docx-guide
+description: Word (.docx) 文档操作原子技能。使用 python-docx 创建、编辑、美化 Word 文档。
+metadata:
+  hermes:
+    category: productivity
+    format: docx
+    skill_type: doc-generation
+    tags:
+    - word
+    - docx
+    - document
+    - office
+name: docx-guide
+triggers:
+- docx guide
+- docx-guide

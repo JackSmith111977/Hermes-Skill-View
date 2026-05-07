@@ -1,0 +1,25 @@
+_source_name: self-capabilities-map
+_source_path: self-capabilities-map/SKILL.md
+category: self-capabilities-map
+depends_on:
+- hermes-self-analysis
+- web-access
+- skill-creator
+description: boku（小玛/Emma）对 Hermes Agent 完整能力边界的认知地图。涵盖已掌握能力、未利用能力、能力限制、可扩展方向。当 boku
+  需要评估自己能否完成某项任务时，先加载此 skill 进行能力匹配。
+design_pattern: Inversion
+name: self-capabilities-map
+referenced_by: []
+skill_type: research
+triggers:
+- boku 能做什么
+- 能力边界
+- Hermes 还能做什么
+- 自我评估
+- 能力盘点
+- 可以做什么
+- 能做到什么程度
+- Hermes capability
+- 扩展能力
+- 还能学什么
+version: 1.0.0

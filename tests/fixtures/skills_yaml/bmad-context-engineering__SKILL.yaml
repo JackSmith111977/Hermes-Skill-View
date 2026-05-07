@@ -1,0 +1,30 @@
+_source_name: bmad-context-engineering
+_source_path: bmad-context-engineering/SKILL.md
+allowed-tools:
+- read_file
+- write_file
+- terminal
+author: 小玛
+category: bmad-context-engineering
+description: BMAD 上下文工程与配置指南。详解 BMAD 如何通过文件系统、TOML 配置和 project-context.md 注入上下文。适用于配置新项目、定制
+  Agent 行为或调试上下文丢失问题。
+license: MIT
+metadata:
+  hermes:
+    category: devops
+    skill_type: Tool Wrapper
+    tags:
+    - bmad
+    - context-engineering
+    - configuration
+    - toml
+name: bmad-context-engineering
+triggers:
+- BMAD 配置
+- BMAD 上下文
+- project-context
+- bmad 定制
+- customize toml
+- bmad 目录结构
+- bmad 注入
+version: 1.0.0

@@ -1,0 +1,19 @@
+_source_name: hermes-agent-skill-authoring
+_source_path: software-development/hermes-agent-skill-authoring/SKILL.md
+author: Hermes Agent
+category: software-development
+description: 'Author in-repo SKILL.md: frontmatter, validator, structure.'
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - writing-plans
+    - requesting-code-review
+    tags:
+    - skills
+    - authoring
+    - hermes-agent
+    - conventions
+    - skill-md
+name: hermes-agent-skill-authoring
+version: 1.0.0

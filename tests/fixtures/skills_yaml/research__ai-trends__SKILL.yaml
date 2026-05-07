@@ -1,0 +1,21 @@
+_source_name: ai-trends
+_source_path: research/ai-trends/SKILL.md
+category: research
+description: AI前沿技术趋势追踪 — 开源模型、AI Agent、LLM新特性、ML论文动态。定期更新，保持对AI领域最新进展的知识同步。
+metadata:
+  hermes:
+    tags:
+    - AI趋势
+    - 开源模型
+    - LLM
+    - AI Agent
+    - 论文追踪
+name: ai-trends
+triggers:
+- ai trends
+- ai前沿
+- llm news
+- open source models
+- ai agents
+- machine learning papers
+version: 1.5.0

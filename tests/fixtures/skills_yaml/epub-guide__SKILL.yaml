@@ -1,0 +1,17 @@
+_source_name: epub-guide
+_source_path: epub-guide/SKILL.md
+category: epub-guide
+description: EPUB 电子书生成原子技能。使用 ebooklib 创建标准 EPUB 电子书。
+metadata:
+  hermes:
+    category: productivity
+    format: epub
+    skill_type: doc-generation
+    tags:
+    - epub
+    - ebook
+    - publishing
+name: epub-guide
+triggers:
+- epub guide
+- epub-guide

@@ -1,0 +1,7 @@
+_source_name: bmad-agent-builder
+_source_path: bmad-method/all-skills/bmad-agent-builder/SKILL.md
+category: bmad-method
+description: Builds, edits or analyzes Agent Skills through conversational discovery.
+  Use when the user requests to "Create an Agent", "Analyze an Agent" or "Edit an
+  Agent".
+name: bmad-agent-builder

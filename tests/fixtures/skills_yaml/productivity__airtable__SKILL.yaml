@@ -1,0 +1,21 @@
+_source_name: airtable
+_source_path: productivity/airtable/SKILL.md
+author: community
+category: productivity
+description: Airtable REST API via curl. Records CRUD, filters, upserts.
+license: MIT
+metadata:
+  hermes:
+    homepage: https://airtable.com/developers/web/api/introduction
+    tags:
+    - Airtable
+    - Productivity
+    - Database
+    - API
+name: airtable
+prerequisites:
+  commands:
+  - curl
+  env_vars:
+  - AIRTABLE_API_KEY
+version: 1.1.0

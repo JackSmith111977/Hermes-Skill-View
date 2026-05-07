@@ -1,0 +1,18 @@
+_source_name: latex-guide
+_source_path: latex-guide/SKILL.md
+category: latex-guide
+description: LaTeX 学术论文排版原子技能。学位论文、期刊文章、技术报告。
+metadata:
+  hermes:
+    category: productivity
+    format: latex
+    skill_type: doc-generation
+    tags:
+    - latex
+    - academic
+    - paper
+    - thesis
+name: latex-guide
+triggers:
+- latex guide
+- latex-guide

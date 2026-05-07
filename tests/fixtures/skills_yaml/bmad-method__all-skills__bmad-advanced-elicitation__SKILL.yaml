@@ -1,0 +1,7 @@
+_source_name: bmad-advanced-elicitation
+_source_path: bmad-method/all-skills/bmad-advanced-elicitation/SKILL.md
+category: bmad-method
+description: Push the LLM to reconsider, refine, and improve its recent output. Use
+  when user asks for deeper critique or mentions a known deeper critique method, e.g.
+  socratic, first principles, pre-mortem, red team.
+name: bmad-advanced-elicitation

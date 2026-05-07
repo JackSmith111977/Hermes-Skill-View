@@ -1,0 +1,31 @@
+_source_name: github-auth
+_source_path: github/github-auth/SKILL.md
+author: Hermes Agent
+category: github
+description: Set up GitHub authentication for the agent using git (universally available...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-pr-workflow
+    - github-code-review
+    - github-issues
+    - github-repo-management
+    tags:
+    - GitHub
+    - Authentication
+    - Git
+    - gh-cli
+    - SSH
+    - Setup
+name: github-auth
+triggers:
+- github
+- token
+- ssh
+- 认证
+- login
+- 推送
+- push
+- 远程仓库
+version: 2.0.0

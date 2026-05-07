@@ -1,0 +1,22 @@
+_source_name: jupyter-live-kernel
+_source_path: data-science/jupyter-live-kernel/SKILL.md
+author: Hermes Agent
+category: data-science
+description: Use a live Jupyter kernel for stateful, iterative Python execution via
+  hame...
+license: MIT
+metadata:
+  hermes:
+    category: data-science
+    tags:
+    - jupyter
+    - notebook
+    - repl
+    - data-science
+    - exploration
+    - iterative
+name: jupyter-live-kernel
+triggers:
+- jupyter live kernel
+- jupyter-live-kernel
+version: 1.0.0

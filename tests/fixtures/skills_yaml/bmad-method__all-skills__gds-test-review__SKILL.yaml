@@ -1,0 +1,6 @@
+_source_name: gds-test-review
+_source_path: bmad-method/all-skills/gds-test-review/SKILL.md
+category: bmad-method
+description: Review test quality and coverage. Use when the user says "test review"
+  or "review tests"
+name: gds-test-review

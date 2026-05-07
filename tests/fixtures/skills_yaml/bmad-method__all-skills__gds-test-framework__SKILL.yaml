@@ -1,0 +1,6 @@
+_source_name: gds-test-framework
+_source_path: bmad-method/all-skills/gds-test-framework/SKILL.md
+category: bmad-method
+description: Initialize game test framework for Unity, Unreal, or Godot. Use when
+  the user says "test framework" or "set up testing"
+name: gds-test-framework

@@ -1,0 +1,22 @@
+_source_name: browser-automation
+_source_path: dogfood/browser-automation/SKILL.md
+category: dogfood
+description: Chrome headless 浏览器自动化实战技能。涵盖页面导航、表单填写、点击交互、快照分析、视觉截图、验证码识别等完整工作流。
+metadata:
+  hermes:
+    category: dogfood
+    design_pattern: tool_wrapper
+    skill_type: library
+    tags:
+    - browser
+    - chrome
+    - automation
+    - visual-analysis
+name: browser-automation
+triggers:
+- 浏览器
+- 自动化
+- chrome
+- 网页交互
+- screenshot
+version: 1.0.0

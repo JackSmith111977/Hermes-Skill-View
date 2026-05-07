@@ -1,0 +1,20 @@
+_source_name: songwriting-and-ai-music
+_source_path: creative/songwriting-and-ai-music/SKILL.md
+category: creative
+description: Songwriting craft, AI music generation prompts (Suno focus), parody/adaptat...
+name: songwriting-and-ai-music
+tags:
+- songwriting
+- music
+- suno
+- parody
+- lyrics
+- creative
+triggers:
+- writing a song
+- song lyrics
+- music prompt
+- suno prompt
+- parody song
+- adapting a song
+- AI music generation

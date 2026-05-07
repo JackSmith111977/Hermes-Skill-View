@@ -1,0 +1,28 @@
+_source_name: pixel-art
+_source_path: creative/pixel-art/SKILL.md
+author: dodo-reach
+category: creative
+description: Convert images into retro pixel art with hardware-accurate palettes (NES,
+  G...
+license: MIT
+metadata:
+  hermes:
+    category: creative
+    credits:
+    - Hardware palettes and animation loops ported from Synero/pixel-art-studio (MIT)
+      — https://github.com/Synero/pixel-art-studio
+    tags:
+    - creative
+    - pixel-art
+    - arcade
+    - snes
+    - nes
+    - gameboy
+    - retro
+    - image
+    - video
+name: pixel-art
+triggers:
+- pixel art
+- pixel-art
+version: 2.0.0

@@ -1,0 +1,25 @@
+_source_name: github-repo-management
+_source_path: github/github-repo-management/SKILL.md
+author: Hermes Agent
+category: github
+description: Clone, create, fork, configure, and manage GitHub repositories. Manage
+  remo...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-auth
+    - github-pr-workflow
+    - github-issues
+    tags:
+    - GitHub
+    - Repositories
+    - Git
+    - Releases
+    - Secrets
+    - Configuration
+name: github-repo-management
+triggers:
+- github repo management
+- github-repo-management
+version: 1.1.0

@@ -1,0 +1,7 @@
+_source_name: bmad-customize
+_source_path: bmad-method/workflows/bmad-customize/SKILL.md
+category: bmad-method
+description: Authors and updates customization overrides for installed BMad skills.
+  Use when the user says 'customize bmad', 'override a skill', 'change agent behavior',
+  or 'customize a workflow'.
+name: bmad-customize

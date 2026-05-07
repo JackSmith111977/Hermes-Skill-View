@@ -1,0 +1,24 @@
+_source_name: systematic-debugging
+_source_path: software-development/systematic-debugging/SKILL.md
+author: Hermes Agent (adapted from obra/superpowers)
+category: software-development
+description: Use when encountering any bug, test failure, or unexpected behavior.
+  4-phas...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - test-driven-development
+    - writing-plans
+    - subagent-driven-development
+    tags:
+    - debugging
+    - troubleshooting
+    - problem-solving
+    - root-cause
+    - investigation
+name: systematic-debugging
+triggers:
+- systematic debugging
+- systematic-debugging
+version: 1.1.0

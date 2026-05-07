@@ -1,0 +1,24 @@
+_source_name: test-driven-development
+_source_path: software-development/test-driven-development/SKILL.md
+author: Hermes Agent (adapted from obra/superpowers)
+category: software-development
+description: Use when implementing any feature or bugfix, before writing implementation
+  ...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - systematic-debugging
+    - writing-plans
+    - subagent-driven-development
+    tags:
+    - testing
+    - tdd
+    - development
+    - quality
+    - red-green-refactor
+name: test-driven-development
+triggers:
+- test driven development
+- test-driven-development
+version: 1.1.0

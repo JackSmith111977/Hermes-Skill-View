@@ -1,0 +1,5 @@
+_source_name: bmad-edit-prd
+_source_path: bmad-method/workflows/bmad-edit-prd/SKILL.md
+category: bmad-method
+description: Edit an existing PRD. Use when the user says "edit this PRD".
+name: bmad-edit-prd

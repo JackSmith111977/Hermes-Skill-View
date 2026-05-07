@@ -1,0 +1,24 @@
+_source_name: github-pr-workflow
+_source_path: github/github-pr-workflow/SKILL.md
+author: Hermes Agent
+category: github
+description: Full pull request lifecycle — create branches, commit changes, open PRs,
+  mo...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-auth
+    - github-code-review
+    tags:
+    - GitHub
+    - Pull-Requests
+    - CI/CD
+    - Git
+    - Automation
+    - Merge
+name: github-pr-workflow
+triggers:
+- github pr workflow
+- github-pr-workflow
+version: 1.1.0

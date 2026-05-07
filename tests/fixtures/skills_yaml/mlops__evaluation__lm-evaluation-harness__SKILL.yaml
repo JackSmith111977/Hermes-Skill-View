@@ -1,0 +1,32 @@
+_source_name: lm-evaluation-harness
+_source_path: mlops/evaluation/lm-evaluation-harness/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- lm-eval
+- transformers
+- vllm
+description: Evaluates LLMs across 60+ academic benchmarks (MMLU, HumanEval, GSM8K,
+  Trut...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Evaluation
+    - LM Evaluation Harness
+    - Benchmarking
+    - MMLU
+    - HumanEval
+    - GSM8K
+    - EleutherAI
+    - Model Quality
+    - Academic Benchmarks
+    - Industry Standard
+name: evaluating-llms-harness
+triggers:
+- evaluating llms harness
+- evaluating-llms-harness
+- 模型评估
+- LLM评测
+- 大模型评估
+version: 1.0.0

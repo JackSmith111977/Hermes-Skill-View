@@ -1,0 +1,6 @@
+_source_name: bmad-testarch-test-design
+_source_path: bmad-method/all-skills/bmad-testarch-test-design/SKILL.md
+category: bmad-method
+description: Create system-level or epic-level test plans. Use when the user says
+  "lets design test plan" or "I want to create test strategy"
+name: bmad-testarch-test-design

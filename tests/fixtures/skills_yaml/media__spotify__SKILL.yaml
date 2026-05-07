@@ -1,0 +1,27 @@
+_source_name: spotify
+_source_path: media/spotify/SKILL.md
+author: Hermes Agent
+category: media
+description: 'Spotify: play, search, queue, manage playlists and devices.'
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - gif-search
+    tags:
+    - spotify
+    - music
+    - playback
+    - playlists
+    - media
+name: spotify
+prerequisites:
+  tools:
+  - spotify_playback
+  - spotify_devices
+  - spotify_queue
+  - spotify_search
+  - spotify_playlists
+  - spotify_albums
+  - spotify_library
+version: 1.0.0

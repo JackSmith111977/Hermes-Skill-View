@@ -1,0 +1,23 @@
+_source_name: arxiv
+_source_path: research/arxiv/SKILL.md
+author: Hermes Agent
+category: research
+description: Search and retrieve academic papers from arXiv using their free REST
+  API. N...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - ocr-and-documents
+    tags:
+    - Research
+    - Arxiv
+    - Papers
+    - Academic
+    - Science
+    - API
+name: arxiv
+triggers:
+- arxiv
+- arxiv
+version: 1.0.0

@@ -1,0 +1,23 @@
+_source_name: github-issues
+_source_path: github/github-issues/SKILL.md
+author: Hermes Agent
+category: github
+description: Create, manage, triage, and close GitHub issues. Search existing issues,
+  ad...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-auth
+    - github-pr-workflow
+    tags:
+    - GitHub
+    - Issues
+    - Project-Management
+    - Bug-Tracking
+    - Triage
+name: github-issues
+triggers:
+- github issues
+- github-issues
+version: 1.1.0

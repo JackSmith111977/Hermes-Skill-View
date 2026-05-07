@@ -1,0 +1,23 @@
+_source_name: github-code-review
+_source_path: github/github-code-review/SKILL.md
+author: Hermes Agent
+category: github
+description: Review code changes by analyzing git diffs, leaving inline comments on
+  PRs,...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-auth
+    - github-pr-workflow
+    tags:
+    - GitHub
+    - Code-Review
+    - Pull-Requests
+    - Git
+    - Quality
+name: github-code-review
+triggers:
+- github code review
+- github-code-review
+version: 1.1.0

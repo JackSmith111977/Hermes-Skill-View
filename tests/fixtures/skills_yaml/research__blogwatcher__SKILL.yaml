@@ -1,0 +1,23 @@
+_source_name: blogwatcher
+_source_path: research/blogwatcher/SKILL.md
+author: JulienTant (fork of Hyaxia/blogwatcher)
+category: research
+description: Monitor blogs and RSS/Atom feeds for updates using the blogwatcher-cli
+  tool...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/JulienTant/blogwatcher-cli
+    tags:
+    - RSS
+    - Blogs
+    - Feed-Reader
+    - Monitoring
+name: blogwatcher
+prerequisites:
+  commands:
+  - blogwatcher-cli
+triggers:
+- blogwatcher
+- blogwatcher
+version: 2.0.0

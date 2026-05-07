@@ -1,0 +1,32 @@
+_source_name: feishu-send-file
+_source_path: feishu/feishu-send-file/SKILL.md
+aliases:
+- /feishu-send-file
+allowed-tools:
+- terminal
+- read_file
+- write_file
+category: feishu
+description: 飞书发送文件的正确流程和最佳实践。通过飞书原生 API（上传→获 file_key→发送 file 消息）实现文件发送。解释为什么 send_mess...
+metadata:
+  hermes:
+    category: feishu
+    design_pattern: tool-wrapper
+    related_skills:
+    - feishu
+    skill_type: library-reference
+    tags:
+    - feishu
+    - file
+    - upload
+    - send
+    - api
+name: feishu-send-file
+triggers:
+- 发送文件到飞书
+- 飞书上传文件
+- 飞书发送 PDF
+- 飞书发送图片
+- feishu file upload
+- 飞书 API 文件
+version: 1.0.0

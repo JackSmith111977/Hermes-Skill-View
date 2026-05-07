@@ -1,0 +1,6 @@
+_source_name: bmad-testarch-trace
+_source_path: bmad-method/all-skills/bmad-testarch-trace/SKILL.md
+category: bmad-method
+description: Generate traceability matrix and quality gate decision. Use when the
+  user says "lets create traceability matrix" or "I want to analyze test coverage"
+name: bmad-testarch-trace

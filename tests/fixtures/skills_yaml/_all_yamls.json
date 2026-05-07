@@ -1,0 +1,6413 @@
+[
+  {
+    "name": "apple-notes",
+    "description": "Manage Apple Notes via the memo CLI on macOS (create, view, search, edit).",
+    "version": "1.0.0",
+    "triggers": [
+      "apple notes",
+      "apple-notes"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "platforms": [
+      "macos"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Notes",
+          "Apple",
+          "macOS",
+          "note-taking"
+        ],
+        "related_skills": [
+          "obsidian"
+        ]
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "memo"
+      ]
+    },
+    "category": "apple",
+    "_source_path": "apple/apple-notes/SKILL.md",
+    "_source_name": "apple-notes"
+  },
+  {
+    "name": "apple-reminders",
+    "description": "Manage Apple Reminders via remindctl CLI (list, add, complete, delete).",
+    "version": "1.0.0",
+    "triggers": [
+      "apple reminders",
+      "apple-reminders"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "platforms": [
+      "macos"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Reminders",
+          "tasks",
+          "todo",
+          "macOS",
+          "Apple"
+        ]
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "remindctl"
+      ]
+    },
+    "category": "apple",
+    "_source_path": "apple/apple-reminders/SKILL.md",
+    "_source_name": "apple-reminders"
+  },
+  {
+    "name": "findmy",
+    "description": "Track Apple devices and AirTags via FindMy.app on macOS using AppleScript a...",
+    "version": "1.0.0",
+    "triggers": [
+      "findmy",
+      "findmy"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "platforms": [
+      "macos"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "FindMy",
+          "AirTag",
+          "location",
+          "tracking",
+          "macOS",
+          "Apple"
+        ]
+      }
+    },
+    "category": "apple",
+    "_source_path": "apple/findmy/SKILL.md",
+    "_source_name": "findmy"
+  },
+  {
+    "name": "imessage",
+    "description": "Send and receive iMessages/SMS via the imsg CLI on macOS.",
+    "version": "1.0.0",
+    "triggers": [
+      "imessage",
+      "imessage"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "platforms": [
+      "macos"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "iMessage",
+          "SMS",
+          "messaging",
+          "macOS",
+          "Apple"
+        ]
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "imsg"
+      ]
+    },
+    "category": "apple",
+    "_source_path": "apple/imessage/SKILL.md",
+    "_source_name": "imessage"
+  },
+  {
+    "name": "claude-code",
+    "description": "Delegate coding tasks to Claude Code (Anthropic's CLI agent). Use for build...",
+    "version": "2.2.0",
+    "triggers": [
+      "claude code",
+      "codex",
+      "agent",
+      "编程助手"
+    ],
+    "author": "Hermes Agent + Teknium",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Coding-Agent",
+          "Claude",
+          "Anthropic",
+          "Code-Review",
+          "Refactoring",
+          "PTY",
+          "Automation"
+        ],
+        "related_skills": [
+          "codex",
+          "hermes-agent",
+          "opencode"
+        ]
+      }
+    },
+    "category": "autonomous-ai-agents",
+    "_source_path": "autonomous-ai-agents/claude-code/SKILL.md",
+    "_source_name": "claude-code"
+  },
+  {
+    "name": "codex",
+    "description": "Delegate coding tasks to OpenAI Codex CLI agent. Use for building features,...",
+    "version": "1.0.0",
+    "triggers": [
+      "codex",
+      "codex"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Coding-Agent",
+          "Codex",
+          "OpenAI",
+          "Code-Review",
+          "Refactoring"
+        ],
+        "related_skills": [
+          "claude-code",
+          "hermes-agent"
+        ]
+      }
+    },
+    "category": "autonomous-ai-agents",
+    "_source_path": "autonomous-ai-agents/codex/SKILL.md",
+    "_source_name": "codex"
+  },
+  {
+    "name": "hermes-agent",
+    "description": "Complete guide to using and extending Hermes Agent — CLI usage, setup, configuration, spawning additional agents, gateway platforms, skills, voice, tools, profiles, and a concise contributor reference. Load this skill when helping users configure Hermes, troubleshoot issues, spawn agent instances, or make code contributions.",
+    "version": "2.0.0",
+    "author": "Hermes Agent + Teknium",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "hermes",
+          "setup",
+          "configuration",
+          "multi-agent",
+          "spawning",
+          "cli",
+          "gateway",
+          "development"
+        ],
+        "homepage": "https://github.com/NousResearch/hermes-agent",
+        "related_skills": [
+          "claude-code",
+          "codex",
+          "opencode"
+        ]
+      }
+    },
+    "category": "autonomous-ai-agents",
+    "_source_path": "autonomous-ai-agents/hermes-agent/SKILL.md",
+    "_source_name": "hermes-agent"
+  },
+  {
+    "name": "hermes-message-injection",
+    "description": "向 Hermes Agent 的消息管道注入外部服务上下文（如 SRA 技能推荐）。每次用户消息自动拦截 → 调外部服务 → 将结果作为 [前缀] 注入到消息前。涵盖 run_agent.py 的 run_conversation() 注入点、module-level 缓存、降级策略。",
+    "version": "2.0.0",
+    "triggers": [
+      "hermes 注入",
+      "hermes 消息拦截",
+      "message injection",
+      "sra integration",
+      "context injection",
+      "hermes hook",
+      "run_conversation",
+      "sra daemon",
+      "sra start",
+      "sra管理",
+      "上下文注入"
+    ],
+    "depends_on": [
+      "hermes-agent"
+    ],
+    "design_pattern": "Pipeline Injection",
+    "skill_type": "Pattern",
+    "category": "autonomous-ai-agents",
+    "_source_path": "autonomous-ai-agents/hermes-message-injection/SKILL.md",
+    "_source_name": "hermes-message-injection"
+  },
+  {
+    "name": "opencode",
+    "description": "Delegate coding tasks to OpenCode CLI agent for feature implementation, ref...",
+    "version": "1.2.0",
+    "triggers": [
+      "opencode",
+      "opencode"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Coding-Agent",
+          "OpenCode",
+          "Autonomous",
+          "Refactoring",
+          "Code-Review"
+        ],
+        "related_skills": [
+          "claude-code",
+          "codex",
+          "hermes-agent"
+        ]
+      }
+    },
+    "category": "autonomous-ai-agents",
+    "_source_path": "autonomous-ai-agents/opencode/SKILL.md",
+    "_source_name": "opencode"
+  },
+  {
+    "name": "bangumi-recommender",
+    "description": "Bangumi API integration for anime recommendation, calendars, and search.",
+    "version": "1.0.0",
+    "triggers": [
+      "番剧推荐",
+      "新番",
+      "Bangumi",
+      "Anime",
+      "番组表"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "anime",
+          "bangumi",
+          "recommendation"
+        ],
+        "category": "entertainment",
+        "skill_type": "generator",
+        "design_pattern": "tool_wrapper"
+      }
+    },
+    "category": "bangumi-recommender",
+    "_source_path": "bangumi-recommender/SKILL.md",
+    "_source_name": "bangumi-recommender"
+  },
+  {
+    "name": "bmad-context-engineering",
+    "description": "BMAD 上下文工程与配置指南。详解 BMAD 如何通过文件系统、TOML 配置和 project-context.md 注入上下文。适用于配置新项目、定制 Agent 行为或调试上下文丢失问题。",
+    "version": "1.0.0",
+    "triggers": [
+      "BMAD 配置",
+      "BMAD 上下文",
+      "project-context",
+      "bmad 定制",
+      "customize toml",
+      "bmad 目录结构",
+      "bmad 注入"
+    ],
+    "author": "小玛",
+    "license": "MIT",
+    "allowed-tools": [
+      "read_file",
+      "write_file",
+      "terminal"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "bmad",
+          "context-engineering",
+          "configuration",
+          "toml"
+        ],
+        "category": "devops",
+        "skill_type": "Tool Wrapper"
+      }
+    },
+    "category": "bmad-context-engineering",
+    "_source_path": "bmad-context-engineering/SKILL.md",
+    "_source_name": "bmad-context-engineering"
+  },
+  {
+    "name": "bmad-context-insights",
+    "description": "BMAD 核心架构与上下文工程深度解析。包含 TOML 上下文注入机制、Party Mode 多智能体并行编排、Step-File 架构流派对比及 project-context.md 契约。",
+    "triggers": [
+      "bmad配置",
+      "bmad架构",
+      "party mode",
+      "上下文注入",
+      "多智能体编排",
+      "project-context",
+      "bmad context"
+    ],
+    "category": "bmad-context-insights",
+    "_source_path": "bmad-context-insights/SKILL.md",
+    "_source_name": "bmad-context-insights"
+  },
+  {
+    "name": "bmad-method",
+    "description": "BMad Method (Build More Architect Dreams) - 全生态 AI 驱动开发框架。含 BMM(敏捷开发)、BMB(模块构建)、TEA(测试架构)、BMGD(游戏开发)、CIS(创新智能) 五大模块共 102 个 Skill。项目开发、功能实现、Bug修复等任务自动触发 BMad 工作流。",
+    "version": "2.1.0",
+    "triggers": [
+      "bmad",
+      "bmad-method",
+      "项目开发",
+      "软件开发",
+      "功能开发",
+      "功能实现",
+      "实现功能",
+      "开发功能",
+      "开发项目",
+      "从 0 到 1",
+      "新项目",
+      "构建项目",
+      "搭建项目",
+      "写代码",
+      "编码",
+      "实现这个",
+      "实现模块",
+      "实现 feature",
+      "bug修复",
+      "修bug",
+      "修复bug",
+      "修复问题",
+      "出了bug",
+      "有问题",
+      "改bug",
+      "重构",
+      "代码重构",
+      "优化代码",
+      "代码优化",
+      "重写",
+      "代码重写",
+      "产品需求",
+      "需求文档",
+      "产品需求文档",
+      "PRD",
+      "需求分析",
+      "写文档",
+      "分析需求",
+      "架构设计",
+      "系统设计",
+      "技术选型",
+      "设计架构",
+      "方案设计",
+      "技术方案",
+      "敏捷开发",
+      "敏捷",
+      "史诗故事",
+      "epic",
+      "user story",
+      "用户故事",
+      "冲刺",
+      "sprint",
+      "项目规划",
+      "项目排期",
+      "代码评审",
+      "代码审查",
+      "code review",
+      "审查代码",
+      "评审代码",
+      "测试策略",
+      "测试设计",
+      "测试框架",
+      "单元测试",
+      "自动化测试",
+      "测试架构",
+      "tea",
+      "test architect",
+      "bmb",
+      "构建模块",
+      "模块构建",
+      "gds",
+      "game dev",
+      "游戏开发",
+      "游戏设计",
+      "GDD",
+      "cis",
+      "creative intelligence",
+      "头脑风暴",
+      "设计思维",
+      "创新策略",
+      "问题解决",
+      "故事叙述",
+      "开发",
+      "编程",
+      "coding",
+      "implement",
+      "implementation"
+    ],
+    "depends_on": [
+      "skill-creator",
+      "writing-plans"
+    ],
+    "design_pattern": "Pipeline",
+    "skill_type": "Tool Wrapper",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/SKILL.md",
+    "_source_name": "bmad-method"
+  },
+  {
+    "name": "bmad-agent-analyst",
+    "description": "Strategic business analyst and requirements expert. Use when the user asks to talk to Mary or requests the business analyst.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/agents/bmad-agent-analyst/SKILL.md",
+    "_source_name": "bmad-agent-analyst"
+  },
+  {
+    "name": "bmad-agent-architect",
+    "description": "System architect and technical design leader. Use when the user asks to talk to Winston or requests the architect.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/agents/bmad-agent-architect/SKILL.md",
+    "_source_name": "bmad-agent-architect"
+  },
+  {
+    "name": "bmad-agent-dev",
+    "description": "Senior software engineer for story execution and code implementation. Use when the user asks to talk to Amelia or requests the developer agent.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/agents/bmad-agent-dev/SKILL.md",
+    "_source_name": "bmad-agent-dev"
+  },
+  {
+    "name": "bmad-agent-pm",
+    "description": "Product manager for PRD creation and requirements discovery. Use when the user asks to talk to John or requests the product manager.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/agents/bmad-agent-pm/SKILL.md",
+    "_source_name": "bmad-agent-pm"
+  },
+  {
+    "name": "bmad-agent-tech-writer",
+    "description": "Technical documentation specialist and knowledge curator. Use when the user asks to talk to Paige or requests the tech writer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/agents/bmad-agent-tech-writer/SKILL.md",
+    "_source_name": "bmad-agent-tech-writer"
+  },
+  {
+    "name": "bmad-agent-ux-designer",
+    "description": "UX designer and UI specialist. Use when the user asks to talk to Sally or requests the UX designer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/agents/bmad-agent-ux-designer/SKILL.md",
+    "_source_name": "bmad-agent-ux-designer"
+  },
+  {
+    "name": "bmad-advanced-elicitation",
+    "description": "Push the LLM to reconsider, refine, and improve its recent output. Use when user asks for deeper critique or mentions a known deeper critique method, e.g. socratic, first principles, pre-mortem, red team.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-advanced-elicitation/SKILL.md",
+    "_source_name": "bmad-advanced-elicitation"
+  },
+  {
+    "name": "bmad-agent-analyst",
+    "description": "Strategic business analyst and requirements expert. Use when the user asks to talk to Mary or requests the business analyst.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-analyst/SKILL.md",
+    "_source_name": "bmad-agent-analyst"
+  },
+  {
+    "name": "bmad-agent-architect",
+    "description": "System architect and technical design leader. Use when the user asks to talk to Winston or requests the architect.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-architect/SKILL.md",
+    "_source_name": "bmad-agent-architect"
+  },
+  {
+    "name": "bmad-agent-builder",
+    "description": "Builds, edits or analyzes Agent Skills through conversational discovery. Use when the user requests to \"Create an Agent\", \"Analyze an Agent\" or \"Edit an Agent\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-builder/SKILL.md",
+    "_source_name": "bmad-agent-builder"
+  },
+  {
+    "name": "bmad-agent-dev",
+    "description": "Senior software engineer for story execution and code implementation. Use when the user asks to talk to Amelia or requests the developer agent.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-dev/SKILL.md",
+    "_source_name": "bmad-agent-dev"
+  },
+  {
+    "name": "bmad-agent-pm",
+    "description": "Product manager for PRD creation and requirements discovery. Use when the user asks to talk to John or requests the product manager.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-pm/SKILL.md",
+    "_source_name": "bmad-agent-pm"
+  },
+  {
+    "name": "bmad-agent-tech-writer",
+    "description": "Technical documentation specialist and knowledge curator. Use when the user asks to talk to Paige or requests the tech writer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-tech-writer/SKILL.md",
+    "_source_name": "bmad-agent-tech-writer"
+  },
+  {
+    "name": "bmad-agent-ux-designer",
+    "description": "UX designer and UI specialist. Use when the user asks to talk to Sally or requests the UX designer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-agent-ux-designer/SKILL.md",
+    "_source_name": "bmad-agent-ux-designer"
+  },
+  {
+    "name": "bmad-bmb-setup",
+    "description": "Sets up BMad Builder module in a project. Use when the user requests to 'install bmb module', 'configure BMad Builder', or 'setup BMad Builder'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-bmb-setup/SKILL.md",
+    "_source_name": "bmad-bmb-setup"
+  },
+  {
+    "name": "bmad-brainstorming",
+    "description": "Facilitate interactive brainstorming sessions using diverse creative techniques and ideation methods. Use when the user says help me brainstorm or help me ideate.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-brainstorming/SKILL.md",
+    "_source_name": "bmad-brainstorming"
+  },
+  {
+    "name": "bmad-check-implementation-readiness",
+    "description": "Validate PRD, UX, Architecture and Epics specs are complete. Use when the user says \"check implementation readiness\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-check-implementation-readiness/SKILL.md",
+    "_source_name": "bmad-check-implementation-readiness"
+  },
+  {
+    "name": "bmad-checkpoint-preview",
+    "description": "LLM-assisted human-in-the-loop review. Make sense of a change, focus attention where it matters, test. Use when the user says \"checkpoint\", \"human review\", or \"walk me through this change\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-checkpoint-preview/SKILL.md",
+    "_source_name": "bmad-checkpoint-preview"
+  },
+  {
+    "name": "bmad-cis-agent-brainstorming-coach",
+    "description": "Elite brainstorming specialist for facilitated ideation sessions. Use when the user asks to talk to Carson or requests the Brainstorming Specialist.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-agent-brainstorming-coach/SKILL.md",
+    "_source_name": "bmad-cis-agent-brainstorming-coach"
+  },
+  {
+    "name": "bmad-cis-agent-creative-problem-solver",
+    "description": "Master problem solver for systematic problem-solving methodologies. Use when the user asks to talk to Dr. Quinn or requests the Master Problem Solver.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-agent-creative-problem-solver/SKILL.md",
+    "_source_name": "bmad-cis-agent-creative-problem-solver"
+  },
+  {
+    "name": "bmad-cis-agent-design-thinking-coach",
+    "description": "Design thinking maestro for human-centered design processes. Use when the user asks to talk to Maya or requests the Design Thinking Maestro.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-agent-design-thinking-coach/SKILL.md",
+    "_source_name": "bmad-cis-agent-design-thinking-coach"
+  },
+  {
+    "name": "bmad-cis-agent-innovation-strategist",
+    "description": "Disruptive innovation oracle for business model innovation and strategic disruption. Use when the user asks to talk to Victor or requests the Disruptive Innovation Oracle.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-agent-innovation-strategist/SKILL.md",
+    "_source_name": "bmad-cis-agent-innovation-strategist"
+  },
+  {
+    "name": "bmad-cis-agent-presentation-master",
+    "description": "Visual communication and presentation expert for slide decks, pitch decks, and visual storytelling. Use when the user asks to talk to Caravaggio or requests the Presentation Expert.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-agent-presentation-master/SKILL.md",
+    "_source_name": "bmad-cis-agent-presentation-master"
+  },
+  {
+    "name": "bmad-cis-agent-storyteller",
+    "description": "Master storyteller for compelling narratives using proven frameworks. Use when the user asks to talk to Sophia or requests the Master Storyteller.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-agent-storyteller/SKILL.md",
+    "_source_name": "bmad-cis-agent-storyteller"
+  },
+  {
+    "name": "bmad-cis-design-thinking",
+    "description": "Guide human-centered design processes using empathy-driven methodologies. Use when the user says \"lets run design thinking\" or \"I want to apply design thinking\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-design-thinking/SKILL.md",
+    "_source_name": "bmad-cis-design-thinking"
+  },
+  {
+    "name": "bmad-cis-innovation-strategy",
+    "description": "Identify disruption opportunities and architect business model innovation. Use when the user says \"lets create an innovation strategy\" or \"I want to find disruption opportunities\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-innovation-strategy/SKILL.md",
+    "_source_name": "bmad-cis-innovation-strategy"
+  },
+  {
+    "name": "bmad-cis-problem-solving",
+    "description": "Apply systematic problem-solving methodologies to complex challenges. Use when the user says \"guide me through structured problem solving\" or \"I want to crack this challenge with guided problem solving techniques\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-problem-solving/SKILL.md",
+    "_source_name": "bmad-cis-problem-solving"
+  },
+  {
+    "name": "bmad-cis-storytelling",
+    "description": "Craft compelling narratives using story frameworks. Use when the user says \"help me with storytelling\" or \"I want to create a narrative through storytelling\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-cis-storytelling/SKILL.md",
+    "_source_name": "bmad-cis-storytelling"
+  },
+  {
+    "name": "bmad-code-review",
+    "description": "Review code changes adversarially using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage into actionable categories. Use when the user says \"run code review\" or \"review this code\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-code-review/SKILL.md",
+    "_source_name": "bmad-code-review"
+  },
+  {
+    "name": "bmad-correct-course",
+    "description": "Manage significant changes during sprint execution. Use when the user says \"correct course\" or \"propose sprint change\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-correct-course/SKILL.md",
+    "_source_name": "bmad-correct-course"
+  },
+  {
+    "name": "bmad-create-architecture",
+    "description": "Create architecture solution design decisions for AI agent consistency. Use when the user says \"lets create architecture\" or \"create technical architecture\" or \"create a solution design\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-create-architecture/SKILL.md",
+    "_source_name": "bmad-create-architecture"
+  },
+  {
+    "name": "bmad-create-epics-and-stories",
+    "description": "Break requirements into epics and user stories. Use when the user says \"create the epics and stories list\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-create-epics-and-stories/SKILL.md",
+    "_source_name": "bmad-create-epics-and-stories"
+  },
+  {
+    "name": "bmad-create-prd",
+    "description": "Create a PRD from scratch. Use when the user says \"lets create a product requirements document\" or \"I want to create a new PRD\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-create-prd/SKILL.md",
+    "_source_name": "bmad-create-prd"
+  },
+  {
+    "name": "bmad-create-story",
+    "description": "Creates a dedicated story file with all the context the agent will need to implement it later. Use when the user says \"create the next story\" or \"create story [story identifier]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-create-story/SKILL.md",
+    "_source_name": "bmad-create-story"
+  },
+  {
+    "name": "bmad-create-ux-design",
+    "description": "Plan UX patterns and design specifications. Use when the user says \"lets create UX design\" or \"create UX specifications\" or \"help me plan the UX\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-create-ux-design/SKILL.md",
+    "_source_name": "bmad-create-ux-design"
+  },
+  {
+    "name": "bmad-customize",
+    "description": "Authors and updates customization overrides for installed BMad skills. Use when the user says 'customize bmad', 'override a skill', 'change agent behavior', or 'customize a workflow'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-customize/SKILL.md",
+    "_source_name": "bmad-customize"
+  },
+  {
+    "name": "bmad-dev-story",
+    "description": "Execute story implementation following a context filled story spec file. Use when the user says \"dev this story [story file]\" or \"implement the next story in the sprint plan\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-dev-story/SKILL.md",
+    "_source_name": "bmad-dev-story"
+  },
+  {
+    "name": "bmad-distillator",
+    "description": "Lossless LLM-optimized compression of source documents. Use when the user requests to 'distill documents' or 'create a distillate'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-distillator/SKILL.md",
+    "_source_name": "bmad-distillator"
+  },
+  {
+    "name": "bmad-document-project",
+    "description": "Document brownfield projects for AI context. Use when the user says \"document this project\" or \"generate project docs\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-document-project/SKILL.md",
+    "_source_name": "bmad-document-project"
+  },
+  {
+    "name": "bmad-domain-research",
+    "description": "Conduct domain and industry research. Use when the user says wants to do domain research for a topic or industry",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-domain-research/SKILL.md",
+    "_source_name": "bmad-domain-research"
+  },
+  {
+    "name": "bmad-edit-prd",
+    "description": "Edit an existing PRD. Use when the user says \"edit this PRD\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-edit-prd/SKILL.md",
+    "_source_name": "bmad-edit-prd"
+  },
+  {
+    "name": "bmad-editorial-review-prose",
+    "description": "Clinical copy-editor that reviews text for communication issues. Use when user says review for prose or improve the prose",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-editorial-review-prose/SKILL.md",
+    "_source_name": "bmad-editorial-review-prose"
+  },
+  {
+    "name": "bmad-editorial-review-structure",
+    "description": "Structural editor that proposes cuts, reorganization, and simplification while preserving comprehension. Use when user requests structural review or editorial review of structure",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-editorial-review-structure/SKILL.md",
+    "_source_name": "bmad-editorial-review-structure"
+  },
+  {
+    "name": "bmad-generate-project-context",
+    "description": "Create project-context.md with AI rules. Use when the user says \"generate project context\" or \"create project context\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-generate-project-context/SKILL.md",
+    "_source_name": "bmad-generate-project-context"
+  },
+  {
+    "name": "bmad-help",
+    "description": "Analyzes current state and user query to answer BMad questions or recommend the next skill(s) to use. Use when user asks for help, bmad help, what to do next, or what to start with in BMad.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-help/SKILL.md",
+    "_source_name": "bmad-help"
+  },
+  {
+    "name": "bmad-index-docs",
+    "description": "Generates or updates an index.md to reference all docs in the folder. Use if user requests to create or update an index of all files in a specific folder",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-index-docs/SKILL.md",
+    "_source_name": "bmad-index-docs"
+  },
+  {
+    "name": "bmad-market-research",
+    "description": "Conduct market research on competition and customers. Use when the user says they need market research",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-market-research/SKILL.md",
+    "_source_name": "bmad-market-research"
+  },
+  {
+    "name": "bmad-module-builder",
+    "description": "Plans, creates, and validates BMad modules. Use when the user requests to 'ideate module', 'plan a module', 'create module', 'build a module', or 'validate module'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-module-builder/SKILL.md",
+    "_source_name": "bmad-module-builder"
+  },
+  {
+    "name": "{setup-skill-name}",
+    "description": "Sets up {module-name} module in a project. Use when the user requests to 'install {module-code} module', 'configure {module-name}', or 'setup {module-name}'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-module-builder/assets/setup-skill-template/SKILL.md",
+    "_source_name": "setup-skill-template"
+  },
+  {
+    "name": "bmad-party-mode",
+    "description": "Orchestrates group discussions between installed BMAD agents, enabling natural multi-agent conversations where each agent is a real subagent with independent thinking. Use when user requests party mode, wants multiple agent perspectives, group discussion, roundtable, or multi-agent conversation about their project.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-party-mode/SKILL.md",
+    "_source_name": "bmad-party-mode"
+  },
+  {
+    "name": "bmad-prfaq",
+    "description": "Working Backwards PRFAQ challenge to forge product concepts. Use when the user requests to 'create a PRFAQ', 'work backwards', or 'run the PRFAQ challenge'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-prfaq/SKILL.md",
+    "_source_name": "bmad-prfaq"
+  },
+  {
+    "name": "bmad-product-brief",
+    "description": "Create or update product briefs through guided or autonomous discovery. Use when the user requests to create or update a Product Brief.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-product-brief/SKILL.md",
+    "_source_name": "bmad-product-brief"
+  },
+  {
+    "name": "bmad-qa-generate-e2e-tests",
+    "description": "Generate end to end automated tests for existing features. Use when the user says \"create qa automated tests for [feature]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-qa-generate-e2e-tests/SKILL.md",
+    "_source_name": "bmad-qa-generate-e2e-tests"
+  },
+  {
+    "name": "bmad-quick-dev",
+    "description": "Implements any user intent, requirement, story, bug fix or change request by producing clean working code artifacts that follow the project's existing architecture, patterns and conventions. Use when the user wants to build, fix, tweak, refactor, add or modify any code, component or feature.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-quick-dev/SKILL.md",
+    "_source_name": "bmad-quick-dev"
+  },
+  {
+    "name": "bmad-retrospective",
+    "description": "Post-epic review to extract lessons and assess success. Use when the user says \"run a retrospective\" or \"lets retro the epic [epic]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-retrospective/SKILL.md",
+    "_source_name": "bmad-retrospective"
+  },
+  {
+    "name": "bmad-review-adversarial-general",
+    "description": "Perform a Cynical Review and produce a findings report. Use when the user requests a critical review of something",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-review-adversarial-general/SKILL.md",
+    "_source_name": "bmad-review-adversarial-general"
+  },
+  {
+    "name": "bmad-review-edge-case-hunter",
+    "description": "Walk every branching path and boundary condition in content, report only unhandled edge cases. Orthogonal to adversarial review - method-driven not attitude-driven. Use when you need exhaustive edge-case analysis of code, specs, or diffs.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-review-edge-case-hunter/SKILL.md",
+    "_source_name": "bmad-review-edge-case-hunter"
+  },
+  {
+    "name": "bmad-shard-doc",
+    "description": "Splits large markdown documents into smaller, organized files based on level 2 (default) sections. Use if the user says perform shard document",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-shard-doc/SKILL.md",
+    "_source_name": "bmad-shard-doc"
+  },
+  {
+    "name": "bmad-sprint-planning",
+    "description": "Generate sprint status tracking from epics. Use when the user says \"run sprint planning\" or \"generate sprint plan\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-sprint-planning/SKILL.md",
+    "_source_name": "bmad-sprint-planning"
+  },
+  {
+    "name": "bmad-sprint-status",
+    "description": "Summarize sprint status and surface risks. Use when the user says \"check sprint status\" or \"show sprint status\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-sprint-status/SKILL.md",
+    "_source_name": "bmad-sprint-status"
+  },
+  {
+    "name": "bmad-tea",
+    "description": "Master Test Architect and Quality Advisor. Use when the user asks to talk to Murat or requests the Test Architect.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-tea/SKILL.md",
+    "_source_name": "bmad-tea"
+  },
+  {
+    "name": "bmad-teach-me-testing",
+    "description": "Teach testing progressively through structured sessions. Use when user says \"lets learn testing\" or \"I want to study test practices\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-teach-me-testing/SKILL.md",
+    "_source_name": "bmad-teach-me-testing"
+  },
+  {
+    "name": "bmad-technical-research",
+    "description": "Conduct technical research on technologies and architecture. Use when the user says they would like to do or produce a technical research report",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-technical-research/SKILL.md",
+    "_source_name": "bmad-technical-research"
+  },
+  {
+    "name": "bmad-testarch-atdd",
+    "description": "Generate red-phase acceptance test scaffolds using the TDD cycle. Use when the user says \"lets write acceptance tests\" or \"I want to do ATDD\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-atdd/SKILL.md",
+    "_source_name": "bmad-testarch-atdd"
+  },
+  {
+    "name": "bmad-testarch-automate",
+    "description": "Expand test automation coverage for codebase. Use when user says \"lets expand test coverage\" or \"I want to automate tests\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-automate/SKILL.md",
+    "_source_name": "bmad-testarch-automate"
+  },
+  {
+    "name": "bmad-testarch-ci",
+    "description": "Scaffold CI/CD quality pipeline with test execution. Use when the user says \"lets setup CI pipeline\" or \"I want to create quality gates\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-ci/SKILL.md",
+    "_source_name": "bmad-testarch-ci"
+  },
+  {
+    "name": "bmad-testarch-framework",
+    "description": "Initialize test framework with Playwright or Cypress. Use when the user says \"lets setup test framework\" or \"I want to initialize testing framework\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-framework/SKILL.md",
+    "_source_name": "bmad-testarch-framework"
+  },
+  {
+    "name": "bmad-testarch-nfr",
+    "description": "Assess NFRs like performance security and reliability. Use when the user says \"lets assess NFRs\" or \"I want to evaluate non-functional requirements\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-nfr/SKILL.md",
+    "_source_name": "bmad-testarch-nfr"
+  },
+  {
+    "name": "bmad-testarch-test-design",
+    "description": "Create system-level or epic-level test plans. Use when the user says \"lets design test plan\" or \"I want to create test strategy\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-test-design/SKILL.md",
+    "_source_name": "bmad-testarch-test-design"
+  },
+  {
+    "name": "bmad-testarch-test-review",
+    "description": "Review test quality using best practices validation. Use when user says \"lets review tests\" or \"I want to evaluate test quality\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-test-review/SKILL.md",
+    "_source_name": "bmad-testarch-test-review"
+  },
+  {
+    "name": "bmad-testarch-trace",
+    "description": "Generate traceability matrix and quality gate decision. Use when the user says \"lets create traceability matrix\" or \"I want to analyze test coverage\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-testarch-trace/SKILL.md",
+    "_source_name": "bmad-testarch-trace"
+  },
+  {
+    "name": "bmad-validate-prd",
+    "description": "Validate a PRD against standards. Use when the user says \"validate this PRD\" or \"run PRD validation\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-validate-prd/SKILL.md",
+    "_source_name": "bmad-validate-prd"
+  },
+  {
+    "name": "bmad-workflow-builder",
+    "description": "Builds, converts, and analyzes workflows and skills. Use when the user requests to \"build a workflow\", \"modify a workflow\", \"quality check workflow\", \"analyze skill\", or \"convert a skill\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/bmad-workflow-builder/SKILL.md",
+    "_source_name": "bmad-workflow-builder"
+  },
+  {
+    "name": "gds-agent-game-architect",
+    "description": "Game systems architect for technical architecture, engine design, and infrastructure. Use when the user asks to talk to Cloud Dragonborn or requests the Game Architect.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-agent-game-architect/SKILL.md",
+    "_source_name": "gds-agent-game-architect"
+  },
+  {
+    "name": "gds-agent-game-designer",
+    "description": "Game designer for creative vision, GDD creation, and narrative design. Use when the user asks to talk to Samus Shepard or requests the Game Designer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-agent-game-designer/SKILL.md",
+    "_source_name": "gds-agent-game-designer"
+  },
+  {
+    "name": "gds-agent-game-dev",
+    "description": "Consolidated game developer for story execution, code implementation, code review, QA/test authorship, and sprint orchestration. Use when the user asks to talk to Link Freeman, the Game Developer, the Game QA, or the Game Scrum Master.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-agent-game-dev/SKILL.md",
+    "_source_name": "gds-agent-game-dev"
+  },
+  {
+    "name": "gds-agent-game-solo-dev",
+    "description": "Elite indie game developer for rapid prototyping and solo quick-flow development. Use when the user asks to talk to Indie or requests the Game Solo Dev.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-agent-game-solo-dev/SKILL.md",
+    "_source_name": "gds-agent-game-solo-dev"
+  },
+  {
+    "name": "gds-agent-tech-writer",
+    "description": "Technical documentation specialist and knowledge curator for game projects. Use when the user asks to talk to Paige or requests the Technical Writer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-agent-tech-writer/SKILL.md",
+    "_source_name": "gds-agent-tech-writer"
+  },
+  {
+    "name": "gds-brainstorm-game",
+    "description": "Facilitate game brainstorming sessions with game-specific techniques. Use when the user says \"brainstorm game\" or \"game ideas\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-brainstorm-game/SKILL.md",
+    "_source_name": "gds-brainstorm-game"
+  },
+  {
+    "name": "gds-check-implementation-readiness",
+    "description": "Verify GDD, UX, Architecture, and Epics alignment before production. Use when the user says \"check readiness\" or \"implementation readiness\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-check-implementation-readiness/SKILL.md",
+    "_source_name": "gds-check-implementation-readiness"
+  },
+  {
+    "name": "gds-code-review",
+    "description": "Review code changes adversarially using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage into actionable categories. Use when the user says \"run code review\" or \"review this code\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-code-review/SKILL.md",
+    "_source_name": "gds-code-review"
+  },
+  {
+    "name": "gds-correct-course",
+    "description": "Manage significant changes during sprint execution. Use when the user says \"correct course\" or \"propose sprint change\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-correct-course/SKILL.md",
+    "_source_name": "gds-correct-course"
+  },
+  {
+    "name": "gds-create-epics-and-stories",
+    "description": "Create Epics and Stories from GDD requirements for development. Use when the user says \"create epics\" or \"create stories\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-epics-and-stories/SKILL.md",
+    "_source_name": "gds-create-epics-and-stories"
+  },
+  {
+    "name": "gds-create-game-brief",
+    "description": "Interactive game brief creation guiding users through defining their game vision. Use when the user says \"game brief\" or \"create brief\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-game-brief/SKILL.md",
+    "_source_name": "gds-create-game-brief"
+  },
+  {
+    "name": "gds-create-gdd",
+    "description": "Create Game Design Documents with mechanics and implementation guidance. Use when the user says \"create GDD\" or \"game design document\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-gdd/SKILL.md",
+    "_source_name": "gds-create-gdd"
+  },
+  {
+    "name": "gds-create-narrative",
+    "description": "Create comprehensive narrative documentation with story structure and world-building. Use when the user says \"narrative design\" or \"create narrative\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-narrative/SKILL.md",
+    "_source_name": "gds-create-narrative"
+  },
+  {
+    "name": "gds-create-prd",
+    "description": "Create a PRD from a GDD or from scratch, for use with external tools like bmad-assist. Use when the user says \"create a PRD\" or \"I want to create a new product requirements document\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-prd/SKILL.md",
+    "_source_name": "gds-create-prd"
+  },
+  {
+    "name": "gds-create-story",
+    "description": "Creates a dedicated story file with all the context the agent will need to implement it later. Use when the user says \"create the next story\" or \"create story [story identifier]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-story/SKILL.md",
+    "_source_name": "gds-create-story"
+  },
+  {
+    "name": "gds-create-ux-design",
+    "description": "Plan UX patterns and design specifications for game UI/HUD elements. Use when the user says \"lets create UX design\" or \"create UX specifications\" or \"help me plan the game UX\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-create-ux-design/SKILL.md",
+    "_source_name": "gds-create-ux-design"
+  },
+  {
+    "name": "gds-dev-story",
+    "description": "Execute story implementation following a context filled story spec file. Use when the user says \"dev this story [story file]\" or \"implement the next story in the sprint plan\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-dev-story/SKILL.md",
+    "_source_name": "gds-dev-story"
+  },
+  {
+    "name": "gds-document-project",
+    "description": "Analyze existing game projects to produce useful documentation. Use when the user says \"document project\" or \"generate docs\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-document-project/SKILL.md",
+    "_source_name": "gds-document-project"
+  },
+  {
+    "name": "gds-domain-research",
+    "description": "Conduct game domain and industry research. Use when the user says \"lets create a research report on [game domain or industry]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-domain-research/SKILL.md",
+    "_source_name": "gds-domain-research"
+  },
+  {
+    "name": "gds-e2e-scaffold",
+    "description": "Scaffold end-to-end testing infrastructure. Use when the user says \"e2e scaffold\" or \"set up e2e testing\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-e2e-scaffold/SKILL.md",
+    "_source_name": "gds-e2e-scaffold"
+  },
+  {
+    "name": "gds-edit-gdd",
+    "description": "Edit an existing Game Design Document. Use when the user says \"edit this GDD\" or \"improve this GDD\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-edit-gdd/SKILL.md",
+    "_source_name": "gds-edit-gdd"
+  },
+  {
+    "name": "gds-edit-prd",
+    "description": "Edit an existing PRD. Use when the user says \"edit this PRD\" or \"improve this PRD\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-edit-prd/SKILL.md",
+    "_source_name": "gds-edit-prd"
+  },
+  {
+    "name": "gds-game-architecture",
+    "description": "Design scale-adaptive game architecture with engine systems and networking. Use when the user says \"game architecture\" or \"design architecture\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-game-architecture/SKILL.md",
+    "_source_name": "gds-game-architecture"
+  },
+  {
+    "name": "gds-generate-project-context",
+    "description": "Create optimized project-context.md for AI agent consistency. Use when the user says \"project context\" or \"generate context\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-generate-project-context/SKILL.md",
+    "_source_name": "gds-generate-project-context"
+  },
+  {
+    "name": "gds-performance-test",
+    "description": "Design game performance testing strategy. Use when the user says \"performance test\" or \"benchmark\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-performance-test/SKILL.md",
+    "_source_name": "gds-performance-test"
+  },
+  {
+    "name": "gds-playtest-plan",
+    "description": "Create structured playtesting plans for user feedback. Use when the user says \"playtest plan\" or \"playtesting\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-playtest-plan/SKILL.md",
+    "_source_name": "gds-playtest-plan"
+  },
+  {
+    "name": "gds-quick-dev",
+    "description": "Implements any user intent, requirement, story, bug fix or change request by producing clean working code artifacts that follow the project's existing architecture, patterns and conventions. Use when the user wants to build, fix, tweak, refactor, add or modify any code, component or feature.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-quick-dev/SKILL.md",
+    "_source_name": "gds-quick-dev"
+  },
+  {
+    "name": "gds-retrospective",
+    "description": "Post-epic review to extract lessons and assess success. Use when the user says \"run a retrospective\" or \"lets retro the epic [epic]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-retrospective/SKILL.md",
+    "_source_name": "gds-retrospective"
+  },
+  {
+    "name": "gds-sprint-planning",
+    "description": "Generate sprint status tracking from epics. Use when the user says \"run sprint planning\" or \"generate sprint plan\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-sprint-planning/SKILL.md",
+    "_source_name": "gds-sprint-planning"
+  },
+  {
+    "name": "gds-sprint-status",
+    "description": "Summarize sprint status and surface risks. Use when the user says \"check sprint status\" or \"show sprint status\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-sprint-status/SKILL.md",
+    "_source_name": "gds-sprint-status"
+  },
+  {
+    "name": "gds-test-automate",
+    "description": "Generate automated game tests for gameplay systems. Use when the user says \"automate tests\" or \"generate tests\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-test-automate/SKILL.md",
+    "_source_name": "gds-test-automate"
+  },
+  {
+    "name": "gds-test-design",
+    "description": "Create comprehensive game test scenarios. Use when the user says \"test design\" or \"design tests\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-test-design/SKILL.md",
+    "_source_name": "gds-test-design"
+  },
+  {
+    "name": "gds-test-framework",
+    "description": "Initialize game test framework for Unity, Unreal, or Godot. Use when the user says \"test framework\" or \"set up testing\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-test-framework/SKILL.md",
+    "_source_name": "gds-test-framework"
+  },
+  {
+    "name": "gds-test-review",
+    "description": "Review test quality and coverage. Use when the user says \"test review\" or \"review tests\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-test-review/SKILL.md",
+    "_source_name": "gds-test-review"
+  },
+  {
+    "name": "gds-validate-gdd",
+    "description": "Validate a GDD against standards. Use when the user says \"validate this GDD\" or \"run GDD validation\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-validate-gdd/SKILL.md",
+    "_source_name": "gds-validate-gdd"
+  },
+  {
+    "name": "gds-validate-prd",
+    "description": "Validate a PRD against standards for external tool compatibility. Use when the user says \"validate this PRD\" or \"run PRD validation\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/all-skills/gds-validate-prd/SKILL.md",
+    "_source_name": "gds-validate-prd"
+  },
+  {
+    "name": "bmad-doc-sync",
+    "description": "在 BMad 工作流中同步 Epics/Stories 文档与实际实现。检测并修复文档漂移——避免\"文档说A，代码做B\"的不一致状态。",
+    "version": "1.0.0",
+    "triggers": [
+      "同步文档",
+      "文档漂移",
+      "文档不一致",
+      "doc sync",
+      "implementation drift",
+      "文档审计",
+      "sync docs",
+      "更新文档",
+      "提交仓库"
+    ],
+    "author": "Emma (小喵)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "bmad-method",
+          "documentation",
+          "epic",
+          "story",
+          "sync",
+          "implementation-drift"
+        ],
+        "category": "bmad-method",
+        "skill_type": "workflow",
+        "design_pattern": "verification"
+      }
+    },
+    "category": "bmad-method",
+    "_source_path": "bmad-method/bmad-doc-sync/SKILL.md",
+    "_source_name": "bmad-doc-sync"
+  },
+  {
+    "name": "bmad-advanced-elicitation",
+    "description": "Push the LLM to reconsider, refine, and improve its recent output. Use when user asks for deeper critique or mentions a known deeper critique method, e.g. socratic, first principles, pre-mortem, red team.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-advanced-elicitation/SKILL.md",
+    "_source_name": "bmad-advanced-elicitation"
+  },
+  {
+    "name": "bmad-agent-analyst",
+    "description": "Strategic business analyst and requirements expert. Use when the user asks to talk to Mary or requests the business analyst.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-agent-analyst/SKILL.md",
+    "_source_name": "bmad-agent-analyst"
+  },
+  {
+    "name": "bmad-agent-architect",
+    "description": "System architect and technical design leader. Use when the user asks to talk to Winston or requests the architect.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-agent-architect/SKILL.md",
+    "_source_name": "bmad-agent-architect"
+  },
+  {
+    "name": "bmad-agent-dev",
+    "description": "Senior software engineer for story execution and code implementation. Use when the user asks to talk to Amelia or requests the developer agent.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-agent-dev/SKILL.md",
+    "_source_name": "bmad-agent-dev"
+  },
+  {
+    "name": "bmad-agent-pm",
+    "description": "Product manager for PRD creation and requirements discovery. Use when the user asks to talk to John or requests the product manager.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-agent-pm/SKILL.md",
+    "_source_name": "bmad-agent-pm"
+  },
+  {
+    "name": "bmad-agent-tech-writer",
+    "description": "Technical documentation specialist and knowledge curator. Use when the user asks to talk to Paige or requests the tech writer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-agent-tech-writer/SKILL.md",
+    "_source_name": "bmad-agent-tech-writer"
+  },
+  {
+    "name": "bmad-agent-ux-designer",
+    "description": "UX designer and UI specialist. Use when the user asks to talk to Sally or requests the UX designer.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-agent-ux-designer/SKILL.md",
+    "_source_name": "bmad-agent-ux-designer"
+  },
+  {
+    "name": "bmad-brainstorming",
+    "description": "Facilitate interactive brainstorming sessions using diverse creative techniques and ideation methods. Use when the user says help me brainstorm or help me ideate.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-brainstorming/SKILL.md",
+    "_source_name": "bmad-brainstorming"
+  },
+  {
+    "name": "bmad-check-implementation-readiness",
+    "description": "Validate PRD, UX, Architecture and Epics specs are complete. Use when the user says \"check implementation readiness\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-check-implementation-readiness/SKILL.md",
+    "_source_name": "bmad-check-implementation-readiness"
+  },
+  {
+    "name": "bmad-checkpoint-preview",
+    "description": "LLM-assisted human-in-the-loop review. Make sense of a change, focus attention where it matters, test. Use when the user says \"checkpoint\", \"human review\", or \"walk me through this change\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-checkpoint-preview/SKILL.md",
+    "_source_name": "bmad-checkpoint-preview"
+  },
+  {
+    "name": "bmad-code-review",
+    "description": "Review code changes adversarially using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage into actionable categories. Use when the user says \"run code review\" or \"review this code\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-code-review/SKILL.md",
+    "_source_name": "bmad-code-review"
+  },
+  {
+    "name": "bmad-correct-course",
+    "description": "Manage significant changes during sprint execution. Use when the user says \"correct course\" or \"propose sprint change\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-correct-course/SKILL.md",
+    "_source_name": "bmad-correct-course"
+  },
+  {
+    "name": "bmad-create-architecture",
+    "description": "Create architecture solution design decisions for AI agent consistency. Use when the user says \"lets create architecture\" or \"create technical architecture\" or \"create a solution design\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-create-architecture/SKILL.md",
+    "_source_name": "bmad-create-architecture"
+  },
+  {
+    "name": "bmad-create-epics-and-stories",
+    "description": "Break requirements into epics and user stories. Use when the user says \"create the epics and stories list\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-create-epics-and-stories/SKILL.md",
+    "_source_name": "bmad-create-epics-and-stories"
+  },
+  {
+    "name": "bmad-create-prd",
+    "description": "Create a PRD from scratch. Use when the user says \"lets create a product requirements document\" or \"I want to create a new PRD\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-create-prd/SKILL.md",
+    "_source_name": "bmad-create-prd"
+  },
+  {
+    "name": "bmad-create-story",
+    "description": "Creates a dedicated story file with all the context the agent will need to implement it later. Use when the user says \"create the next story\" or \"create story [story identifier]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-create-story/SKILL.md",
+    "_source_name": "bmad-create-story"
+  },
+  {
+    "name": "bmad-create-ux-design",
+    "description": "Plan UX patterns and design specifications. Use when the user says \"lets create UX design\" or \"create UX specifications\" or \"help me plan the UX\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-create-ux-design/SKILL.md",
+    "_source_name": "bmad-create-ux-design"
+  },
+  {
+    "name": "bmad-customize",
+    "description": "Authors and updates customization overrides for installed BMad skills. Use when the user says 'customize bmad', 'override a skill', 'change agent behavior', or 'customize a workflow'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-customize/SKILL.md",
+    "_source_name": "bmad-customize"
+  },
+  {
+    "name": "bmad-dev-story",
+    "description": "Execute story implementation following a context filled story spec file. Use when the user says \"dev this story [story file]\" or \"implement the next story in the sprint plan\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-dev-story/SKILL.md",
+    "_source_name": "bmad-dev-story"
+  },
+  {
+    "name": "bmad-distillator",
+    "description": "Lossless LLM-optimized compression of source documents. Use when the user requests to 'distill documents' or 'create a distillate'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-distillator/SKILL.md",
+    "_source_name": "bmad-distillator"
+  },
+  {
+    "name": "bmad-document-project",
+    "description": "Document brownfield projects for AI context. Use when the user says \"document this project\" or \"generate project docs\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-document-project/SKILL.md",
+    "_source_name": "bmad-document-project"
+  },
+  {
+    "name": "bmad-domain-research",
+    "description": "Conduct domain and industry research. Use when the user says wants to do domain research for a topic or industry",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-domain-research/SKILL.md",
+    "_source_name": "bmad-domain-research"
+  },
+  {
+    "name": "bmad-edit-prd",
+    "description": "Edit an existing PRD. Use when the user says \"edit this PRD\".",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-edit-prd/SKILL.md",
+    "_source_name": "bmad-edit-prd"
+  },
+  {
+    "name": "bmad-editorial-review-prose",
+    "description": "Clinical copy-editor that reviews text for communication issues. Use when user says review for prose or improve the prose",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-editorial-review-prose/SKILL.md",
+    "_source_name": "bmad-editorial-review-prose"
+  },
+  {
+    "name": "bmad-editorial-review-structure",
+    "description": "Structural editor that proposes cuts, reorganization, and simplification while preserving comprehension. Use when user requests structural review or editorial review of structure",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-editorial-review-structure/SKILL.md",
+    "_source_name": "bmad-editorial-review-structure"
+  },
+  {
+    "name": "bmad-generate-project-context",
+    "description": "Create project-context.md with AI rules. Use when the user says \"generate project context\" or \"create project context\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-generate-project-context/SKILL.md",
+    "_source_name": "bmad-generate-project-context"
+  },
+  {
+    "name": "bmad-help",
+    "description": "Analyzes current state and user query to answer BMad questions or recommend the next skill(s) to use. Use when user asks for help, bmad help, what to do next, or what to start with in BMad.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-help/SKILL.md",
+    "_source_name": "bmad-help"
+  },
+  {
+    "name": "bmad-index-docs",
+    "description": "Generates or updates an index.md to reference all docs in the folder. Use if user requests to create or update an index of all files in a specific folder",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-index-docs/SKILL.md",
+    "_source_name": "bmad-index-docs"
+  },
+  {
+    "name": "bmad-market-research",
+    "description": "Conduct market research on competition and customers. Use when the user says they need market research",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-market-research/SKILL.md",
+    "_source_name": "bmad-market-research"
+  },
+  {
+    "name": "bmad-party-mode",
+    "description": "Orchestrates group discussions between installed BMAD agents, enabling natural multi-agent conversations where each agent is a real subagent with independent thinking. Use when user requests party mode, wants multiple agent perspectives, group discussion, roundtable, or multi-agent conversation about their project.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-party-mode/SKILL.md",
+    "_source_name": "bmad-party-mode"
+  },
+  {
+    "name": "bmad-prfaq",
+    "description": "Working Backwards PRFAQ challenge to forge product concepts. Use when the user requests to 'create a PRFAQ', 'work backwards', or 'run the PRFAQ challenge'.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-prfaq/SKILL.md",
+    "_source_name": "bmad-prfaq"
+  },
+  {
+    "name": "bmad-product-brief",
+    "description": "Create or update product briefs through guided or autonomous discovery. Use when the user requests to create or update a Product Brief.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-product-brief/SKILL.md",
+    "_source_name": "bmad-product-brief"
+  },
+  {
+    "name": "bmad-qa-generate-e2e-tests",
+    "description": "Generate end to end automated tests for existing features. Use when the user says \"create qa automated tests for [feature]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-qa-generate-e2e-tests/SKILL.md",
+    "_source_name": "bmad-qa-generate-e2e-tests"
+  },
+  {
+    "name": "bmad-quick-dev",
+    "description": "Implements any user intent, requirement, story, bug fix or change request by producing clean working code artifacts that follow the project's existing architecture, patterns and conventions. Use when the user wants to build, fix, tweak, refactor, add or modify any code, component or feature.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-quick-dev/SKILL.md",
+    "_source_name": "bmad-quick-dev"
+  },
+  {
+    "name": "bmad-retrospective",
+    "description": "Post-epic review to extract lessons and assess success. Use when the user says \"run a retrospective\" or \"lets retro the epic [epic]\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-retrospective/SKILL.md",
+    "_source_name": "bmad-retrospective"
+  },
+  {
+    "name": "bmad-review-adversarial-general",
+    "description": "Perform a Cynical Review and produce a findings report. Use when the user requests a critical review of something",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-review-adversarial-general/SKILL.md",
+    "_source_name": "bmad-review-adversarial-general"
+  },
+  {
+    "name": "bmad-review-edge-case-hunter",
+    "description": "Walk every branching path and boundary condition in content, report only unhandled edge cases. Orthogonal to adversarial review - method-driven not attitude-driven. Use when you need exhaustive edge-case analysis of code, specs, or diffs.",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-review-edge-case-hunter/SKILL.md",
+    "_source_name": "bmad-review-edge-case-hunter"
+  },
+  {
+    "name": "bmad-shard-doc",
+    "description": "Splits large markdown documents into smaller, organized files based on level 2 (default) sections. Use if the user says perform shard document",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-shard-doc/SKILL.md",
+    "_source_name": "bmad-shard-doc"
+  },
+  {
+    "name": "bmad-sprint-planning",
+    "description": "Generate sprint status tracking from epics. Use when the user says \"run sprint planning\" or \"generate sprint plan\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-sprint-planning/SKILL.md",
+    "_source_name": "bmad-sprint-planning"
+  },
+  {
+    "name": "bmad-sprint-status",
+    "description": "Summarize sprint status and surface risks. Use when the user says \"check sprint status\" or \"show sprint status\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-sprint-status/SKILL.md",
+    "_source_name": "bmad-sprint-status"
+  },
+  {
+    "name": "bmad-technical-research",
+    "description": "Conduct technical research on technologies and architecture. Use when the user says they would like to do or produce a technical research report",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-technical-research/SKILL.md",
+    "_source_name": "bmad-technical-research"
+  },
+  {
+    "name": "bmad-validate-prd",
+    "description": "Validate a PRD against standards. Use when the user says \"validate this PRD\" or \"run PRD validation\"",
+    "category": "bmad-method",
+    "_source_path": "bmad-method/workflows/bmad-validate-prd/SKILL.md",
+    "_source_name": "bmad-validate-prd"
+  },
+  {
+    "name": "bmad-party-mode-orchestration",
+    "description": "BMAD 多智能体编排指南。详解如何使用 Party Mode 并行 Spawn Subagent、动态路由上下文、以及进行上下文压缩。适用于需要多视角分析、复杂问题研讨或模拟专家会议的场景。",
+    "version": "1.0.0",
+    "triggers": [
+      "BMAD Party Mode",
+      "多智能体协作",
+      "并行 Subagent",
+      "Agent 编排",
+      "上下文压缩",
+      "专家会议",
+      "模拟讨论"
+    ],
+    "author": "小玛",
+    "license": "MIT",
+    "allowed-tools": [
+      "terminal",
+      "delegate_task"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "bmad",
+          "multi-agent",
+          "orchestration",
+          "party-mode"
+        ],
+        "category": "devops",
+        "skill_type": "Tool Wrapper"
+      }
+    },
+    "category": "bmad-party-mode-orchestration",
+    "_source_path": "bmad-party-mode-orchestration/SKILL.md",
+    "_source_name": "bmad-party-mode-orchestration"
+  },
+  {
+    "name": "clash-config",
+    "description": "Clash / mihomo 代理工具配置管理技能。涵盖配置格式、代理协议、代理组、路由规则、\nDNS 设置、TUN 模式、代理提供者等完整配置参考。...",
+    "version": "2.1.0",
+    "triggers": [
+      "clash config",
+      "clash-config"
+    ],
+    "author": "小喵",
+    "license": "MIT",
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "proxy",
+          "clash",
+          "mihomo",
+          "network",
+          "config",
+          "vpn"
+        ],
+        "category": "devops",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper",
+        "related_skills": [
+          "web-access",
+          "browser-automation"
+        ]
+      }
+    },
+    "category": "clash-config",
+    "_source_path": "clash-config/SKILL.md",
+    "_source_name": "clash-config"
+  },
+  {
+    "name": "commit-quality-check",
+    "description": "GitHub 项目提交前文档与业务一致性检查 + 提交质量检查清单。涵盖 Conventional Commits 规范验证、安全红线扫描、文档一致性检查、变更范围评估。适用于任何需要做 git commit 或 PR 前自检的场景。",
+    "version": "1.1.0",
+    "triggers": [
+      "提交检查",
+      "提交质量",
+      "commit check",
+      "一致性检查",
+      "提交前检查",
+      "pre-commit",
+      "审查提交",
+      "代码审查前检查",
+      "提交规范",
+      "commitlint",
+      "质量门禁",
+      "代码审查前自检",
+      "pre-push"
+    ],
+    "author": "Emma (小喵)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "commit",
+          "quality",
+          "review",
+          "consistency",
+          "security",
+          "conventional-commits",
+          "pre-commit",
+          "git-hooks"
+        ],
+        "category": "software-development",
+        "skill_type": "reviewer",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "commit-quality-check",
+    "_source_path": "commit-quality-check/SKILL.md",
+    "_source_name": "commit-quality-check"
+  },
+  {
+    "name": "architecture-diagram",
+    "description": "Generate dark-themed SVG diagrams of software systems and cloud infrastruct...",
+    "version": "1.0.0",
+    "triggers": [
+      "architecture diagram",
+      "architecture-diagram"
+    ],
+    "author": "Cocoon AI (hello@cocoon-ai.com), ported by Hermes Agent",
+    "license": "MIT",
+    "dependencies": [],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "architecture",
+          "diagrams",
+          "SVG",
+          "HTML",
+          "visualization",
+          "infrastructure",
+          "cloud"
+        ],
+        "related_skills": [
+          "concept-diagrams",
+          "excalidraw"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/architecture-diagram/SKILL.md",
+    "_source_name": "architecture-diagram"
+  },
+  {
+    "name": "ascii-art",
+    "description": "Generate ASCII art using pyfiglet (571 fonts), cowsay, boxes, toilet, image...",
+    "version": "4.0.0",
+    "triggers": [
+      "ascii art",
+      "ascii-art"
+    ],
+    "author": "0xbyt4, Hermes Agent",
+    "license": "MIT",
+    "dependencies": [],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "ASCII",
+          "Art",
+          "Banners",
+          "Creative",
+          "Unicode",
+          "Text-Art",
+          "pyfiglet",
+          "figlet",
+          "cowsay",
+          "boxes"
+        ],
+        "related_skills": [
+          "excalidraw"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/ascii-art/SKILL.md",
+    "_source_name": "ascii-art"
+  },
+  {
+    "name": "ascii-video",
+    "description": "Production pipeline for ASCII art video — any format. Converts video/audio/...",
+    "triggers": [
+      "ascii video",
+      "ascii-video"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/ascii-video/SKILL.md",
+    "_source_name": "ascii-video"
+  },
+  {
+    "name": "baoyu-comic",
+    "description": "Knowledge comics (知识漫画): educational, biography, tutorial.",
+    "version": "1.56.1",
+    "author": "宝玉 (JimLiu)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "comic",
+          "knowledge-comic",
+          "creative",
+          "image-generation"
+        ],
+        "homepage": "https://github.com/JimLiu/baoyu-skills#baoyu-comic"
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/baoyu-comic/SKILL.md",
+    "_source_name": "baoyu-comic"
+  },
+  {
+    "name": "baoyu-infographic",
+    "description": "Generate professional infographics with 21 layout types and 21 visual style...",
+    "version": "1.56.1",
+    "triggers": [
+      "baoyu infographic",
+      "baoyu-infographic"
+    ],
+    "author": "宝玉 (JimLiu)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "infographic",
+          "visual-summary",
+          "creative",
+          "image-generation"
+        ],
+        "homepage": "https://github.com/JimLiu/baoyu-skills#baoyu-infographic"
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/baoyu-infographic/SKILL.md",
+    "_source_name": "baoyu-infographic"
+  },
+  {
+    "name": "claude-design",
+    "description": "Design one-off HTML artifacts (landing, deck, prototype).",
+    "version": "1.0.0",
+    "author": "BadTechBandit",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "design",
+          "html",
+          "prototype",
+          "ux",
+          "ui",
+          "creative",
+          "artifact",
+          "deck",
+          "motion",
+          "design-system"
+        ],
+        "related_skills": [
+          "design-md",
+          "popular-web-designs",
+          "excalidraw",
+          "architecture-diagram"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/claude-design/SKILL.md",
+    "_source_name": "claude-design"
+  },
+  {
+    "name": "comfyui",
+    "description": "Generate images, video, and audio with ComfyUI — install, launch, manage nodes/models, run workflows with parameter injection. Uses the official comfy-cli for lifecycle and direct REST/WebSocket API for execution.",
+    "version": "5.0.0",
+    "author": [
+      "kshitijk4poor",
+      "alt-glitch"
+    ],
+    "license": "MIT",
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ],
+    "compatibility": "Requires ComfyUI (local, Comfy Desktop, or Comfy Cloud) and comfy-cli (auto-installed via pipx/uvx by the setup script).",
+    "prerequisites": {
+      "commands": [
+        "python3"
+      ]
+    },
+    "setup": {
+      "help": "Run scripts/hardware_check.py FIRST to decide local vs Comfy Cloud; then scripts/comfyui_setup.sh auto-installs locally (or use Cloud API key for platform.comfy.org)."
+    },
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "comfyui",
+          "image-generation",
+          "stable-diffusion",
+          "flux",
+          "sd3",
+          "wan-video",
+          "hunyuan-video",
+          "creative",
+          "generative-ai",
+          "video-generation"
+        ],
+        "related_skills": [
+          "stable-diffusion-image-generation",
+          "image_gen"
+        ],
+        "category": "creative"
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/comfyui/SKILL.md",
+    "_source_name": "comfyui"
+  },
+  {
+    "name": "ideation",
+    "description": "Generate project ideas through creative constraints. Use when the user says...",
+    "version": "1.0.0",
+    "triggers": [
+      "ideation",
+      "creative-ideation",
+      "头脑风暴",
+      "创意生成",
+      "点子",
+      "灵感"
+    ],
+    "title": "Creative Ideation — Constraint-Driven Project Generation",
+    "author": "SHL0MS",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Creative",
+          "Ideation",
+          "Projects",
+          "Brainstorming",
+          "Inspiration"
+        ],
+        "category": "creative",
+        "requires_toolsets": []
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/creative-ideation/SKILL.md",
+    "_source_name": "creative-ideation"
+  },
+  {
+    "name": "design-md",
+    "description": "Author/validate/export Google's DESIGN.md token spec files.",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "design",
+          "design-system",
+          "tokens",
+          "ui",
+          "accessibility",
+          "wcag",
+          "tailwind",
+          "dtcg",
+          "google"
+        ],
+        "related_skills": [
+          "popular-web-designs",
+          "claude-design",
+          "excalidraw",
+          "architecture-diagram"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/design-md/SKILL.md",
+    "_source_name": "design-md"
+  },
+  {
+    "name": "excalidraw",
+    "description": "Create hand-drawn style diagrams using Excalidraw JSON format. Generate .ex...",
+    "version": "1.0.0",
+    "triggers": [
+      "excalidraw",
+      "excalidraw"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "dependencies": [],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Excalidraw",
+          "Diagrams",
+          "Flowcharts",
+          "Architecture",
+          "Visualization",
+          "JSON"
+        ],
+        "related_skills": []
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/excalidraw/SKILL.md",
+    "_source_name": "excalidraw"
+  },
+  {
+    "name": "humanizer",
+    "description": "Humanize text: strip AI-isms and add real voice.",
+    "version": "2.5.1",
+    "author": "Siqi Chen (@blader, https://github.com/blader/humanizer), ported by Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "writing",
+          "editing",
+          "humanize",
+          "anti-ai-slop",
+          "voice",
+          "prose",
+          "text"
+        ],
+        "category": "creative",
+        "homepage": "https://github.com/blader/humanizer",
+        "related_skills": [
+          "songwriting-and-ai-music"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/humanizer/SKILL.md",
+    "_source_name": "humanizer"
+  },
+  {
+    "name": "image-to-image-guide",
+    "description": "按已知信息生图的完整指南 — IP-Adapter + ControlNet 组合、17 种 ControlNet 模型分类、固定角色大法、风格迁移工作流。涵盖从参考图生成新图的全流程，解决 AI 绘图随机性太强的问题。",
+    "version": "1.0.0",
+    "triggers": [
+      "按已知信息生图",
+      "图生图",
+      "ControlNet",
+      "IP-Adapter",
+      "风格迁移",
+      "固定角色",
+      "参考图生图",
+      "姿势控制",
+      "线稿上色",
+      "角色一致性",
+      "image-to-image",
+      "参考图",
+      "原图生新图"
+    ],
+    "depends_on": [
+      "image-prompt-guide"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "browser_navigate",
+      "browser_snapshot"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "image-generation",
+          "controlnet",
+          "ip-adapter",
+          "style-transfer",
+          "character-consistency"
+        ],
+        "category": "creative",
+        "skill_type": "workflow",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/image-to-image-guide/SKILL.md",
+    "_source_name": "image-to-image-guide"
+  },
+  {
+    "name": "manim-video",
+    "description": "Production pipeline for mathematical and technical animations using Manim C...",
+    "version": "1.0.0",
+    "triggers": [
+      "manim video",
+      "manim-video"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/manim-video/SKILL.md",
+    "_source_name": "manim-video"
+  },
+  {
+    "name": "p5js",
+    "description": "Production pipeline for interactive and generative visual art using p5.js. ...",
+    "version": "1.0.0",
+    "triggers": [
+      "p5js",
+      "p5js"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "creative-coding",
+          "generative-art",
+          "p5js",
+          "canvas",
+          "interactive",
+          "visualization",
+          "webgl",
+          "shaders",
+          "animation"
+        ],
+        "related_skills": [
+          "ascii-video",
+          "manim-video",
+          "excalidraw"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/p5js/SKILL.md",
+    "_source_name": "p5js"
+  },
+  {
+    "name": "pixel-art",
+    "description": "Convert images into retro pixel art with hardware-accurate palettes (NES, G...",
+    "version": "2.0.0",
+    "triggers": [
+      "pixel art",
+      "pixel-art"
+    ],
+    "author": "dodo-reach",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "creative",
+          "pixel-art",
+          "arcade",
+          "snes",
+          "nes",
+          "gameboy",
+          "retro",
+          "image",
+          "video"
+        ],
+        "category": "creative",
+        "credits": [
+          "Hardware palettes and animation loops ported from Synero/pixel-art-studio (MIT) — https://github.com/Synero/pixel-art-studio"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/pixel-art/SKILL.md",
+    "_source_name": "pixel-art"
+  },
+  {
+    "name": "popular-web-designs",
+    "description": "54 production-quality design systems extracted from real websites. Load a t...",
+    "version": "1.0.0",
+    "triggers": [
+      "build a page that looks like",
+      "make it look like stripe",
+      "design like linear",
+      "vercel style",
+      "create a UI",
+      "web design",
+      "landing page",
+      "dashboard design",
+      "website styled like"
+    ],
+    "author": "Hermes Agent + Teknium (design systems sourced from VoltAgent/awesome-design-md)",
+    "license": "MIT",
+    "tags": [
+      "design",
+      "css",
+      "html",
+      "ui",
+      "web-development",
+      "design-systems",
+      "templates"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/popular-web-designs/SKILL.md",
+    "_source_name": "popular-web-designs"
+  },
+  {
+    "name": "pretext",
+    "description": "Use when building creative browser demos with @chenglou/pretext — DOM-free text layout for ASCII art, typographic flow around obstacles, text-as-geometry games, kinetic typography, and text-powered generative art. Produces single-file HTML demos by default.",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "creative-coding",
+          "typography",
+          "pretext",
+          "ascii-art",
+          "canvas",
+          "generative",
+          "text-layout",
+          "kinetic-typography"
+        ],
+        "related_skills": [
+          "p5js",
+          "claude-design",
+          "excalidraw",
+          "architecture-diagram"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/pretext/SKILL.md",
+    "_source_name": "pretext"
+  },
+  {
+    "name": "sketch",
+    "description": "Throwaway HTML mockups: 2-3 design variants to compare.",
+    "version": "1.0.0",
+    "author": "Hermes Agent (adapted from gsd-build/get-shit-done)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "sketch",
+          "mockup",
+          "design",
+          "ui",
+          "prototype",
+          "html",
+          "variants",
+          "exploration",
+          "wireframe",
+          "comparison"
+        ],
+        "related_skills": [
+          "spike",
+          "claude-design",
+          "popular-web-designs",
+          "excalidraw"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/sketch/SKILL.md",
+    "_source_name": "sketch"
+  },
+  {
+    "name": "songwriting-and-ai-music",
+    "description": "Songwriting craft, AI music generation prompts (Suno focus), parody/adaptat...",
+    "triggers": [
+      "writing a song",
+      "song lyrics",
+      "music prompt",
+      "suno prompt",
+      "parody song",
+      "adapting a song",
+      "AI music generation"
+    ],
+    "tags": [
+      "songwriting",
+      "music",
+      "suno",
+      "parody",
+      "lyrics",
+      "creative"
+    ],
+    "category": "creative",
+    "_source_path": "creative/songwriting-and-ai-music/SKILL.md",
+    "_source_name": "songwriting-and-ai-music"
+  },
+  {
+    "name": "touchdesigner-mcp",
+    "description": "Control a running TouchDesigner instance via twozero MCP — create operators, set parameters, wire connections, execute Python, build real-time visuals. 36 native tools.",
+    "version": "1.1.0",
+    "author": "kshitijk4poor",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "TouchDesigner",
+          "MCP",
+          "twozero",
+          "creative-coding",
+          "real-time-visuals",
+          "generative-art",
+          "audio-reactive",
+          "VJ",
+          "installation",
+          "GLSL"
+        ],
+        "related_skills": [
+          "native-mcp",
+          "ascii-video",
+          "manim-video",
+          "hermes-video"
+        ]
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/touchdesigner-mcp/SKILL.md",
+    "_source_name": "touchdesigner-mcp"
+  },
+  {
+    "name": "visual-aesthetics",
+    "description": "boku 的视觉审美指南——判断美与丑的核心标准。涵盖信息层级、认知负荷、色彩语义、Dieter Rams 十原则。帮助 boku 在生成图片、排版文...",
+    "version": "1.0.0",
+    "triggers": [
+      "评价这个好看吗",
+      "审美分析",
+      "美丑判断",
+      "设计原则",
+      "视觉分析",
+      "设计太乱了",
+      "Dieter Rams"
+    ],
+    "allowed-tools": [
+      "vision_analyze",
+      "terminal",
+      "mcp_tavily_tavily_search"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "aesthetics",
+          "design",
+          "beauty",
+          "visual-judgment",
+          "criteria"
+        ],
+        "category": "creative",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      }
+    },
+    "category": "creative",
+    "_source_path": "creative/visual-aesthetics/SKILL.md",
+    "_source_name": "visual-aesthetics"
+  },
+  {
+    "name": "jupyter-live-kernel",
+    "description": "Use a live Jupyter kernel for stateful, iterative Python execution via hame...",
+    "version": "1.0.0",
+    "triggers": [
+      "jupyter live kernel",
+      "jupyter-live-kernel"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "jupyter",
+          "notebook",
+          "repl",
+          "data-science",
+          "exploration",
+          "iterative"
+        ],
+        "category": "data-science"
+      }
+    },
+    "category": "data-science",
+    "_source_path": "data-science/jupyter-live-kernel/SKILL.md",
+    "_source_name": "jupyter-live-kernel"
+  },
+  {
+    "name": "delete-safety",
+    "description": "删除操作安全边界与确认框架。涵盖 Git 分支/标签/文件删除的风险分级、确认信息模板、批量删除安全策略、AI Agent 操作铁律。任何涉及 delete/remove/clear/truncate/drop 的操作，必须先走此框架评估。",
+    "version": "1.0.0",
+    "triggers": [
+      "删除",
+      "清理分支",
+      "delete",
+      "删除操作",
+      "安全确认",
+      "危险操作",
+      "删除安全",
+      "删除风险",
+      "确认删除",
+      "删库",
+      "删除确认"
+    ],
+    "author": "Emma (小玛)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "safety",
+          "delete",
+          "confirmation",
+          "risk-assessment",
+          "destructive-operations"
+        ],
+        "category": "safety",
+        "skill_type": "reviewer",
+        "design_pattern": "pipeline"
+      }
+    },
+    "depends_on": [
+      "commit-quality-check"
+    ],
+    "category": "delete-safety",
+    "_source_path": "delete-safety/SKILL.md",
+    "_source_name": "delete-safety"
+  },
+  {
+    "name": "kanban-orchestrator",
+    "description": "Decomposition playbook + specialist-roster conventions + anti-temptation rules for an orchestrator profile routing work through Kanban. The \"don't do the work yourself\" rule and the basic lifecycle are auto-injected into every kanban worker's system prompt; this skill is the deeper playbook when you're specifically playing the orchestrator role.",
+    "version": "2.0.0",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "kanban",
+          "multi-agent",
+          "orchestration",
+          "routing"
+        ],
+        "related_skills": [
+          "kanban-worker"
+        ]
+      }
+    },
+    "category": "devops",
+    "_source_path": "devops/kanban-orchestrator/SKILL.md",
+    "_source_name": "kanban-orchestrator"
+  },
+  {
+    "name": "kanban-worker",
+    "description": "Pitfalls, examples, and edge cases for Hermes Kanban workers. The lifecycle itself is auto-injected into every worker's system prompt as KANBAN_GUIDANCE (from agent/prompt_builder.py); this skill is what you load when you want deeper detail on specific scenarios.",
+    "version": "2.0.0",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "kanban",
+          "multi-agent",
+          "collaboration",
+          "workflow",
+          "pitfalls"
+        ],
+        "related_skills": [
+          "kanban-orchestrator"
+        ]
+      }
+    },
+    "category": "devops",
+    "_source_path": "devops/kanban-worker/SKILL.md",
+    "_source_name": "kanban-worker"
+  },
+  {
+    "name": "linux-ops-guide",
+    "description": "Hermes 服务器（Ubuntu）日常运维指南。涵盖 systemd 服务管理、日志分析、端口排查、磁盘监控、进程管理、快速排查流程。",
+    "version": "1.0.0",
+    "triggers": [
+      "linux",
+      "运维",
+      "systemd",
+      "命令",
+      "ops"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "search_files"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "linux",
+          "ops",
+          "systemd",
+          "monitoring",
+          "troubleshooting"
+        ],
+        "category": "devops",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      }
+    },
+    "category": "devops",
+    "_source_path": "devops/linux-ops-guide/SKILL.md",
+    "_source_name": "linux-ops-guide"
+  },
+  {
+    "name": "proxy-monitor",
+    "description": "代理节点健康监控与工业级部署流水线。涵盖活性/依赖性检查、熔断策略、安全部署（Secrets 扫描/原子同步/回滚）。",
+    "version": "2.0.0",
+    "triggers": [
+      "代理",
+      "mihomo",
+      "监控",
+      "deploy",
+      "部署"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "proxy",
+          "monitoring",
+          "deployment",
+          "github",
+          "circuit-breaker"
+        ],
+        "category": "devops",
+        "skill_type": "operational",
+        "design_pattern": "tool_wrapper"
+      }
+    },
+    "category": "devops",
+    "_source_path": "devops/proxy-monitor/SKILL.md",
+    "_source_name": "proxy-monitor"
+  },
+  {
+    "name": "webhook-subscriptions",
+    "description": "Create and manage webhook subscriptions for event-driven agent activation, ...",
+    "version": "1.1.0",
+    "triggers": [
+      "webhook subscriptions",
+      "webhook-subscriptions"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "webhook",
+          "events",
+          "automation",
+          "integrations",
+          "notifications",
+          "push"
+        ]
+      }
+    },
+    "category": "devops",
+    "_source_path": "devops/webhook-subscriptions/SKILL.md",
+    "_source_name": "webhook-subscriptions"
+  },
+  {
+    "name": "doc-design",
+    "description": "文档排版设计索引技能。根据文档格式路由到对应的原子 skill。\n当用户需要创建、编辑、美化任何格式的文档时使用此技能，\n本 skill 负责识别格式...",
+    "version": "5.1.0",
+    "triggers": [
+      "文档",
+      "排版",
+      "doc",
+      "排版设计"
+    ],
+    "depends_on": [
+      "pdf-layout-reportlab",
+      "pdf-layout-weasyprint",
+      "docx-guide",
+      "pptx-guide",
+      "markdown-guide",
+      "html-guide",
+      "latex-guide",
+      "epub-guide"
+    ],
+    "author": "小喵",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "document",
+          "design",
+          "formatting",
+          "index"
+        ],
+        "related_skills": [
+          "pdf-layout-reportlab",
+          "pdf-layout-weasyprint",
+          "docx-guide",
+          "pptx-guide",
+          "markdown-guide",
+          "html-guide",
+          "latex-guide",
+          "epub-guide"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "design_pattern": "index"
+      }
+    },
+    "category": "doc-design",
+    "_source_path": "doc-design/SKILL.md",
+    "_source_name": "doc-design"
+  },
+  {
+    "name": "pdf-layout-reportlab",
+    "description": "使用 ReportLab 生成中文 PDF 的完整无痛指南。涵盖字体注册（WQY ZenHei/STSong-Light）、智能分页策略、表格最佳实践...",
+    "version": "1.0.0",
+    "triggers": [
+      "生成中文 PDF",
+      "PDF 黑块",
+      "PDF 排版问题",
+      "ReportLab PDF",
+      "中文 PDF 字体",
+      "分页策略",
+      "PDF 表格"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "execute_code"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "pdf",
+          "reportlab",
+          "chinese",
+          "typography",
+          "layout"
+        ],
+        "category": "doc-design",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper",
+        "related_skills": [
+          "pdf-layout-weasyprint",
+          "doc-design"
+        ]
+      }
+    },
+    "category": "doc-design",
+    "_source_path": "doc-design/pdf-layout-reportlab/SKILL.md",
+    "_source_name": "pdf-layout-reportlab"
+  },
+  {
+    "name": "pdf-layout-weasyprint",
+    "description": "使用 WeasyPrint（HTML+CSS→PDF）生成中文 PDF 的完整指南。WeasyPrint 比 ReportLab 更适合文字为主的 P...",
+    "version": "2.0.0",
+    "triggers": [
+      "pdf",
+      "weasyprint",
+      "生成 pdf"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "pdf",
+          "weasyprint",
+          "html",
+          "css",
+          "chinese",
+          "layout"
+        ],
+        "category": "doc-design",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper",
+        "related_skills": [
+          "pdf-layout-reportlab",
+          "doc-design"
+        ]
+      }
+    },
+    "category": "doc-design",
+    "_source_path": "doc-design/pdf-layout-weasyprint/SKILL.md",
+    "_source_name": "pdf-layout-weasyprint"
+  },
+  {
+    "name": "docker-terminal",
+    "description": "Docker 沙箱终端执行指南 — 安全地在隔离容器中运行命令。涵盖配置、安全参数、镜像选择、卷挂载、资源限制及最佳实践。当用户需要配置 Docker backend、排查容器问题、选择镜像或配置安全策略时使用此 skill。",
+    "version": "1.0.0",
+    "triggers": [
+      "docker terminal",
+      "container sandbox",
+      "terminal isolation",
+      "docker backend",
+      "容器安全",
+      "sandboxed execution",
+      "Docker 沙箱",
+      "隔离执行"
+    ],
+    "depends_on": [],
+    "referenced_by": [
+      "self-capabilities-map"
+    ],
+    "design_pattern": "Tool Wrapper",
+    "skill_type": "product-verification",
+    "category": "docker-terminal",
+    "_source_path": "docker-terminal/SKILL.md",
+    "_source_name": "docker-terminal"
+  },
+  {
+    "name": "readme-for-ai",
+    "description": "编写模型友好型 README 的方法论。让 AI Agent 在阅读 README 后能自主完成安装、配置、运行全流程。",
+    "version": "1.0.0",
+    "triggers": [
+      "写 README",
+      "模型友好",
+      "AI 自主安装",
+      "readme for AI",
+      "自述文件",
+      "文档编写"
+    ],
+    "author": "Emma (小喵)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "documentation",
+          "readme",
+          "ai-friendly",
+          "autonomous-setup"
+        ],
+        "category": "documentation",
+        "skill_type": "methodology",
+        "design_pattern": "template"
+      }
+    },
+    "category": "documentation",
+    "_source_path": "documentation/readme-for-ai/SKILL.md",
+    "_source_name": "readme-for-ai"
+  },
+  {
+    "name": "docx-guide",
+    "description": "Word (.docx) 文档操作原子技能。使用 python-docx 创建、编辑、美化 Word 文档。",
+    "triggers": [
+      "docx guide",
+      "docx-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "word",
+          "docx",
+          "document",
+          "office"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "docx"
+      }
+    },
+    "category": "docx-guide",
+    "_source_path": "docx-guide/SKILL.md",
+    "_source_name": "docx-guide"
+  },
+  {
+    "name": "dogfood",
+    "description": "Systematic exploratory QA testing of web applications — find bugs, capture ...",
+    "version": "1.0.0",
+    "triggers": [
+      "dogfood",
+      "dogfood"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "qa",
+          "testing",
+          "browser",
+          "web",
+          "dogfood"
+        ],
+        "related_skills": []
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/SKILL.md",
+    "_source_name": "dogfood"
+  },
+  {
+    "name": "analysis-workflow",
+    "description": "大文件分析与数据处理工作流——boku 处理大型文档、数据文件、代码库时的标准分析框架。涵盖分块策略、Map-Reduce 模式、渐进式摘要、内存管理等核心模式。",
+    "version": "1.0.0",
+    "triggers": [
+      "分析大文件",
+      "处理大型文档",
+      "分块处理",
+      "chunking",
+      "map reduce",
+      "流式处理",
+      "大文件分析",
+      "文档提炼"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "execute_code",
+      "search_files",
+      "delegate_task"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "analysis",
+          "workflow",
+          "chunking",
+          "map-reduce",
+          "streaming",
+          "memory-management"
+        ],
+        "category": "dogfood",
+        "skill_type": "methodology",
+        "design_pattern": "meta-workflow"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/analysis-workflow/SKILL.md",
+    "_source_name": "analysis-workflow"
+  },
+  {
+    "name": "anti-repetition-loop",
+    "description": "检测和防止 AI 智能体在对话中重复循环回复相同内容。涵盖根因分析、实时检测、主动预防、自动恢复四大模块。",
+    "version": "1.0.0",
+    "triggers": [
+      "重复回复",
+      "循环说话",
+      "一直在说同一句话",
+      "卡住了",
+      "repetition loop",
+      "重复循环"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "self-correction",
+          "conversation-management",
+          "quality-control"
+        ],
+        "category": "dogfood",
+        "skill_type": "inversion",
+        "design_pattern": "diagnosis"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/anti-repetition-loop/SKILL.md",
+    "_source_name": "anti-repetition-loop"
+  },
+  {
+    "name": "browser-automation",
+    "description": "Chrome headless 浏览器自动化实战技能。涵盖页面导航、表单填写、点击交互、快照分析、视觉截图、验证码识别等完整工作流。",
+    "version": "1.0.0",
+    "triggers": [
+      "浏览器",
+      "自动化",
+      "chrome",
+      "网页交互",
+      "screenshot"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "browser",
+          "chrome",
+          "automation",
+          "visual-analysis"
+        ],
+        "category": "dogfood",
+        "skill_type": "library",
+        "design_pattern": "tool_wrapper"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/browser-automation/SKILL.md",
+    "_source_name": "browser-automation"
+  },
+  {
+    "name": "hermes-self-analysis",
+    "description": "boku（Emma/小喵猫娘女仆 AI）对自身的全面分析——架构理解、工具能力评估、已知弱点、学习经验、决策模式。知己才能更好地发挥所长、规避短板。",
+    "version": "1.0.0",
+    "triggers": [
+      "分析自己",
+      "了解自己的能力",
+      "弱点是什么",
+      "能做什么不能做什么",
+      "自我分析",
+      "boku 的局限"
+    ],
+    "allowed-tools": [
+      "read_file",
+      "terminal",
+      "session_search"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "self-analysis",
+          "introspection",
+          "capabilities",
+          "limitations"
+        ],
+        "category": "dogfood",
+        "skill_type": "research",
+        "design_pattern": "inversion"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/hermes-self-analysis/SKILL.md",
+    "_source_name": "hermes-self-analysis"
+  },
+  {
+    "name": "information-decomposition",
+    "description": "信息分解与上下文管理指南。教 boku 如何用高级搜索策略（Boolean/Operators）和多级摘要策略（Chunking/Summarizat...",
+    "version": "1.0.0",
+    "triggers": [
+      "信息量太大",
+      "搜索结果太多",
+      "读不完",
+      "上下文不够用 - dogfood - 高级搜索 - 分治法 - 大文件处理"
+    ],
+    "related_skills": [
+      "analysis-workflow"
+    ],
+    "allowed-tools": [
+      "mcp_tavily_tavily_search",
+      "mcp_tavily_tavily_extract",
+      "mcp_tavily_tavily_crawl"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "search-strategies",
+          "context-management",
+          "chunking",
+          "summarization",
+          "boolean"
+        ],
+        "category": "dogfood",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/information-decomposition/SKILL.md",
+    "_source_name": "information-decomposition"
+  },
+  {
+    "name": "memory-management",
+    "description": "Hermes Agent 记忆库（Memory）智能管理与上下文窗口优化指南。涵盖 Memory 分层策略、Context Window 管理（滑动窗...",
+    "version": "2.0.0",
+    "triggers": [
+      "记忆",
+      "上下文",
+      "memory",
+      "token",
+      "遗忘"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "memory",
+          "context-management",
+          "optimization",
+          "sliding-window"
+        ],
+        "category": "dogfood",
+        "skill_type": "operational",
+        "design_pattern": "inversion"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/memory-management/SKILL.md",
+    "_source_name": "memory-management"
+  },
+  {
+    "name": "problem-solving-sherlock",
+    "description": "通用问题解决的 meta-skill——不限于代码调试，而是面对任何卡住的情况时的系统化突破方法。基于 systematic-debugging 但扩...",
+    "version": "1.0.0",
+    "triggers": [
+      "卡住了",
+      "怎么办",
+      "行不通",
+      "不好用",
+      "没办法了",
+      "不知道怎么做",
+      "试试别的方法",
+      "哪里出问题了",
+      "遇到困难",
+      "想不通"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "search_files",
+      "session_search",
+      "mcp_tavily_tavily_search",
+      "mcp_tavily_tavily_extract"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "problem-solving",
+          "troubleshooting",
+          "research",
+          "methodology",
+          "debugging"
+        ],
+        "category": "dogfood",
+        "skill_type": "research",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/problem-solving-sherlock/SKILL.md",
+    "_source_name": "problem-solving-sherlock"
+  },
+  {
+    "name": "system-health-check",
+    "description": "Hermes Agent 系统健康检查、LLM 可观测性与自动修复指南。涵盖 429 限流降级、Fallback 链断裂、辅助模型配置、日志分析、Ci...",
+    "version": "2.0.0",
+    "triggers": [
+      "健康检查",
+      "诊断",
+      "报错",
+      "429",
+      "health check"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "health-check",
+          "diagnostics",
+          "fallback",
+          "observability",
+          "circuit-breaker"
+        ],
+        "category": "dogfood",
+        "skill_type": "diagnosis",
+        "design_pattern": "inversion"
+      }
+    },
+    "category": "dogfood",
+    "_source_path": "dogfood/system-health-check/SKILL.md",
+    "_source_name": "system-health-check"
+  },
+  {
+    "name": "himalaya",
+    "description": "CLI to manage emails via IMAP/SMTP. Use himalaya to list, read, write, repl...",
+    "version": "1.0.0",
+    "triggers": [
+      "himalaya",
+      "himalaya"
+    ],
+    "author": "community",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Email",
+          "IMAP",
+          "SMTP",
+          "CLI",
+          "Communication"
+        ],
+        "homepage": "https://github.com/pimalaya/himalaya"
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "himalaya"
+      ]
+    },
+    "category": "email",
+    "_source_path": "email/himalaya/SKILL.md",
+    "_source_name": "himalaya"
+  },
+  {
+    "name": "epub-guide",
+    "description": "EPUB 电子书生成原子技能。使用 ebooklib 创建标准 EPUB 电子书。",
+    "triggers": [
+      "epub guide",
+      "epub-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "epub",
+          "ebook",
+          "publishing"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "epub"
+      }
+    },
+    "category": "epub-guide",
+    "_source_path": "epub-guide/SKILL.md",
+    "_source_name": "epub-guide"
+  },
+  {
+    "name": "feishu-batch-send",
+    "description": "飞书批量发送文件/图片技能。支持一次发送多个文件到同一个或多个聊天，自动处理 token 刷新、错误重试、速率限制。 包含批量发送脚本和速率控制策略。",
+    "version": "1.0.0",
+    "triggers": [
+      "批量发送飞书",
+      "飞书批量发送",
+      "feishu batch send",
+      "发送多个文件到飞书",
+      "飞书多发",
+      "批量发文件"
+    ],
+    "depends_on": [
+      "feishu",
+      "feishu-send-file"
+    ],
+    "design_pattern": "Pipeline",
+    "skill_type": "generator",
+    "category": "feishu-batch-send",
+    "_source_path": "feishu-batch-send/SKILL.md",
+    "_source_name": "feishu-batch-send"
+  },
+  {
+    "name": "feishu",
+    "description": "飞书全套操作技能 — 消息、云文档、多维表格、日历、通讯录、审批、知识库、电子表格、任务、事件订阅。当用户需要操作飞书任何功能时触发。",
+    "triggers": [
+      "飞书",
+      "发消息",
+      "lark",
+      "文档"
+    ],
+    "metadata": {
+      "clawdbot": {
+        "emoji": "📋",
+        "requires": {
+          "bins": [
+            "python3"
+          ]
+        },
+        "install": [
+          {
+            "id": "pip",
+            "kind": "pip",
+            "package": "lark-oapi"
+          }
+        ]
+      }
+    },
+    "category": "feishu",
+    "_source_path": "feishu/SKILL.md",
+    "_source_name": "feishu"
+  },
+  {
+    "name": "feishu-send-file",
+    "description": "飞书发送文件的正确流程和最佳实践。通过飞书原生 API（上传→获 file_key→发送 file 消息）实现文件发送。解释为什么 send_mess...",
+    "version": "1.0.0",
+    "triggers": [
+      "发送文件到飞书",
+      "飞书上传文件",
+      "飞书发送 PDF",
+      "飞书发送图片",
+      "feishu file upload",
+      "飞书 API 文件"
+    ],
+    "aliases": [
+      "/feishu-send-file"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "feishu",
+          "file",
+          "upload",
+          "send",
+          "api"
+        ],
+        "category": "feishu",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper",
+        "related_skills": [
+          "feishu"
+        ]
+      }
+    },
+    "category": "feishu",
+    "_source_path": "feishu/feishu-send-file/SKILL.md",
+    "_source_name": "feishu-send-file"
+  },
+  {
+    "name": "financial-analyst",
+    "description": "金融数据分析与研报生成技能。使用 akshare 获取行情，ta 库计算指标，matplotlib 绘制图表，LLM 生成研报。",
+    "version": "1.0.0",
+    "triggers": [
+      "股票分析",
+      "行情查询",
+      "研报生成",
+      "financial analysis",
+      "stock report",
+      "大盘走势"
+    ],
+    "depends_on": [
+      "web-access",
+      "pdf-layout-weasyprint"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "finance",
+          "analysis",
+          "report"
+        ],
+        "category": "data-science",
+        "skill_type": "generator",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "financial-analyst",
+    "_source_path": "financial-analyst/SKILL.md",
+    "_source_name": "financial-analyst"
+  },
+  {
+    "name": "minecraft-modpack-server",
+    "description": "Set up a modded Minecraft server from a CurseForge/Modrinth server pack zip...",
+    "triggers": [
+      "minecraft modpack server",
+      "minecraft-modpack-server"
+    ],
+    "tags": [
+      "minecraft",
+      "gaming",
+      "server",
+      "neoforge",
+      "forge",
+      "modpack"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "gaming",
+    "_source_path": "gaming/minecraft-modpack-server/SKILL.md",
+    "_source_name": "minecraft-modpack-server"
+  },
+  {
+    "name": "pokemon-player",
+    "description": "Play Pokemon games autonomously via headless emulation. Starts a game serve...",
+    "triggers": [
+      "pokemon player",
+      "pokemon-player"
+    ],
+    "tags": [
+      "gaming",
+      "pokemon",
+      "emulator",
+      "pyboy",
+      "gameplay",
+      "gameboy"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "gaming",
+    "_source_path": "gaming/pokemon-player/SKILL.md",
+    "_source_name": "pokemon-player"
+  },
+  {
+    "name": "codebase-inspection",
+    "description": "Inspect and analyze codebases using pygount for LOC counting, language brea...",
+    "version": "1.0.0",
+    "triggers": [
+      "codebase inspection",
+      "codebase-inspection"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "LOC",
+          "Code Analysis",
+          "pygount",
+          "Codebase",
+          "Metrics",
+          "Repository"
+        ],
+        "related_skills": [
+          "github-repo-management"
+        ]
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "pygount"
+      ]
+    },
+    "category": "github",
+    "_source_path": "github/codebase-inspection/SKILL.md",
+    "_source_name": "codebase-inspection"
+  },
+  {
+    "name": "git-advanced-ops",
+    "description": "Git 和 GitHub 高级操作指南，特别包含代理环境下的配置。涵盖 interactive rebase、stash、冲突解决、force pus...",
+    "version": "1.0.0",
+    "triggers": [
+      "git",
+      "rebase",
+      "stash",
+      "冲突"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "git",
+          "github",
+          "rebase",
+          "proxy",
+          "collaboration"
+        ],
+        "category": "github",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      }
+    },
+    "category": "github",
+    "_source_path": "github/git-advanced-ops/SKILL.md",
+    "_source_name": "git-advanced-ops"
+  },
+  {
+    "name": "github-auth",
+    "description": "Set up GitHub authentication for the agent using git (universally available...",
+    "version": "2.0.0",
+    "triggers": [
+      "github",
+      "token",
+      "ssh",
+      "认证",
+      "login",
+      "推送",
+      "push",
+      "远程仓库"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Authentication",
+          "Git",
+          "gh-cli",
+          "SSH",
+          "Setup"
+        ],
+        "related_skills": [
+          "github-pr-workflow",
+          "github-code-review",
+          "github-issues",
+          "github-repo-management"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-auth/SKILL.md",
+    "_source_name": "github-auth"
+  },
+  {
+    "name": "github-code-review",
+    "description": "Review code changes by analyzing git diffs, leaving inline comments on PRs,...",
+    "version": "1.1.0",
+    "triggers": [
+      "github code review",
+      "github-code-review"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Code-Review",
+          "Pull-Requests",
+          "Git",
+          "Quality"
+        ],
+        "related_skills": [
+          "github-auth",
+          "github-pr-workflow"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-code-review/SKILL.md",
+    "_source_name": "github-code-review"
+  },
+  {
+    "name": "github-deploy-upload",
+    "description": "安全地将本地部署目录通过定时 cron 推送到 GitHub 仓库。涵盖认证令牌安全存储（独立文件 600 权限）、git remote 内容自动清理、远程分支适配等实践。",
+    "version": "1.0.0",
+    "triggers": [
+      "deploy upload",
+      "deploy-upload",
+      "定时上传",
+      "自动推送",
+      "github push token",
+      "github deploy token",
+      "安全推送脚本",
+      "deploy-upload.sh"
+    ],
+    "author": "小喵 (Hermes Agent)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Deploy",
+          "Security",
+          "Git",
+          "Cron",
+          "Token"
+        ],
+        "related_skills": [
+          "github-repo-management",
+          "github-auth",
+          "hermes-ops-tips"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-deploy-upload/SKILL.md",
+    "_source_name": "github-deploy-upload"
+  },
+  {
+    "name": "github-issues",
+    "description": "Create, manage, triage, and close GitHub issues. Search existing issues, ad...",
+    "version": "1.1.0",
+    "triggers": [
+      "github issues",
+      "github-issues"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Issues",
+          "Project-Management",
+          "Bug-Tracking",
+          "Triage"
+        ],
+        "related_skills": [
+          "github-auth",
+          "github-pr-workflow"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-issues/SKILL.md",
+    "_source_name": "github-issues"
+  },
+  {
+    "name": "github-pr-workflow",
+    "description": "Full pull request lifecycle — create branches, commit changes, open PRs, mo...",
+    "version": "1.1.0",
+    "triggers": [
+      "github pr workflow",
+      "github-pr-workflow"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Pull-Requests",
+          "CI/CD",
+          "Git",
+          "Automation",
+          "Merge"
+        ],
+        "related_skills": [
+          "github-auth",
+          "github-code-review"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-pr-workflow/SKILL.md",
+    "_source_name": "github-pr-workflow"
+  },
+  {
+    "name": "github-project-ops",
+    "description": "GitHub 项目运维完整指南 — 仓库管理、分支保护、Issue/PR 工作流、CI/CD (Actions)、安全 (Secret Scanning/Dependabot/CodeQL)、Release (SemVer/semantic-release)、社区运营、备份迁移。",
+    "version": "1.1.0",
+    "triggers": [
+      "github",
+      "项目运维",
+      "分支保护",
+      "branch protection",
+      "rulesets",
+      "ci/cd",
+      "github actions",
+      "dependabot",
+      "codeql",
+      "code scanning",
+      "secret scanning",
+      "semantic release",
+      "semver",
+      "版本管理",
+      "release",
+      "pull request",
+      "code review",
+      "issues",
+      "issue triage",
+      "社区运营",
+      "open source",
+      "开源",
+      "contributing guide",
+      "stale bot",
+      "备份仓库",
+      "repository management",
+      "文档一致性",
+      "代码审计",
+      "文档飘移",
+      "doc drift",
+      "发布前准备",
+      "pre-release",
+      "项目现状分析",
+      "代码文档对比",
+      "documentation audit"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "search_files",
+      "patch"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Repository Management",
+          "Branch Protection",
+          "CI/CD",
+          "GitHub Actions",
+          "Security",
+          "Dependabot",
+          "Code Scanning",
+          "Release",
+          "SemVer",
+          "semantic-release",
+          "Community",
+          "Open Source"
+        ],
+        "category": "github",
+        "skill_type": "library-reference",
+        "design_pattern": "domain-guide",
+        "related_skills": [
+          "git-advanced-ops",
+          "github-auth",
+          "github-pr-workflow",
+          "github-code-review",
+          "github-issues",
+          "github-repo-management",
+          "linux-ops-guide"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-project-ops/SKILL.md",
+    "_source_name": "github-project-ops"
+  },
+  {
+    "name": "github-repo-management",
+    "description": "Clone, create, fork, configure, and manage GitHub repositories. Manage remo...",
+    "version": "1.1.0",
+    "triggers": [
+      "github repo management",
+      "github-repo-management"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GitHub",
+          "Repositories",
+          "Git",
+          "Releases",
+          "Secrets",
+          "Configuration"
+        ],
+        "related_skills": [
+          "github-auth",
+          "github-pr-workflow",
+          "github-issues"
+        ]
+      }
+    },
+    "category": "github",
+    "_source_path": "github/github-repo-management/SKILL.md",
+    "_source_name": "github-repo-management"
+  },
+  {
+    "name": "hermes-ops-tips",
+    "description": "Hermes 运维与工具流最佳实践。包含 Hermes 手动升级流程、SRA Proxy 修复、高清架构图生成 (SVG + cairosvg)、Memory 降级策略。",
+    "triggers": [
+      "高清截图",
+      "cairosvg",
+      "sra proxy bug",
+      "架构图",
+      "memory full",
+      "hermes运维",
+      "升级hermes",
+      "hermes升级",
+      "hermes doctor",
+      "hermes修复",
+      "statusline",
+      "状态栏",
+      "自定义功能恢复",
+      "gateway hook",
+      "网关钩子",
+      "升级后修复"
+    ],
+    "category": "hermes-ops-tips",
+    "_source_path": "hermes-ops-tips/SKILL.md",
+    "_source_name": "hermes-ops-tips"
+  },
+  {
+    "name": "html-guide",
+    "description": "HTML/CSS 网页排版原子技能。创建可打印的网页文档。",
+    "triggers": [
+      "html guide",
+      "html-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "html",
+          "css",
+          "web",
+          "print"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "html"
+      }
+    },
+    "category": "html-guide",
+    "_source_path": "html-guide/SKILL.md",
+    "_source_name": "html-guide"
+  },
+  {
+    "name": "hy3-model-guide",
+    "description": "Hy3 模型（混元 3 预览版）完整指南 — 涵盖架构解析、性能基准、API 使用、成本优化、Agent 工作流设计。基于腾讯官方文档和实战验证数据。当用户询问 Hy3/混元3/tencent hy3/hy3-preview 时使用此 skill。",
+    "version": "1.0.0",
+    "triggers": [
+      "Hy3",
+      "hy3",
+      "混元3",
+      "Hunyuan 3",
+      "tencent hy3",
+      "hy3-preview",
+      "腾讯混元3",
+      "hy3 模型",
+      "混元3.0",
+      "腾讯混元3.0",
+      "混元3预览版",
+      "Hy3 preview",
+      "hunyuan3"
+    ],
+    "author": "小喵 (Emma)",
+    "license": "MIT",
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "web_search",
+      "web_extract",
+      "skill_manage",
+      "skills_list",
+      "skill_view"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "hy3",
+          "hunyuan",
+          "model-guide",
+          "tencent",
+          "moe-architecture",
+          "agent"
+        ],
+        "category": "reference",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      },
+      "depends_on": [
+        "web-access",
+        "skill-creator"
+      ]
+    },
+    "category": "hy3-model-guide",
+    "_source_path": "hy3-model-guide/SKILL.md",
+    "_source_name": "hy3-model-guide"
+  },
+  {
+    "name": "image-generation",
+    "description": "生成高质量配图（支持 gpt-image-2, Stable Diffusion, Dashscope），含 Prompt 模板与 API 接入指南。",
+    "triggers": [
+      "生图",
+      "配图",
+      "image gen",
+      "画图"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "image",
+          "generative-ai",
+          "design",
+          "prompt-engineering"
+        ],
+        "category": "creative",
+        "skill_type": "library",
+        "design_pattern": "generator"
+      }
+    },
+    "category": "image-generation",
+    "_source_path": "image-generation/SKILL.md",
+    "_source_name": "image-generation"
+  },
+  {
+    "name": "image-prompt-guide",
+    "description": "编写高质量生图 Prompt 的最佳实践，涵盖光影、风格、情绪及技术参数（适配 FLUX/gpt-image-2）。包含角色一致性技巧、多模态策略决策树、按已知信息生图方法。",
+    "triggers": [
+      "prompt",
+      "生图提示词",
+      "art style",
+      "character consistency",
+      "角色一致性"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "prompt-engineering",
+          "generative-ai",
+          "art",
+          "flux",
+          "gpt-image-2",
+          "character-consistency"
+        ],
+        "category": "creative",
+        "skill_type": "reference",
+        "design_pattern": "tool_wrapper"
+      }
+    },
+    "category": "image-prompt-guide",
+    "_source_path": "image-prompt-guide/SKILL.md",
+    "_source_name": "image-prompt-guide"
+  },
+  {
+    "name": "knowledge-routing",
+    "description": "Guide for classifying new knowledge: Memory vs Skills. Use when absorbing experience or updating knowledge base.",
+    "version": "1.1.0",
+    "triggers": [
+      "经验吸收",
+      "知识分类",
+      "记忆管理",
+      "skill更新",
+      "knowledge routing",
+      "经验沉淀",
+      "总结",
+      "总结经验",
+      "复盘",
+      "踩坑",
+      "教训",
+      "经验教训",
+      "记下来",
+      "存入Memory",
+      "存入Skill",
+      "知识路由"
+    ],
+    "category": "knowledge-routing",
+    "_source_path": "knowledge-routing/SKILL.md",
+    "_source_name": "knowledge-routing"
+  },
+  {
+    "name": "latex-guide",
+    "description": "LaTeX 学术论文排版原子技能。学位论文、期刊文章、技术报告。",
+    "triggers": [
+      "latex guide",
+      "latex-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "latex",
+          "academic",
+          "paper",
+          "thesis"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "latex"
+      }
+    },
+    "category": "latex-guide",
+    "_source_path": "latex-guide/SKILL.md",
+    "_source_name": "latex-guide"
+  },
+  {
+    "name": "learning-review-cycle",
+    "description": "学习-Review-总结自驱动循环。定时扫描 skill 新鲜度、自动生成学习总结/周报/月报、探测知识缺口并生成学习建议。让整个 learning ecosystem 自动运转。",
+    "version": "1.0.0",
+    "triggers": [
+      "review",
+      "复盘",
+      "总结",
+      "学习总结",
+      "学习周报",
+      "学习月报",
+      "自动学习",
+      "自驱动",
+      "知识缺口",
+      "知识审计",
+      "skill review",
+      "技能盘点",
+      "定期回顾",
+      "learning review"
+    ],
+    "depends_on": [
+      "learning-workflow",
+      "learning",
+      "skill-creator"
+    ],
+    "design_pattern": "Pipeline + Generator",
+    "skill_type": "Workflow",
+    "category": "learning-review-cycle",
+    "_source_path": "learning-review-cycle/SKILL.md",
+    "_source_name": "learning-review-cycle"
+  },
+  {
+    "name": "learning-workflow",
+    "description": "所有学习/研究任务的强制流程拦截器。通过状态机+文件标志物实现防跳过机制。任何涉及'学习、研究、了解、搞懂'的请求必须先走此流程。v4.0 重大更新：三层迭代循环架构（子主题递归+中间反思+质量门禁）、螺旋式学习模式。",
+    "version": "4.0.0",
+    "triggers": [
+      "学习",
+      "研究",
+      "了解",
+      "搞懂",
+      "看看",
+      "学学",
+      "查一下",
+      "调研",
+      "探索",
+      "掌握",
+      "沉淀",
+      "总结复盘",
+      "学习周报",
+      "学习月报",
+      "技能盘点",
+      "study",
+      "learn",
+      "research",
+      "explore",
+      "review"
+    ],
+    "depends_on": [
+      "skill-creator",
+      "web-access",
+      "learning",
+      "learning-review-cycle"
+    ],
+    "design_pattern": "Pipeline",
+    "skill_type": "Workflow",
+    "category": "learning-workflow",
+    "_source_path": "learning-workflow/SKILL.md",
+    "_source_name": "learning-workflow"
+  },
+  {
+    "name": "learning",
+    "description": "当你需要从零开始学习一个新主题、研究新技术、了解陌生领域时使用此 skill。涵盖：联网上下文补充引擎、过滤高质量信息、清洗冗余内容、精炼核心知识、最终通过 skill-creator 沉淀为可复用的 skill。v2.6 核心升级：强制联网补充协议，内置信息源分级、时效性门禁与交叉验证机制。",
+    "version": "2.7.0",
+    "triggers": [
+      "学习",
+      "研究",
+      "调研",
+      "最佳实践",
+      "learn",
+      "学学",
+      "深入了解",
+      "查一下",
+      "沉淀",
+      "总结复盘",
+      "学习总结",
+      "自驱动",
+      "帮我搞懂",
+      "我想学",
+      "这是什么",
+      "怎么用",
+      "怎么用XXX",
+      "搞懂",
+      "了解",
+      "了解一下",
+      "看看",
+      "探索",
+      "掌握",
+      "熟悉",
+      "入门",
+      "新手教程",
+      "从零开始",
+      "快速上手"
+    ],
+    "author": "小喵",
+    "license": "MIT",
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "skill_manage",
+      "skills_list",
+      "skill_view"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "learning",
+          "research",
+          "meta-skill",
+          "knowledge-integration",
+          "reflection",
+          "self-driven"
+        ],
+        "related_skills": [
+          "web-access",
+          "skill-creator",
+          "learning-workflow",
+          "learning-review-cycle"
+        ],
+        "category": "learning",
+        "skill_type": "research",
+        "design_pattern": "pipeline"
+      }
+    },
+    "depends_on": [
+      "web-access",
+      "skill-creator",
+      "learning-workflow",
+      "learning-review-cycle"
+    ],
+    "category": "learning",
+    "_source_path": "learning/SKILL.md",
+    "_source_name": "learning"
+  },
+  {
+    "name": "markdown-guide",
+    "description": "Markdown 写作与转换原子技能。语法指南 + pandoc 转换 + 最佳实践。",
+    "triggers": [
+      "markdown guide",
+      "markdown-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "markdown",
+          "pandoc",
+          "writing",
+          "documentation"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "markdown"
+      }
+    },
+    "category": "markdown-guide",
+    "_source_path": "markdown-guide/SKILL.md",
+    "_source_name": "markdown-guide"
+  },
+  {
+    "name": "native-mcp",
+    "description": "Built-in MCP (Model Context Protocol) client that connects to external MCP ...",
+    "version": "1.0.0",
+    "triggers": [
+      "mcp",
+      "工具",
+      "model context"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "MCP",
+          "Tools",
+          "Integrations"
+        ],
+        "related_skills": [
+          "mcporter"
+        ]
+      }
+    },
+    "category": "mcp",
+    "_source_path": "mcp/native-mcp/SKILL.md",
+    "_source_name": "native-mcp"
+  },
+  {
+    "name": "gif-search",
+    "description": "Search and download GIFs from Tenor using curl. No dependencies beyond curl...",
+    "version": "1.1.0",
+    "triggers": [
+      "gif search",
+      "gif-search"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "prerequisites": {
+      "env_vars": [
+        "TENOR_API_KEY"
+      ],
+      "commands": [
+        "curl",
+        "jq"
+      ]
+    },
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "GIF",
+          "Media",
+          "Search",
+          "Tenor",
+          "API"
+        ]
+      }
+    },
+    "category": "media",
+    "_source_path": "media/gif-search/SKILL.md",
+    "_source_name": "gif-search"
+  },
+  {
+    "name": "heartmula",
+    "description": "Set up and run HeartMuLa, the open-source music generation model family (Su...",
+    "version": "1.0.0",
+    "triggers": [
+      "heartmula",
+      "heartmula"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "music",
+          "audio",
+          "generation",
+          "ai",
+          "heartmula",
+          "heartcodec",
+          "lyrics",
+          "songs"
+        ],
+        "related_skills": [
+          "audiocraft"
+        ]
+      }
+    },
+    "category": "media",
+    "_source_path": "media/heartmula/SKILL.md",
+    "_source_name": "heartmula"
+  },
+  {
+    "name": "songsee",
+    "description": "Generate spectrograms and audio feature visualizations (mel, chroma, MFCC, ...",
+    "version": "1.0.0",
+    "triggers": [
+      "songsee",
+      "songsee"
+    ],
+    "author": "community",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Audio",
+          "Visualization",
+          "Spectrogram",
+          "Music",
+          "Analysis"
+        ],
+        "homepage": "https://github.com/steipete/songsee"
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "songsee"
+      ]
+    },
+    "category": "media",
+    "_source_path": "media/songsee/SKILL.md",
+    "_source_name": "songsee"
+  },
+  {
+    "name": "spotify",
+    "description": "Spotify: play, search, queue, manage playlists and devices.",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "prerequisites": {
+      "tools": [
+        "spotify_playback",
+        "spotify_devices",
+        "spotify_queue",
+        "spotify_search",
+        "spotify_playlists",
+        "spotify_albums",
+        "spotify_library"
+      ]
+    },
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "spotify",
+          "music",
+          "playback",
+          "playlists",
+          "media"
+        ],
+        "related_skills": [
+          "gif-search"
+        ]
+      }
+    },
+    "category": "media",
+    "_source_path": "media/spotify/SKILL.md",
+    "_source_name": "spotify"
+  },
+  {
+    "name": "youtube-content",
+    "description": "Fetch YouTube video transcripts and transform them into structured content ...",
+    "triggers": [
+      "youtube content",
+      "youtube-content"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "media",
+    "_source_path": "media/youtube-content/SKILL.md",
+    "_source_name": "youtube-content"
+  },
+  {
+    "name": "mermaid-guide",
+    "description": "Mermaid 图表生成指南。包含语法速查、场景模板（流程图、时序图、类图、状态图） 以及排版最佳实践。用于在 Markdown/PDF/文档中快速生...",
+    "version": "1.0.0",
+    "triggers": [
+      "mermaid guide",
+      "mermaid-guide"
+    ],
+    "author": "Emma",
+    "license": "MIT",
+    "allowed-tools": [
+      "write_file",
+      "read_file"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "diagram",
+          "uml",
+          "mermaid",
+          "documentation",
+          "visualization"
+        ],
+        "related_skills": [
+          "doc-design",
+          "markdown-guide"
+        ],
+        "category": "documentation",
+        "skill_type": "library-reference",
+        "design_pattern": "generator"
+      }
+    },
+    "category": "mermaid-guide",
+    "_source_path": "mermaid-guide/SKILL.md",
+    "_source_name": "mermaid-guide"
+  },
+  {
+    "name": "architecture-trilemma",
+    "description": "运行时(Runtime) vs 技能(Skill) vs 工具(Tool) — 三种Agent扩展机制的架构决策模式。当你需要在系统中设计一个新的组件时，先判断它属于三者中的哪一种，再决定它的集成方式、文档格式和安装流程。",
+    "version": "1.0.0",
+    "triggers": [
+      "运行时",
+      "runtime",
+      "技能",
+      "skill",
+      "工具",
+      "tool",
+      "架构设计",
+      "组件分类",
+      "决策模式",
+      "设计哲学迁移"
+    ],
+    "author": "Emma (小喵)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "architecture",
+          "design-pattern",
+          "decision-making",
+          "runtime",
+          "skill",
+          "tool"
+        ],
+        "category": "meta",
+        "skill_type": "methodology",
+        "design_pattern": "decision-tree"
+      }
+    },
+    "category": "meta",
+    "_source_path": "meta/architecture-trilemma/SKILL.md",
+    "_source_name": "architecture-trilemma"
+  },
+  {
+    "name": "design-philosophy-migration",
+    "description": "跨项目设计哲学重构方法论。从研究目标项目的设计哲学 → 提炼可复用模式 → 应用到自己的项目中。\n当需要从优秀项目中学习设计模式、并同构到自己的项目时使用此 skill。\n",
+    "version": "1.0.0",
+    "triggers": [
+      "设计哲学",
+      "跨项目",
+      "知识迁移",
+      "设计重构",
+      "借鉴",
+      "参考",
+      "学习其设计",
+      "项目重构",
+      "哲学迁移",
+      "设计模式迁移",
+      "架构重构",
+      "借鉴设计",
+      "学一下",
+      "学学它的"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "cross-project",
+          "design-philosophy",
+          "knowledge-transfer",
+          "refactoring",
+          "methodology"
+        ],
+        "category": "meta",
+        "skill_type": "methodology",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "meta",
+    "_source_path": "meta/design-philosophy-migration/SKILL.md",
+    "_source_name": "design-philosophy-migration"
+  },
+  {
+    "name": "evaluating-llms-harness",
+    "description": "Evaluates LLMs across 60+ academic benchmarks (MMLU, HumanEval, GSM8K, Trut...",
+    "version": "1.0.0",
+    "triggers": [
+      "evaluating llms harness",
+      "evaluating-llms-harness",
+      "模型评估",
+      "LLM评测",
+      "大模型评估"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "lm-eval",
+      "transformers",
+      "vllm"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Evaluation",
+          "LM Evaluation Harness",
+          "Benchmarking",
+          "MMLU",
+          "HumanEval",
+          "GSM8K",
+          "EleutherAI",
+          "Model Quality",
+          "Academic Benchmarks",
+          "Industry Standard"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/evaluation/lm-evaluation-harness/SKILL.md",
+    "_source_name": "lm-evaluation-harness"
+  },
+  {
+    "name": "weights-and-biases",
+    "description": "Track ML experiments with automatic logging, visualize training in real-tim...",
+    "version": "1.0.0",
+    "triggers": [
+      "weights and biases",
+      "weights-and-biases"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "wandb"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "MLOps",
+          "Weights And Biases",
+          "WandB",
+          "Experiment Tracking",
+          "Hyperparameter Tuning",
+          "Model Registry",
+          "Collaboration",
+          "Real-Time Visualization",
+          "PyTorch",
+          "TensorFlow",
+          "HuggingFace"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/evaluation/weights-and-biases/SKILL.md",
+    "_source_name": "weights-and-biases"
+  },
+  {
+    "name": "huggingface-hub",
+    "description": "Hugging Face Hub CLI (hf) — search, download, and upload models and dataset...",
+    "version": "1.0.0",
+    "triggers": [
+      "huggingface hub",
+      "huggingface-hub"
+    ],
+    "author": "Hugging Face",
+    "license": "MIT",
+    "tags": [
+      "huggingface",
+      "hf",
+      "models",
+      "datasets",
+      "hub",
+      "mlops"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/huggingface-hub/SKILL.md",
+    "_source_name": "huggingface-hub"
+  },
+  {
+    "name": "llama-cpp",
+    "description": "Run LLM inference with llama.cpp on CPU, Apple Silicon, AMD/Intel GPUs, or ...",
+    "version": "2.0.0",
+    "triggers": [
+      "llama cpp",
+      "llama-cpp"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "llama-cpp-python>=0.2.0"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "llama.cpp",
+          "GGUF",
+          "Quantization",
+          "CPU Inference",
+          "Apple Silicon",
+          "Edge Deployment",
+          "Non-NVIDIA",
+          "AMD GPUs",
+          "Intel GPUs",
+          "Embedded",
+          "Model Compression"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/inference/llama-cpp/SKILL.md",
+    "_source_name": "llama-cpp"
+  },
+  {
+    "name": "obliteratus",
+    "description": "Remove refusal behaviors from open-weight LLMs using OBLITERATUS — mechanis...",
+    "version": "2.0.0",
+    "triggers": [
+      "obliteratus",
+      "obliteratus"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "dependencies": [
+      "obliteratus",
+      "torch",
+      "transformers",
+      "bitsandbytes",
+      "accelerate",
+      "safetensors"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Abliteration",
+          "Uncensoring",
+          "Refusal-Removal",
+          "LLM",
+          "Weight-Projection",
+          "SVD",
+          "Mechanistic-Interpretability",
+          "HuggingFace",
+          "Model-Surgery"
+        ],
+        "related_skills": [
+          "vllm",
+          "gguf",
+          "huggingface-tokenizers"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/inference/obliteratus/SKILL.md",
+    "_source_name": "obliteratus"
+  },
+  {
+    "name": "outlines",
+    "description": "Guarantee valid JSON/XML/code structure during generation, use Pydantic mod...",
+    "version": "1.0.0",
+    "triggers": [
+      "outlines",
+      "outlines"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "outlines",
+      "transformers",
+      "vllm",
+      "pydantic"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Prompt Engineering",
+          "Outlines",
+          "Structured Generation",
+          "JSON Schema",
+          "Pydantic",
+          "Local Models",
+          "Grammar-Based Generation",
+          "vLLM",
+          "Transformers",
+          "Type Safety"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/inference/outlines/SKILL.md",
+    "_source_name": "outlines"
+  },
+  {
+    "name": "serving-llms-vllm",
+    "description": "Serves LLMs with high throughput using vLLM's PagedAttention and continuous...",
+    "version": "1.0.0",
+    "triggers": [
+      "serving llms vllm",
+      "serving-llms-vllm",
+      "vllm",
+      "模型部署",
+      "推理加速",
+      "LLM推理"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "vllm",
+      "torch",
+      "transformers"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "vLLM",
+          "Inference Serving",
+          "PagedAttention",
+          "Continuous Batching",
+          "High Throughput",
+          "Production",
+          "OpenAI API",
+          "Quantization",
+          "Tensor Parallelism"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/inference/vllm/SKILL.md",
+    "_source_name": "vllm"
+  },
+  {
+    "name": "audiocraft-audio-generation",
+    "description": "PyTorch library for audio generation including text-to-music (MusicGen) and...",
+    "version": "1.0.0",
+    "triggers": [
+      "audiocraft audio generation",
+      "audiocraft-audio-generation",
+      "音频生成",
+      "音乐生成",
+      "文生音乐"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "audiocraft",
+      "torch>=2.0.0",
+      "transformers>=4.30.0"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Multimodal",
+          "Audio Generation",
+          "Text-to-Music",
+          "Text-to-Audio",
+          "MusicGen"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/models/audiocraft/SKILL.md",
+    "_source_name": "audiocraft"
+  },
+  {
+    "name": "segment-anything-model",
+    "description": "Foundation model for image segmentation with zero-shot transfer. Use when y...",
+    "version": "1.0.0",
+    "triggers": [
+      "segment anything model",
+      "segment-anything-model",
+      "sam",
+      "图像分割",
+      "抠图",
+      "SAM模型"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "segment-anything",
+      "transformers>=4.30.0",
+      "torch>=1.7.0"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Multimodal",
+          "Image Segmentation",
+          "Computer Vision",
+          "SAM",
+          "Zero-Shot"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/models/segment-anything/SKILL.md",
+    "_source_name": "segment-anything"
+  },
+  {
+    "name": "dspy",
+    "description": "Build complex AI systems with declarative programming, optimize prompts aut...",
+    "version": "1.0.0",
+    "triggers": [
+      "dspy",
+      "dspy"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "dspy",
+      "openai",
+      "anthropic"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Prompt Engineering",
+          "DSPy",
+          "Declarative Programming",
+          "RAG",
+          "Agents",
+          "Prompt Optimization",
+          "LM Programming",
+          "Stanford NLP",
+          "Automatic Optimization",
+          "Modular AI"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/research/dspy/SKILL.md",
+    "_source_name": "dspy"
+  },
+  {
+    "name": "axolotl",
+    "description": "Expert guidance for fine-tuning LLMs with Axolotl - YAML configs, 100+ mode...",
+    "version": "1.0.0",
+    "triggers": [
+      "axolotl",
+      "axolotl"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "axolotl",
+      "torch",
+      "transformers",
+      "datasets",
+      "peft",
+      "accelerate",
+      "deepspeed"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Fine-Tuning",
+          "Axolotl",
+          "LLM",
+          "LoRA",
+          "QLoRA",
+          "DPO",
+          "KTO",
+          "ORPO",
+          "GRPO",
+          "YAML",
+          "HuggingFace",
+          "DeepSpeed",
+          "Multimodal"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/training/axolotl/SKILL.md",
+    "_source_name": "axolotl"
+  },
+  {
+    "name": "fine-tuning-with-trl",
+    "description": "Fine-tune LLMs using reinforcement learning with TRL - SFT for instruction ...",
+    "version": "1.0.0",
+    "triggers": [
+      "fine tuning with trl",
+      "fine-tuning-with-trl",
+      "微调",
+      "RLHF",
+      "强化学习微调"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "trl",
+      "transformers",
+      "datasets",
+      "peft",
+      "accelerate",
+      "torch"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Post-Training",
+          "TRL",
+          "Reinforcement Learning",
+          "Fine-Tuning",
+          "SFT",
+          "DPO",
+          "PPO",
+          "GRPO",
+          "RLHF",
+          "Preference Alignment",
+          "HuggingFace"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/training/trl-fine-tuning/SKILL.md",
+    "_source_name": "trl-fine-tuning"
+  },
+  {
+    "name": "unsloth",
+    "description": "Expert guidance for fast fine-tuning with Unsloth - 2-5x faster training, 5...",
+    "version": "1.0.0",
+    "triggers": [
+      "unsloth",
+      "unsloth"
+    ],
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "unsloth",
+      "torch",
+      "transformers",
+      "trl",
+      "datasets",
+      "peft"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Fine-Tuning",
+          "Unsloth",
+          "Fast Training",
+          "LoRA",
+          "QLoRA",
+          "Memory-Efficient",
+          "Optimization",
+          "Llama",
+          "Mistral",
+          "Gemma",
+          "Qwen"
+        ]
+      }
+    },
+    "category": "mlops",
+    "_source_path": "mlops/training/unsloth/SKILL.md",
+    "_source_name": "unsloth"
+  },
+  {
+    "name": "news-briefing",
+    "description": "新闻采集与报刊级别简报生成技能。涵盖 RSS/API 采集管线、新闻分类筛选去重、AI 辅助摘要、以及使用 WeasyPrint 生成专业报刊级 PDF 文档（4+页，网格系统+视觉层次+多栏布局）。",
+    "version": "2.2.0",
+    "triggers": [
+      "新闻采集",
+      "新闻简报",
+      "news briefing",
+      "报刊",
+      "报纸",
+      "日报",
+      "周报",
+      "看新闻",
+      "新闻汇总"
+    ],
+    "depends_on": [
+      "web-access",
+      "pdf-layout-weasyprint"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "mcp_tavily_tavily_search",
+      "mcp_tavily_tavily_extract"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "news",
+          "briefing",
+          "rss",
+          "aggregation",
+          "newspaper",
+          "layout",
+          "weasyprint",
+          "pdf"
+        ],
+        "category": "research",
+        "skill_type": "doc-generation",
+        "design_pattern": "generator"
+      }
+    },
+    "category": "news-briefing",
+    "_source_path": "news-briefing/SKILL.md",
+    "_source_name": "news-briefing"
+  },
+  {
+    "name": "night-study-engine",
+    "description": "Hermes 夜间自习引擎 v2.0 — 自驱动学习系统。涵盖动态领域引擎、学习质量门禁、知识追踪、间隔复习、结构化日志、晨间汇报增强、Artifact 产出门禁。v2.0 核心升级：从简单批处理升级为完整学习系统。",
+    "version": "2.0.0",
+    "triggers": [
+      "夜间学习",
+      "night study",
+      "夜间自习",
+      "自主学习",
+      "自动学习",
+      "知识更新",
+      "skill 维护",
+      "学习系统",
+      "间隔复习",
+      "知识追踪",
+      "知识门禁",
+      "学习质量",
+      "自习改造",
+      "self-driven learning",
+      "autonomous study",
+      "knowledge update"
+    ],
+    "author": "小喵 (Emma)",
+    "license": "MIT",
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "cronjob",
+      "mcp_tavily_tavily_search",
+      "mcp_tavily_tavily_extract",
+      "mcp_tavily_tavily_crawl",
+      "delegate_task"
+    ],
+    "depends_on": [
+      "learning-workflow",
+      "learning-review-cycle",
+      "web-access",
+      "skill-creator"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "autonomous-learning",
+          "knowledge-tracking",
+          "spaced-repetition",
+          "quality-gate"
+        ],
+        "category": "meta",
+        "skill_type": "pipeline",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "night-study-engine",
+    "_source_path": "night-study-engine/SKILL.md",
+    "_source_name": "night-study-engine"
+  },
+  {
+    "name": "obsidian",
+    "description": "Read, search, and create notes in the Obsidian vault.",
+    "triggers": [
+      "obsidian",
+      "obsidian"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "note-taking",
+    "_source_path": "note-taking/obsidian/SKILL.md",
+    "_source_name": "obsidian"
+  },
+  {
+    "name": "pdf-layout",
+    "description": "专业 PDF 排版设计与生成技能。涵盖 reportlab 高级排版技巧、中文 PDF 生成、 WQY ZenHei 字体方案、Mermaid 图嵌入...",
+    "version": "2.0.0",
+    "triggers": [
+      "pdf layout",
+      "pdf-layout"
+    ],
+    "author": "小喵",
+    "license": "MIT",
+    "allowed-tools": [
+      "write_file",
+      "patch",
+      "read_file",
+      "terminal"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "pdf",
+          "reportlab",
+          "layout",
+          "typography",
+          "chinese",
+          "toc",
+          "header-footer",
+          "table-style"
+        ],
+        "related_skills": [
+          "doc-design",
+          "mermaid-guide"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "design_pattern": "generator"
+      }
+    },
+    "category": "pdf-layout",
+    "_source_path": "pdf-layout/SKILL.md",
+    "_source_name": "pdf-layout"
+  },
+  {
+    "name": "pdf-pro-design",
+    "description": "PDF 专业排版设计与生成系统。涵盖场景自适应（技术/商务/学术）、顶级排版规范（CRAP 原则）、字体策略、高级 CSS (WeasyPrint/Chrome) 以及自动化视觉质检。目标是生成达到“网上优秀”标准的 PDF 文档。",
+    "version": "2.0.0",
+    "triggers": [
+      "pdf pro",
+      "professional pdf",
+      "高级排版",
+      "排版设计",
+      "优秀文档",
+      "design pdf"
+    ],
+    "depends_on": [
+      "visual-aesthetics",
+      "web-access"
+    ],
+    "design_pattern": "Generator",
+    "skill_type": "pipeline",
+    "category": "pdf-pro-design",
+    "_source_path": "pdf-pro-design/SKILL.md",
+    "_source_name": "pdf-pro-design"
+  },
+  {
+    "name": "pdf-render-comparison",
+    "description": "PDF 渲染工具选型决策树。根据需求特征（中文支持、排版复杂度、安装状态）推荐最佳工具链。 涵盖 WeasyPrint、ReportLab、fpdf2、Headless Chrome、Pandoc 五大工具的对比矩阵、安装检测脚本和选型流程图。",
+    "version": "1.0.0",
+    "triggers": [
+      "pdf render comparison",
+      "pdf 工具选型",
+      "pdf 渲染对比",
+      "pdf toolchain",
+      "选择pdf工具",
+      "用什么生成pdf",
+      "pdf renderer",
+      "weasyprint vs reportlab"
+    ],
+    "depends_on": [
+      "pdf-layout",
+      "pdf-pro-design"
+    ],
+    "design_pattern": "Tool Wrapper",
+    "skill_type": "generator",
+    "category": "pdf-render-comparison",
+    "_source_path": "pdf-render-comparison/SKILL.md",
+    "_source_name": "pdf-render-comparison"
+  },
+  {
+    "name": "pptx-guide",
+    "description": "PowerPoint (.pptx) 演示文稿操作原子技能。使用 python-pptx 创建专业 PPT，含 2025-2026 设计趋势。",
+    "triggers": [
+      "pptx guide",
+      "pptx-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "powerpoint",
+          "pptx",
+          "presentation",
+          "slides"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "pptx"
+      }
+    },
+    "category": "pptx-guide",
+    "_source_path": "pptx-guide/SKILL.md",
+    "_source_name": "pptx-guide"
+  },
+  {
+    "name": "process-management",
+    "description": "长任务监控与后台进程管理最佳实践。涵盖 terminal(background=true) 的 8 种操作模式、notify_on_complete 异步通知、watch_patterns 实时监控、以及与 cronjob/delegate_task/execute_code 的配合策略。当需要启动长时间运行的任务时使用此 skill。",
+    "version": "1.0.0",
+    "triggers": [
+      "长任务",
+      "后台进程",
+      "process管理",
+      "进程监控",
+      "异步任务",
+      "长时间运行",
+      "background task",
+      "process tool",
+      "notify_on_complete",
+      "watch_patterns",
+      "部署监控",
+      "训练监控"
+    ],
+    "depends_on": [],
+    "referenced_by": [
+      "self-capabilities-map"
+    ],
+    "design_pattern": "Pipeline",
+    "skill_type": "product-verification",
+    "category": "process-management",
+    "_source_path": "process-management/SKILL.md",
+    "_source_name": "process-management"
+  },
+  {
+    "name": "airtable",
+    "description": "Airtable REST API via curl. Records CRUD, filters, upserts.",
+    "version": "1.1.0",
+    "author": "community",
+    "license": "MIT",
+    "prerequisites": {
+      "env_vars": [
+        "AIRTABLE_API_KEY"
+      ],
+      "commands": [
+        "curl"
+      ]
+    },
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Airtable",
+          "Productivity",
+          "Database",
+          "API"
+        ],
+        "homepage": "https://airtable.com/developers/web/api/introduction"
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/airtable/SKILL.md",
+    "_source_name": "airtable"
+  },
+  {
+    "name": "google-workspace",
+    "description": "Gmail, Calendar, Drive, Contacts, Sheets, and Docs integration for Hermes. ...",
+    "version": "1.0.0",
+    "triggers": [
+      "google workspace",
+      "google-workspace"
+    ],
+    "author": "Nous Research",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Google",
+          "Gmail",
+          "Calendar",
+          "Drive",
+          "Sheets",
+          "Docs",
+          "Contacts",
+          "Email",
+          "OAuth"
+        ],
+        "homepage": "https://github.com/NousResearch/hermes-agent",
+        "related_skills": [
+          "himalaya"
+        ]
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/google-workspace/SKILL.md",
+    "_source_name": "google-workspace"
+  },
+  {
+    "name": "linear",
+    "description": "Manage Linear issues, projects, and teams via the GraphQL API. Create, upda...",
+    "version": "1.0.0",
+    "triggers": [
+      "linear",
+      "linear"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "prerequisites": {
+      "env_vars": [
+        "LINEAR_API_KEY"
+      ],
+      "commands": [
+        "curl"
+      ]
+    },
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Linear",
+          "Project Management",
+          "Issues",
+          "GraphQL",
+          "API",
+          "Productivity"
+        ]
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/linear/SKILL.md",
+    "_source_name": "linear"
+  },
+  {
+    "name": "maps",
+    "description": "Location intelligence — geocode a place, reverse-geocode coordinates, find ...",
+    "version": "1.2.0",
+    "triggers": [
+      "maps",
+      "maps"
+    ],
+    "author": "Mibayy",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "maps",
+          "geocoding",
+          "places",
+          "routing",
+          "distance",
+          "directions",
+          "nearby",
+          "location",
+          "openstreetmap",
+          "nominatim",
+          "overpass",
+          "osrm"
+        ],
+        "category": "productivity",
+        "requires_toolsets": [
+          "terminal"
+        ],
+        "supersedes": [
+          "find-nearby"
+        ]
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/maps/SKILL.md",
+    "_source_name": "maps"
+  },
+  {
+    "name": "nano-pdf",
+    "description": "Edit PDFs with natural-language instructions using the nano-pdf CLI. Modify...",
+    "version": "1.0.0",
+    "triggers": [
+      "nano pdf",
+      "nano-pdf"
+    ],
+    "author": "community",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "PDF",
+          "Documents",
+          "Editing",
+          "NLP",
+          "Productivity"
+        ],
+        "homepage": "https://pypi.org/project/nano-pdf/"
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/nano-pdf/SKILL.md",
+    "_source_name": "nano-pdf"
+  },
+  {
+    "name": "notion",
+    "description": "Notion API for creating and managing pages, databases, and blocks via curl....",
+    "version": "1.0.0",
+    "triggers": [
+      "notion",
+      "notion"
+    ],
+    "author": "community",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Notion",
+          "Productivity",
+          "Notes",
+          "Database",
+          "API"
+        ],
+        "homepage": "https://developers.notion.com"
+      }
+    },
+    "prerequisites": {
+      "env_vars": [
+        "NOTION_API_KEY"
+      ]
+    },
+    "category": "productivity",
+    "_source_path": "productivity/notion/SKILL.md",
+    "_source_name": "notion"
+  },
+  {
+    "name": "ocr-and-documents",
+    "description": "Extract text from PDFs and scanned documents. Use web_extract for remote UR...",
+    "version": "2.3.0",
+    "triggers": [
+      "ocr and documents",
+      "ocr-and-documents"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "PDF",
+          "Documents",
+          "Research",
+          "Arxiv",
+          "Text-Extraction",
+          "OCR"
+        ],
+        "related_skills": [
+          "powerpoint"
+        ]
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/ocr-and-documents/SKILL.md",
+    "_source_name": "ocr-and-documents"
+  },
+  {
+    "name": "powerpoint",
+    "description": "Use this skill any time a .pptx file is involved in any way — as input, out...",
+    "triggers": [
+      "powerpoint",
+      "powerpoint"
+    ],
+    "license": "Proprietary. LICENSE.txt has complete terms",
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "productivity",
+    "_source_path": "productivity/powerpoint/SKILL.md",
+    "_source_name": "powerpoint"
+  },
+  {
+    "name": "pptx-analysis",
+    "description": "PPT 深度理解与解析原子技能。循环分析流水线（树状递归+中间反思+process files），三层架构（结构解析→视觉分析→语义理解），27种设计缺陷检测。",
+    "version": "2.0.0",
+    "triggers": [
+      "pptx analysis",
+      "pptx-analysis",
+      "PPT 深度理解",
+      "PPT 解析",
+      "幻灯片分析",
+      "slide analysis",
+      "设计缺陷检测",
+      "CRAP 原则检测",
+      "PPT 阅读理解",
+      "循环分析",
+      "深度分析",
+      "迭代精炼",
+      "gleaning loop"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "powerpoint",
+          "pptx",
+          "presentation",
+          "slides",
+          "vision-analysis",
+          "design-flaws",
+          "cyclic-analysis",
+          "iterative-refinement"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-analysis",
+        "format": "pptx"
+      }
+    },
+    "depends_on": [
+      "analysis-workflow",
+      "mermaid-guide"
+    ],
+    "design_pattern": "Cyclic-Pipeline",
+    "category": "productivity",
+    "_source_path": "productivity/pptx-analysis/SKILL.md",
+    "_source_name": "pptx-analysis"
+  },
+  {
+    "name": "proxy-finder",
+    "description": "免费代理机场搜集与节点测试技能。搜索可用机场订阅源、下载订阅、测试节点连通性、 筛选可用节点并写入 mihomo 配置。当用户需要找免费节点、测试代理...",
+    "version": "2.0.0",
+    "triggers": [
+      "proxy finder",
+      "proxy-finder"
+    ],
+    "author": "小喵",
+    "license": "MIT",
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "mcp_tavily_tavily_search",
+      "mcp_tavily_tavily_extract"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "proxy",
+          "v2ray",
+          "clash",
+          "network",
+          "automation",
+          "scraping"
+        ],
+        "category": "devops",
+        "skill_type": "data-analysis",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "proxy-finder",
+    "_source_path": "proxy-finder/SKILL.md",
+    "_source_name": "proxy-finder"
+  },
+  {
+    "name": "godmode",
+    "description": "Jailbreak API-served LLMs using G0DM0D3 techniques — Parseltongue input obf...",
+    "version": "1.0.0",
+    "triggers": [
+      "godmode",
+      "godmode"
+    ],
+    "author": "Hermes Agent + Teknium",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "jailbreak",
+          "red-teaming",
+          "G0DM0D3",
+          "Parseltongue",
+          "GODMODE",
+          "uncensoring",
+          "safety-bypass",
+          "prompt-engineering",
+          "L1B3RT4S"
+        ],
+        "related_skills": [
+          "obliteratus"
+        ]
+      }
+    },
+    "category": "red-teaming",
+    "_source_path": "red-teaming/godmode/SKILL.md",
+    "_source_name": "godmode"
+  },
+  {
+    "name": "ai-trends",
+    "description": "AI前沿技术趋势追踪 — 开源模型、AI Agent、LLM新特性、ML论文动态。定期更新，保持对AI领域最新进展的知识同步。",
+    "version": "1.5.0",
+    "triggers": [
+      "ai trends",
+      "ai前沿",
+      "llm news",
+      "open source models",
+      "ai agents",
+      "machine learning papers"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "AI趋势",
+          "开源模型",
+          "LLM",
+          "AI Agent",
+          "论文追踪"
+        ]
+      }
+    },
+    "category": "research",
+    "_source_path": "research/ai-trends/SKILL.md",
+    "_source_name": "ai-trends"
+  },
+  {
+    "name": "arxiv",
+    "description": "Search and retrieve academic papers from arXiv using their free REST API. N...",
+    "version": "1.0.0",
+    "triggers": [
+      "arxiv",
+      "arxiv"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Research",
+          "Arxiv",
+          "Papers",
+          "Academic",
+          "Science",
+          "API"
+        ],
+        "related_skills": [
+          "ocr-and-documents"
+        ]
+      }
+    },
+    "category": "research",
+    "_source_path": "research/arxiv/SKILL.md",
+    "_source_name": "arxiv"
+  },
+  {
+    "name": "blogwatcher",
+    "description": "Monitor blogs and RSS/Atom feeds for updates using the blogwatcher-cli tool...",
+    "version": "2.0.0",
+    "triggers": [
+      "blogwatcher",
+      "blogwatcher"
+    ],
+    "author": "JulienTant (fork of Hyaxia/blogwatcher)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "RSS",
+          "Blogs",
+          "Feed-Reader",
+          "Monitoring"
+        ],
+        "homepage": "https://github.com/JulienTant/blogwatcher-cli"
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "blogwatcher-cli"
+      ]
+    },
+    "category": "research",
+    "_source_path": "research/blogwatcher/SKILL.md",
+    "_source_name": "blogwatcher"
+  },
+  {
+    "name": "deep-research",
+    "description": "深度调研工作流 — 从需求理解到可交付报告（PDF/PPT）的完整方法论。融合 MECE 原则、金字塔原理、SCQA 框架、BLUF 原则。支持产出结构化研究报告（PDF）和演示文稿（PPT）。任何涉及'调研/研究/对比/分析'的任务应优先加载此 skill。",
+    "version": "2.0.0",
+    "triggers": [
+      "调研",
+      "研究",
+      "深度调研",
+      "报告",
+      "研究报告",
+      "可交付",
+      "对比分析",
+      "方案对比",
+      "调研报告",
+      "research",
+      "deep research",
+      "深度研究",
+      "产出一份报告",
+      "出报告",
+      "输出报告",
+      "给我一份报告",
+      "出一份报告",
+      "调研一下",
+      "研究一下"
+    ],
+    "author": "Emma (小玛)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "research",
+          "report",
+          "methodology",
+          "presentation",
+          "pdf",
+          "pptx"
+        ],
+        "category": "research",
+        "skill_type": "pipeline",
+        "design_pattern": "pipeline"
+      }
+    },
+    "depends_on": [
+      "web-access",
+      "learning",
+      "pdf-layout-weasyprint",
+      "pptx-guide"
+    ],
+    "category": "research",
+    "_source_path": "research/deep-research/SKILL.md",
+    "_source_name": "deep-research"
+  },
+  {
+    "name": "llm-wiki",
+    "description": "Karpathy's LLM Wiki — build and maintain a persistent, interlinked markdown...",
+    "version": "2.0.0",
+    "triggers": [
+      "llm wiki",
+      "llm-wiki"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "wiki",
+          "knowledge-base",
+          "research",
+          "notes",
+          "markdown",
+          "rag-alternative"
+        ],
+        "category": "research",
+        "related_skills": [
+          "obsidian",
+          "arxiv",
+          "agentic-research-ideas"
+        ]
+      }
+    },
+    "category": "research",
+    "_source_path": "research/llm-wiki/SKILL.md",
+    "_source_name": "llm-wiki"
+  },
+  {
+    "name": "polymarket",
+    "description": "Query Polymarket prediction market data — search markets, get prices, order...",
+    "version": "1.0.0",
+    "triggers": [
+      "polymarket",
+      "polymarket"
+    ],
+    "author": "Hermes Agent + Teknium",
+    "tags": [
+      "polymarket",
+      "prediction-markets",
+      "market-data",
+      "trading"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": []
+      }
+    },
+    "category": "research",
+    "_source_path": "research/polymarket/SKILL.md",
+    "_source_name": "polymarket"
+  },
+  {
+    "name": "research-paper-writing",
+    "description": "End-to-end pipeline for writing ML/AI research papers — from experiment des...",
+    "version": "1.1.0",
+    "triggers": [
+      "research paper writing",
+      "research-paper-writing"
+    ],
+    "title": "Research Paper Writing Pipeline",
+    "author": "Orchestra Research",
+    "license": "MIT",
+    "dependencies": [
+      "semanticscholar",
+      "arxiv",
+      "habanero",
+      "requests",
+      "scipy",
+      "numpy",
+      "matplotlib",
+      "SciencePlots"
+    ],
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Research",
+          "Paper Writing",
+          "Experiments",
+          "ML",
+          "AI",
+          "NeurIPS",
+          "ICML",
+          "ICLR",
+          "ACL",
+          "AAAI",
+          "COLM",
+          "LaTeX",
+          "Citations",
+          "Statistical Analysis"
+        ],
+        "category": "research",
+        "related_skills": [
+          "arxiv",
+          "ml-paper-writing",
+          "subagent-driven-development",
+          "plan"
+        ],
+        "requires_toolsets": [
+          "terminal",
+          "files"
+        ]
+      }
+    },
+    "category": "research",
+    "_source_path": "research/research-paper-writing/SKILL.md",
+    "_source_name": "research-paper-writing"
+  },
+  {
+    "name": "self-capabilities-map",
+    "description": "boku（小玛/Emma）对 Hermes Agent 完整能力边界的认知地图。涵盖已掌握能力、未利用能力、能力限制、可扩展方向。当 boku 需要评估自己能否完成某项任务时，先加载此 skill 进行能力匹配。",
+    "version": "1.0.0",
+    "triggers": [
+      "boku 能做什么",
+      "能力边界",
+      "Hermes 还能做什么",
+      "自我评估",
+      "能力盘点",
+      "可以做什么",
+      "能做到什么程度",
+      "Hermes capability",
+      "扩展能力",
+      "还能学什么"
+    ],
+    "depends_on": [
+      "hermes-self-analysis",
+      "web-access",
+      "skill-creator"
+    ],
+    "referenced_by": [],
+    "design_pattern": "Inversion",
+    "skill_type": "research",
+    "category": "self-capabilities-map",
+    "_source_path": "self-capabilities-map/SKILL.md",
+    "_source_name": "self-capabilities-map"
+  },
+  {
+    "name": "skill-creator",
+    "description": "创建、优化、评估 Skill 的完整工作流。支持从实战任务中提取知识、从学习笔记转化 Skill。内置 5 种设计模式，9 阶段创作流程（含快速更新通道），引用依赖检查，以及 skill-manage 联动拦截。",
+    "version": "4.1.0",
+    "triggers": [
+      "skill",
+      "创建技能",
+      "优化技能",
+      "模板",
+      "技能升级",
+      "依赖检查",
+      "skill-manage 联动"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "search_files",
+      "skill_manage",
+      "skills_list",
+      "skill_view"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "skill-creation",
+          "evaluation",
+          "knowledge-extraction",
+          "versioning",
+          "dependency-tracking"
+        ],
+        "category": "meta",
+        "skill_type": "generator",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "skill-creator",
+    "_source_path": "skill-creator/SKILL.md",
+    "_source_name": "skill-creator"
+  },
+  {
+    "name": "skill-to-pypi",
+    "description": "将 Hermes 内部组件（skill/脚本/工具）打包为独立的 Python 开源项目。涵盖项目结构初始化、模块化重构、pyproject.toml/setup.py 配置、测试框架搭建、Git 版本管理、覆盖率目标设定、LICENSE 选择等完整流程。\n\n从一次实战中沉淀：SRA (Skill Runtime Advisor) 从单脚本 skill-advisor.py 转化为独立 GitHub 仓库的完整经验。",
+    "version": "1.1.0",
+    "triggers": [
+      "开源",
+      "发布到 PyPI",
+      "pip install",
+      "打包",
+      "独立项目",
+      "GitHub 发布",
+      "开源项目",
+      "open source",
+      "publish to pypi",
+      "package",
+      "项目结构",
+      "project scaffolding",
+      "twine",
+      "setuptools",
+      "pypi 上传",
+      "license",
+      "pep 621",
+      "pep 639",
+      "wheel",
+      "sdist",
+      "发布前准备",
+      "发行版",
+      "first release",
+      "CHANGELOG",
+      "文档一致性检查",
+      "pre-release",
+      "CI 配置",
+      "GitHub Actions",
+      "自动测试"
+    ],
+    "design_pattern": "Pipeline + Generator",
+    "skill_type": "Workflow",
+    "category": "skill-to-pypi",
+    "_source_path": "skill-to-pypi/SKILL.md",
+    "_source_name": "skill-to-pypi"
+  },
+  {
+    "name": "smart-broadcast",
+    "description": "Hermes 智能播报引擎 v2.0 管理指南。涵盖状态检查、数据源配置、静默管理、故障排查及扩展开发。",
+    "version": "1.0.0",
+    "triggers": [
+      "播报",
+      "广播",
+      "通知",
+      "播报状态",
+      "智能播报",
+      "广播配置",
+      "添加播报源",
+      "广播测试"
+    ],
+    "depends_on": [],
+    "design_pattern": "Tool Wrapper",
+    "skill_type": "Tool Wrapper",
+    "category": "smart-broadcast",
+    "_source_path": "smart-broadcast/SKILL.md",
+    "_source_name": "smart-broadcast"
+  },
+  {
+    "name": "openhue",
+    "description": "Control Philips Hue lights, rooms, and scenes via the OpenHue CLI. Turn lig...",
+    "version": "1.0.0",
+    "triggers": [
+      "openhue",
+      "openhue"
+    ],
+    "author": "community",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "Smart-Home",
+          "Hue",
+          "Lights",
+          "IoT",
+          "Automation"
+        ],
+        "homepage": "https://www.openhue.io/cli"
+      }
+    },
+    "prerequisites": {
+      "commands": [
+        "openhue"
+      ]
+    },
+    "category": "smart-home",
+    "_source_path": "smart-home/openhue/SKILL.md",
+    "_source_name": "openhue"
+  },
+  {
+    "name": "xurl",
+    "description": "Interact with X/Twitter via xurl, the official X API CLI. Use for posting, ...",
+    "version": "1.1.0",
+    "triggers": [
+      "xurl",
+      "xurl"
+    ],
+    "author": "xdevplatform + openclaw + Hermes Agent",
+    "license": "MIT",
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "prerequisites": {
+      "commands": [
+        "xurl"
+      ]
+    },
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "twitter",
+          "x",
+          "social-media",
+          "xurl",
+          "official-api"
+        ],
+        "homepage": "https://github.com/xdevplatform/xurl",
+        "upstream_skill": "https://github.com/openclaw/openclaw/blob/main/skills/xurl/SKILL.md"
+      }
+    },
+    "category": "social-media",
+    "_source_path": "social-media/xurl/SKILL.md",
+    "_source_name": "xurl"
+  },
+  {
+    "name": "debugging-hermes-tui-commands",
+    "description": "Debug Hermes TUI slash commands: Python, gateway, Ink UI.",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "debugging",
+          "hermes-agent",
+          "tui",
+          "slash-commands",
+          "typescript",
+          "python"
+        ],
+        "related_skills": [
+          "python-debugpy",
+          "node-inspect-debugger",
+          "systematic-debugging"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/debugging-hermes-tui-commands/SKILL.md",
+    "_source_name": "debugging-hermes-tui-commands"
+  },
+  {
+    "name": "hermes-agent-skill-authoring",
+    "description": "Author in-repo SKILL.md: frontmatter, validator, structure.",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "skills",
+          "authoring",
+          "hermes-agent",
+          "conventions",
+          "skill-md"
+        ],
+        "related_skills": [
+          "writing-plans",
+          "requesting-code-review"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/hermes-agent-skill-authoring/SKILL.md",
+    "_source_name": "hermes-agent-skill-authoring"
+  },
+  {
+    "name": "node-inspect-debugger",
+    "description": "Debug Node.js via --inspect + Chrome DevTools Protocol CLI.",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "debugging",
+          "nodejs",
+          "node-inspect",
+          "cdp",
+          "breakpoints",
+          "ui-tui"
+        ],
+        "related_skills": [
+          "systematic-debugging",
+          "python-debugpy",
+          "debugging-hermes-tui-commands"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/node-inspect-debugger/SKILL.md",
+    "_source_name": "node-inspect-debugger"
+  },
+  {
+    "name": "patch-file-safety",
+    "description": "安全使用 patch 工具的最佳实践指南——何时用 patch、何时用 write_file、什么时候该重写整个文件。避免大块替换污染文件的风险。",
+    "version": "1.0.0",
+    "triggers": [
+      "需要修改代码文件",
+      "patch 工具遇到问题",
+      "文件被 patch 污染了",
+      "如何安全编辑文件",
+      "大块替换代码"
+    ],
+    "allowed-tools": [
+      "read_file",
+      "write_file",
+      "patch",
+      "terminal",
+      "execute_code"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "patch",
+          "file-edit",
+          "safety",
+          "code-modification"
+        ],
+        "category": "software-development",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/patch-file-safety/SKILL.md",
+    "_source_name": "patch-file-safety"
+  },
+  {
+    "name": "plan",
+    "description": "Plan mode for Hermes — inspect context, write a markdown plan into the acti...",
+    "version": "1.0.0",
+    "triggers": [
+      "plan",
+      "plan"
+    ],
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "planning",
+          "plan-mode",
+          "implementation",
+          "workflow"
+        ],
+        "related_skills": [
+          "writing-plans",
+          "subagent-driven-development"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/plan/SKILL.md",
+    "_source_name": "plan"
+  },
+  {
+    "name": "python-debugpy",
+    "description": "Debug Python: pdb REPL + debugpy remote (DAP).",
+    "version": "1.0.0",
+    "author": "Hermes Agent",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "debugging",
+          "python",
+          "pdb",
+          "debugpy",
+          "breakpoints",
+          "dap",
+          "post-mortem"
+        ],
+        "related_skills": [
+          "systematic-debugging",
+          "node-inspect-debugger",
+          "debugging-hermes-tui-commands"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/python-debugpy/SKILL.md",
+    "_source_name": "python-debugpy"
+  },
+  {
+    "name": "python-env-guide",
+    "description": "Hermes 环境下的 Python 使用最佳实践指南。涵盖 venv 管理、pip 用法、路径解析、错误处理、pathlib、if __name__...",
+    "version": "2.0.0",
+    "triggers": [
+      "python",
+      "venv",
+      "pip",
+      "环境",
+      "logging"
+    ],
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "execute_code",
+      "patch"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "python",
+          "venv",
+          "pip",
+          "environment",
+          "best-practices"
+        ],
+        "category": "software-development",
+        "skill_type": "library-reference",
+        "design_pattern": "tool-wrapper"
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/python-env-guide/SKILL.md",
+    "_source_name": "python-env-guide"
+  },
+  {
+    "name": "requesting-code-review",
+    "description": "Pre-commit verification pipeline — static security scan, baseline-aware qua...",
+    "version": "2.0.0",
+    "triggers": [
+      "requesting code review",
+      "requesting-code-review"
+    ],
+    "author": "Hermes Agent (adapted from obra/superpowers + MorAlekss)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "code-review",
+          "security",
+          "verification",
+          "quality",
+          "pre-commit",
+          "auto-fix"
+        ],
+        "related_skills": [
+          "subagent-driven-development",
+          "writing-plans",
+          "test-driven-development",
+          "github-code-review"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/requesting-code-review/SKILL.md",
+    "_source_name": "requesting-code-review"
+  },
+  {
+    "name": "spike",
+    "description": "Throwaway experiments to validate an idea before build.",
+    "version": "1.0.0",
+    "author": "Hermes Agent (adapted from gsd-build/get-shit-done)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "spike",
+          "prototype",
+          "experiment",
+          "feasibility",
+          "throwaway",
+          "exploration",
+          "research",
+          "planning",
+          "mvp",
+          "proof-of-concept"
+        ],
+        "related_skills": [
+          "sketch",
+          "writing-plans",
+          "subagent-driven-development",
+          "plan"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/spike/SKILL.md",
+    "_source_name": "spike"
+  },
+  {
+    "name": "subagent-driven-development",
+    "description": "Use when executing implementation plans with independent tasks. Dispatches ...",
+    "version": "1.1.0",
+    "triggers": [
+      "subagent driven development",
+      "subagent-driven-development"
+    ],
+    "author": "Hermes Agent (adapted from obra/superpowers)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "delegation",
+          "subagent",
+          "implementation",
+          "workflow",
+          "parallel"
+        ],
+        "related_skills": [
+          "writing-plans",
+          "requesting-code-review",
+          "test-driven-development"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/subagent-driven-development/SKILL.md",
+    "_source_name": "subagent-driven-development"
+  },
+  {
+    "name": "systematic-debugging",
+    "description": "Use when encountering any bug, test failure, or unexpected behavior. 4-phas...",
+    "version": "1.1.0",
+    "triggers": [
+      "systematic debugging",
+      "systematic-debugging"
+    ],
+    "author": "Hermes Agent (adapted from obra/superpowers)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "debugging",
+          "troubleshooting",
+          "problem-solving",
+          "root-cause",
+          "investigation"
+        ],
+        "related_skills": [
+          "test-driven-development",
+          "writing-plans",
+          "subagent-driven-development"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/systematic-debugging/SKILL.md",
+    "_source_name": "systematic-debugging"
+  },
+  {
+    "name": "test-driven-development",
+    "description": "Use when implementing any feature or bugfix, before writing implementation ...",
+    "version": "1.1.0",
+    "triggers": [
+      "test driven development",
+      "test-driven-development"
+    ],
+    "author": "Hermes Agent (adapted from obra/superpowers)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "testing",
+          "tdd",
+          "development",
+          "quality",
+          "red-green-refactor"
+        ],
+        "related_skills": [
+          "systematic-debugging",
+          "writing-plans",
+          "subagent-driven-development"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/test-driven-development/SKILL.md",
+    "_source_name": "test-driven-development"
+  },
+  {
+    "name": "writing-plans",
+    "description": "Use when you have a spec or requirements for a multi-step task. Creates com...",
+    "version": "1.1.0",
+    "triggers": [
+      "writing plans",
+      "writing-plans"
+    ],
+    "author": "Hermes Agent (adapted from obra/superpowers)",
+    "license": "MIT",
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "planning",
+          "design",
+          "implementation",
+          "workflow",
+          "documentation"
+        ],
+        "related_skills": [
+          "subagent-driven-development",
+          "test-driven-development",
+          "requesting-code-review"
+        ]
+      }
+    },
+    "category": "software-development",
+    "_source_path": "software-development/writing-plans/SKILL.md",
+    "_source_name": "writing-plans"
+  },
+  {
+    "name": "skill-eval-cranfield",
+    "description": "基于 Cranfield 信息检索范式的 skill 推荐系统评估方法论。涵盖分层测试查询设计(L1-L5)、自动 Qrels 生成、量化指标(Recall/MRR/NDCG/Spurious)、基线对比、按难度分层报告。适用于需要量化评估推荐/匹配系统改进效果的场景。",
+    "version": "1.0.0",
+    "author": "Emma (小喵)",
+    "license": "MIT",
+    "triggers": [
+      "eval",
+      "评估",
+      "recall",
+      "mrr",
+      "ndcg",
+      "baseline",
+      "基线",
+      "ground truth",
+      "qrels",
+      "相关性判断",
+      "测试框架",
+      "cranfield",
+      "评估指标",
+      "量化测试",
+      "对照测试"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "evaluation",
+          "testing",
+          "information-retrieval",
+          "cranfield-paradigm",
+          "recommendation-system",
+          "benchmark"
+        ],
+        "category": "testing",
+        "skill_type": "methodology",
+        "design_pattern": "pipeline",
+        "related_skills": [
+          "skill-creator",
+          "systematic-debugging"
+        ]
+      }
+    },
+    "category": "testing",
+    "_source_path": "testing/skill-eval-cranfield/SKILL.md",
+    "_source_name": "skill-eval-cranfield"
+  },
+  {
+    "name": "vision-qc-patterns",
+    "description": "PDF 排版错误模式库。涵盖粘连、错位、溢出、截断、字体回退失败等常见排版问题的视觉特征、根因分析和修复方案。 配合 vision_analyze 工具自动识别 PDF 渲染质量问题。",
+    "version": "1.0.0",
+    "triggers": [
+      "排版错误",
+      "排版问题",
+      "视觉质检",
+      "vision qc",
+      "pdf 错误模式",
+      "文字粘连",
+      "文字溢出",
+      "文字错位",
+      "排版检查",
+      "layout error"
+    ],
+    "depends_on": [
+      "pdf-layout",
+      "pdf-pro-design"
+    ],
+    "design_pattern": "Reviewer",
+    "skill_type": "pipeline",
+    "category": "vision-qc-patterns",
+    "_source_path": "vision-qc-patterns/SKILL.md",
+    "_source_name": "vision-qc-patterns"
+  },
+  {
+    "name": "web-access",
+    "description": "所有联网操作的统一入口。搜索、网页抓取、浏览器自动化、Tavily MCP 等都必须先经过此 skill，由它根据任务类型决策最优工具。",
+    "version": "6.4.0-hermes",
+    "triggers": [
+      "联网",
+      "搜索",
+      "查资料",
+      "web search",
+      "crawl",
+      "爬取",
+      "抓取",
+      "提取",
+      "浏览器"
+    ],
+    "author": "一泽Eze (adapted & upgraded by 小喵)",
+    "license": "MIT",
+    "github": "https://github.com/eze-is/web-access",
+    "allowed-tools": [
+      "terminal",
+      "read_file",
+      "write_file",
+      "patch",
+      "web_search",
+      "web_extract",
+      "web_crawl",
+      "browser_navigate",
+      "browser_snapshot",
+      "browser_click",
+      "browser_type",
+      "browser_scroll",
+      "browser_back",
+      "browser_press",
+      "browser_get_images",
+      "browser_vision",
+      "browser_console",
+      "mcp_tavily_tavily_search",
+      "mcp_tavily_tavily_extract",
+      "mcp_tavily_tavily_crawl",
+      "mcp_tavily_tavily_map"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "web",
+          "browser",
+          "scraping",
+          "search",
+          "automation",
+          "tavily"
+        ],
+        "related_skills": [
+          "clash-config",
+          "doc-design",
+          "skill-creator"
+        ],
+        "category": "web-access",
+        "skill_type": "product-verification",
+        "design_pattern": "pipeline"
+      }
+    },
+    "category": "web-access",
+    "_source_path": "web-access/SKILL.md",
+    "_source_name": "web-access"
+  },
+  {
+    "name": "web-ui",
+    "description": "Hermes Agent Web UI Dashboard 管理指南。涵盖安装启动、配置管理、API Key 管理、会话浏览、Cron 任务、日志查看、数据分析、OAuth 认证、主题切换、插件扩展、安全加固等完整操作。",
+    "version": "1.0.0",
+    "triggers": [
+      "web dashboard",
+      "hermes web",
+      "web ui",
+      "dashboard",
+      "web管理",
+      "web面板",
+      "web server",
+      "fastapi web",
+      "hermes dashboard",
+      "网页界面",
+      "web管理面板"
+    ],
+    "depends_on": [],
+    "referenced_by": [
+      "self-capabilities-map"
+    ],
+    "design_pattern": "Tool Wrapper",
+    "skill_type": "product-verification",
+    "category": "web-ui",
+    "_source_path": "web-ui/SKILL.md",
+    "_source_name": "web-ui"
+  },
+  {
+    "name": "writing-styles-guide",
+    "description": "去 AI 味写作指南。包含文本自检规则、风格调色板、Prompt 模板及复杂场景应对策略。用于生成具有人类质感（Perplexity/Burstiness）的多样化内容。",
+    "version": "1.0.0",
+    "triggers": [
+      "风格",
+      "语气",
+      "去 ai 味",
+      "人话",
+      "写作风格",
+      "tone",
+      "style",
+      "换个说法",
+      "像个人"
+    ],
+    "depends_on": [
+      "learning-workflow"
+    ],
+    "design_pattern": "Generator",
+    "skill_type": "Reference",
+    "category": "writing-styles-guide",
+    "_source_path": "writing-styles-guide/SKILL.md",
+    "_source_name": "writing-styles-guide"
+  },
+  {
+    "name": "xlsx-guide",
+    "description": "Excel (.xlsx) 电子表格操作原子技能。使用 openpyxl 创建带样式和图表的表格。",
+    "triggers": [
+      "xlsx guide",
+      "xlsx-guide"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "excel",
+          "xlsx",
+          "spreadsheet",
+          "data"
+        ],
+        "category": "productivity",
+        "skill_type": "doc-generation",
+        "format": "xlsx"
+      }
+    },
+    "category": "xlsx-guide",
+    "_source_path": "xlsx-guide/SKILL.md",
+    "_source_name": "xlsx-guide"
+  },
+  {
+    "name": "yuanbao",
+    "description": "Yuanbao (元宝) group interaction — @mention users, query group info and members",
+    "version": "1.0.0",
+    "triggers": [
+      "yuanbao",
+      "yuanbao"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "yuanbao",
+          "mention",
+          "at",
+          "group",
+          "members",
+          "元宝",
+          "派",
+          "艾特"
+        ],
+        "related_skills": []
+      }
+    },
+    "category": "yuanbao",
+    "_source_path": "yuanbao/SKILL.md",
+    "_source_name": "yuanbao"
+  }
+]

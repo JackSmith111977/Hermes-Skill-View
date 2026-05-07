@@ -1,0 +1,27 @@
+_source_name: creative-ideation
+_source_path: creative/creative-ideation/SKILL.md
+author: SHL0MS
+category: creative
+description: Generate project ideas through creative constraints. Use when the user
+  says...
+license: MIT
+metadata:
+  hermes:
+    category: creative
+    requires_toolsets: []
+    tags:
+    - Creative
+    - Ideation
+    - Projects
+    - Brainstorming
+    - Inspiration
+name: ideation
+title: Creative Ideation — Constraint-Driven Project Generation
+triggers:
+- ideation
+- creative-ideation
+- 头脑风暴
+- 创意生成
+- 点子
+- 灵感
+version: 1.0.0

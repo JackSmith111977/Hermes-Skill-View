@@ -1,0 +1,25 @@
+_source_name: apple-notes
+_source_path: apple/apple-notes/SKILL.md
+author: Hermes Agent
+category: apple
+description: Manage Apple Notes via the memo CLI on macOS (create, view, search, edit).
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - obsidian
+    tags:
+    - Notes
+    - Apple
+    - macOS
+    - note-taking
+name: apple-notes
+platforms:
+- macos
+prerequisites:
+  commands:
+  - memo
+triggers:
+- apple notes
+- apple-notes
+version: 1.0.0

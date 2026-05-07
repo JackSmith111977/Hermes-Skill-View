@@ -1,0 +1,6 @@
+_source_name: bmad-testarch-nfr
+_source_path: bmad-method/all-skills/bmad-testarch-nfr/SKILL.md
+category: bmad-method
+description: Assess NFRs like performance security and reliability. Use when the user
+  says "lets assess NFRs" or "I want to evaluate non-functional requirements"
+name: bmad-testarch-nfr

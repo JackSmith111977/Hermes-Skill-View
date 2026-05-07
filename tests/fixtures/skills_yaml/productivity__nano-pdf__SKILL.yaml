@@ -1,0 +1,21 @@
+_source_name: nano-pdf
+_source_path: productivity/nano-pdf/SKILL.md
+author: community
+category: productivity
+description: Edit PDFs with natural-language instructions using the nano-pdf CLI.
+  Modify...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://pypi.org/project/nano-pdf/
+    tags:
+    - PDF
+    - Documents
+    - Editing
+    - NLP
+    - Productivity
+name: nano-pdf
+triggers:
+- nano pdf
+- nano-pdf
+version: 1.0.0

@@ -1,0 +1,31 @@
+_source_name: pdf-layout-weasyprint
+_source_path: doc-design/pdf-layout-weasyprint/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- patch
+category: doc-design
+description: 使用 WeasyPrint（HTML+CSS→PDF）生成中文 PDF 的完整指南。WeasyPrint 比 ReportLab 更适合文字为主的
+  P...
+metadata:
+  hermes:
+    category: doc-design
+    design_pattern: tool-wrapper
+    related_skills:
+    - pdf-layout-reportlab
+    - doc-design
+    skill_type: library-reference
+    tags:
+    - pdf
+    - weasyprint
+    - html
+    - css
+    - chinese
+    - layout
+name: pdf-layout-weasyprint
+triggers:
+- pdf
+- weasyprint
+- 生成 pdf
+version: 2.0.0

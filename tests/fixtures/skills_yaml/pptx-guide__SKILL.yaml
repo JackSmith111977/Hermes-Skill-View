@@ -1,0 +1,18 @@
+_source_name: pptx-guide
+_source_path: pptx-guide/SKILL.md
+category: pptx-guide
+description: PowerPoint (.pptx) 演示文稿操作原子技能。使用 python-pptx 创建专业 PPT，含 2025-2026 设计趋势。
+metadata:
+  hermes:
+    category: productivity
+    format: pptx
+    skill_type: doc-generation
+    tags:
+    - powerpoint
+    - pptx
+    - presentation
+    - slides
+name: pptx-guide
+triggers:
+- pptx guide
+- pptx-guide

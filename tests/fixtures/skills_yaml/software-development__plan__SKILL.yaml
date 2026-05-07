@@ -1,0 +1,22 @@
+_source_name: plan
+_source_path: software-development/plan/SKILL.md
+author: Hermes Agent
+category: software-development
+description: Plan mode for Hermes — inspect context, write a markdown plan into the
+  acti...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - writing-plans
+    - subagent-driven-development
+    tags:
+    - planning
+    - plan-mode
+    - implementation
+    - workflow
+name: plan
+triggers:
+- plan
+- plan
+version: 1.0.0

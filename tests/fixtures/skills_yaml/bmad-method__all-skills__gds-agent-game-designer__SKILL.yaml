@@ -1,0 +1,6 @@
+_source_name: gds-agent-game-designer
+_source_path: bmad-method/all-skills/gds-agent-game-designer/SKILL.md
+category: bmad-method
+description: Game designer for creative vision, GDD creation, and narrative design.
+  Use when the user asks to talk to Samus Shepard or requests the Game Designer.
+name: gds-agent-game-designer

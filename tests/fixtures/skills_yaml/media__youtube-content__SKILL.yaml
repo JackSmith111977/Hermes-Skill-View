@@ -1,0 +1,12 @@
+_source_name: youtube-content
+_source_path: media/youtube-content/SKILL.md
+category: media
+description: Fetch YouTube video transcripts and transform them into structured content
+  ...
+metadata:
+  hermes:
+    tags: []
+name: youtube-content
+triggers:
+- youtube content
+- youtube-content

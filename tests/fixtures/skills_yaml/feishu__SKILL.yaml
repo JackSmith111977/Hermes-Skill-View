@@ -1,0 +1,20 @@
+_source_name: feishu
+_source_path: feishu/SKILL.md
+category: feishu
+description: 飞书全套操作技能 — 消息、云文档、多维表格、日历、通讯录、审批、知识库、电子表格、任务、事件订阅。当用户需要操作飞书任何功能时触发。
+metadata:
+  clawdbot:
+    emoji: 📋
+    install:
+    - id: pip
+      kind: pip
+      package: lark-oapi
+    requires:
+      bins:
+      - python3
+name: feishu
+triggers:
+- 飞书
+- 发消息
+- lark
+- 文档

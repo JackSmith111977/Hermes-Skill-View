@@ -1,0 +1,37 @@
+_source_name: problem-solving-sherlock
+_source_path: dogfood/problem-solving-sherlock/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- search_files
+- session_search
+- mcp_tavily_tavily_search
+- mcp_tavily_tavily_extract
+category: dogfood
+description: 通用问题解决的 meta-skill——不限于代码调试，而是面对任何卡住的情况时的系统化突破方法。基于 systematic-debugging
+  但扩...
+metadata:
+  hermes:
+    category: dogfood
+    design_pattern: pipeline
+    skill_type: research
+    tags:
+    - problem-solving
+    - troubleshooting
+    - research
+    - methodology
+    - debugging
+name: problem-solving-sherlock
+triggers:
+- 卡住了
+- 怎么办
+- 行不通
+- 不好用
+- 没办法了
+- 不知道怎么做
+- 试试别的方法
+- 哪里出问题了
+- 遇到困难
+- 想不通
+version: 1.0.0

@@ -1,0 +1,26 @@
+_source_name: claude-design
+_source_path: creative/claude-design/SKILL.md
+author: BadTechBandit
+category: creative
+description: Design one-off HTML artifacts (landing, deck, prototype).
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - design-md
+    - popular-web-designs
+    - excalidraw
+    - architecture-diagram
+    tags:
+    - design
+    - html
+    - prototype
+    - ux
+    - ui
+    - creative
+    - artifact
+    - deck
+    - motion
+    - design-system
+name: claude-design
+version: 1.0.0

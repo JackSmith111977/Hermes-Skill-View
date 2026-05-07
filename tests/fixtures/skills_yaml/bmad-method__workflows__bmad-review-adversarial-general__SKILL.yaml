@@ -1,0 +1,6 @@
+_source_name: bmad-review-adversarial-general
+_source_path: bmad-method/workflows/bmad-review-adversarial-general/SKILL.md
+category: bmad-method
+description: Perform a Cynical Review and produce a findings report. Use when the
+  user requests a critical review of something
+name: bmad-review-adversarial-general

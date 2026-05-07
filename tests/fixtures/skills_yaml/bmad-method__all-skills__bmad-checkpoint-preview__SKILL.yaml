@@ -1,0 +1,7 @@
+_source_name: bmad-checkpoint-preview
+_source_path: bmad-method/all-skills/bmad-checkpoint-preview/SKILL.md
+category: bmad-method
+description: LLM-assisted human-in-the-loop review. Make sense of a change, focus
+  attention where it matters, test. Use when the user says "checkpoint", "human review",
+  or "walk me through this change".
+name: bmad-checkpoint-preview

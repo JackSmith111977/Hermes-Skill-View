@@ -1,0 +1,26 @@
+_source_name: codebase-inspection
+_source_path: github/codebase-inspection/SKILL.md
+author: Hermes Agent
+category: github
+description: Inspect and analyze codebases using pygount for LOC counting, language
+  brea...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-repo-management
+    tags:
+    - LOC
+    - Code Analysis
+    - pygount
+    - Codebase
+    - Metrics
+    - Repository
+name: codebase-inspection
+prerequisites:
+  commands:
+  - pygount
+triggers:
+- codebase inspection
+- codebase-inspection
+version: 1.0.0

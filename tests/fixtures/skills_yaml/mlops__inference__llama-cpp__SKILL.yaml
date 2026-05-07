@@ -1,0 +1,28 @@
+_source_name: llama-cpp
+_source_path: mlops/inference/llama-cpp/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- llama-cpp-python>=0.2.0
+description: Run LLM inference with llama.cpp on CPU, Apple Silicon, AMD/Intel GPUs,
+  or ...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - llama.cpp
+    - GGUF
+    - Quantization
+    - CPU Inference
+    - Apple Silicon
+    - Edge Deployment
+    - Non-NVIDIA
+    - AMD GPUs
+    - Intel GPUs
+    - Embedded
+    - Model Compression
+name: llama-cpp
+triggers:
+- llama cpp
+- llama-cpp
+version: 2.0.0

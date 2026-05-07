@@ -1,0 +1,6 @@
+_source_name: gds-validate-gdd
+_source_path: bmad-method/all-skills/gds-validate-gdd/SKILL.md
+category: bmad-method
+description: Validate a GDD against standards. Use when the user says "validate this
+  GDD" or "run GDD validation".
+name: gds-validate-gdd

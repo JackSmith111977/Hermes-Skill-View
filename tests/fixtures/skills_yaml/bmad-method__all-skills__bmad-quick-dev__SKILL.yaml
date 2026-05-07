@@ -1,0 +1,8 @@
+_source_name: bmad-quick-dev
+_source_path: bmad-method/all-skills/bmad-quick-dev/SKILL.md
+category: bmad-method
+description: Implements any user intent, requirement, story, bug fix or change request
+  by producing clean working code artifacts that follow the project's existing architecture,
+  patterns and conventions. Use when the user wants to build, fix, tweak, refactor,
+  add or modify any code, component or feature.
+name: bmad-quick-dev

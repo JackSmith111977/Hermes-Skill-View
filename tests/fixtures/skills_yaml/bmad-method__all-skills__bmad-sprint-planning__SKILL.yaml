@@ -1,0 +1,6 @@
+_source_name: bmad-sprint-planning
+_source_path: bmad-method/all-skills/bmad-sprint-planning/SKILL.md
+category: bmad-method
+description: Generate sprint status tracking from epics. Use when the user says "run
+  sprint planning" or "generate sprint plan"
+name: bmad-sprint-planning

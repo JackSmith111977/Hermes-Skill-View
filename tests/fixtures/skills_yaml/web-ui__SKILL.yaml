@@ -1,0 +1,24 @@
+_source_name: web-ui
+_source_path: web-ui/SKILL.md
+category: web-ui
+depends_on: []
+description: Hermes Agent Web UI Dashboard 管理指南。涵盖安装启动、配置管理、API Key 管理、会话浏览、Cron 任务、日志查看、数据分析、OAuth
+  认证、主题切换、插件扩展、安全加固等完整操作。
+design_pattern: Tool Wrapper
+name: web-ui
+referenced_by:
+- self-capabilities-map
+skill_type: product-verification
+triggers:
+- web dashboard
+- hermes web
+- web ui
+- dashboard
+- web管理
+- web面板
+- web server
+- fastapi web
+- hermes dashboard
+- 网页界面
+- web管理面板
+version: 1.0.0

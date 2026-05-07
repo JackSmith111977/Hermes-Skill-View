@@ -1,0 +1,34 @@
+_source_name: pdf-layout
+_source_path: pdf-layout/SKILL.md
+allowed-tools:
+- write_file
+- patch
+- read_file
+- terminal
+author: 小喵
+category: pdf-layout
+description: 专业 PDF 排版设计与生成技能。涵盖 reportlab 高级排版技巧、中文 PDF 生成、 WQY ZenHei 字体方案、Mermaid
+  图嵌入...
+license: MIT
+metadata:
+  hermes:
+    category: productivity
+    design_pattern: generator
+    related_skills:
+    - doc-design
+    - mermaid-guide
+    skill_type: doc-generation
+    tags:
+    - pdf
+    - reportlab
+    - layout
+    - typography
+    - chinese
+    - toc
+    - header-footer
+    - table-style
+name: pdf-layout
+triggers:
+- pdf layout
+- pdf-layout
+version: 2.0.0

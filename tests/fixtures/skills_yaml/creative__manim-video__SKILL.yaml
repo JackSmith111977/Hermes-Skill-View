@@ -1,0 +1,13 @@
+_source_name: manim-video
+_source_path: creative/manim-video/SKILL.md
+category: creative
+description: Production pipeline for mathematical and technical animations using Manim
+  C...
+metadata:
+  hermes:
+    tags: []
+name: manim-video
+triggers:
+- manim video
+- manim-video
+version: 1.0.0

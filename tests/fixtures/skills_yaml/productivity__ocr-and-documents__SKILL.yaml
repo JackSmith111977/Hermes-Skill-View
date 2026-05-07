@@ -1,0 +1,23 @@
+_source_name: ocr-and-documents
+_source_path: productivity/ocr-and-documents/SKILL.md
+author: Hermes Agent
+category: productivity
+description: Extract text from PDFs and scanned documents. Use web_extract for remote
+  UR...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - powerpoint
+    tags:
+    - PDF
+    - Documents
+    - Research
+    - Arxiv
+    - Text-Extraction
+    - OCR
+name: ocr-and-documents
+triggers:
+- ocr and documents
+- ocr-and-documents
+version: 2.3.0

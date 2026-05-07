@@ -1,0 +1,6 @@
+_source_name: bmad-generate-project-context
+_source_path: bmad-method/all-skills/bmad-generate-project-context/SKILL.md
+category: bmad-method
+description: Create project-context.md with AI rules. Use when the user says "generate
+  project context" or "create project context"
+name: bmad-generate-project-context

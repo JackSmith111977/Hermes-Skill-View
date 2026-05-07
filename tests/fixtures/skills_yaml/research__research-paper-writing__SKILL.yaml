@@ -1,0 +1,51 @@
+_source_name: research-paper-writing
+_source_path: research/research-paper-writing/SKILL.md
+author: Orchestra Research
+category: research
+dependencies:
+- semanticscholar
+- arxiv
+- habanero
+- requests
+- scipy
+- numpy
+- matplotlib
+- SciencePlots
+description: End-to-end pipeline for writing ML/AI research papers — from experiment
+  des...
+license: MIT
+metadata:
+  hermes:
+    category: research
+    related_skills:
+    - arxiv
+    - ml-paper-writing
+    - subagent-driven-development
+    - plan
+    requires_toolsets:
+    - terminal
+    - files
+    tags:
+    - Research
+    - Paper Writing
+    - Experiments
+    - ML
+    - AI
+    - NeurIPS
+    - ICML
+    - ICLR
+    - ACL
+    - AAAI
+    - COLM
+    - LaTeX
+    - Citations
+    - Statistical Analysis
+name: research-paper-writing
+platforms:
+- linux
+- macos
+title: Research Paper Writing Pipeline
+triggers:
+- research paper writing
+- research-paper-writing
+version: 1.1.0

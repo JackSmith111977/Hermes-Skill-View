@@ -1,0 +1,21 @@
+_source_name: native-mcp
+_source_path: mcp/native-mcp/SKILL.md
+author: Hermes Agent
+category: mcp
+description: Built-in MCP (Model Context Protocol) client that connects to external
+  MCP ...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - mcporter
+    tags:
+    - MCP
+    - Tools
+    - Integrations
+name: native-mcp
+triggers:
+- mcp
+- 工具
+- model context
+version: 1.0.0

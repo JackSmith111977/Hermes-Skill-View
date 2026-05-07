@@ -1,0 +1,25 @@
+_source_name: architecture-diagram
+_source_path: creative/architecture-diagram/SKILL.md
+author: Cocoon AI (hello@cocoon-ai.com), ported by Hermes Agent
+category: creative
+dependencies: []
+description: Generate dark-themed SVG diagrams of software systems and cloud infrastruct...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - concept-diagrams
+    - excalidraw
+    tags:
+    - architecture
+    - diagrams
+    - SVG
+    - HTML
+    - visualization
+    - infrastructure
+    - cloud
+name: architecture-diagram
+triggers:
+- architecture diagram
+- architecture-diagram
+version: 1.0.0

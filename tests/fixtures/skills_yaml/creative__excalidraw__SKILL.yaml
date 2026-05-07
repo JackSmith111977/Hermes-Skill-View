@@ -1,0 +1,23 @@
+_source_name: excalidraw
+_source_path: creative/excalidraw/SKILL.md
+author: Hermes Agent
+category: creative
+dependencies: []
+description: Create hand-drawn style diagrams using Excalidraw JSON format. Generate
+  .ex...
+license: MIT
+metadata:
+  hermes:
+    related_skills: []
+    tags:
+    - Excalidraw
+    - Diagrams
+    - Flowcharts
+    - Architecture
+    - Visualization
+    - JSON
+name: excalidraw
+triggers:
+- excalidraw
+- excalidraw
+version: 1.0.0

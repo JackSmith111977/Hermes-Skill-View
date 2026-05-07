@@ -1,0 +1,6 @@
+_source_name: setup-skill-template
+_source_path: bmad-method/all-skills/bmad-module-builder/assets/setup-skill-template/SKILL.md
+category: bmad-method
+description: Sets up {module-name} module in a project. Use when the user requests
+  to 'install {module-code} module', 'configure {module-name}', or 'setup {module-name}'.
+name: '{setup-skill-name}'

@@ -1,0 +1,6 @@
+_source_name: gds-test-automate
+_source_path: bmad-method/all-skills/gds-test-automate/SKILL.md
+category: bmad-method
+description: Generate automated game tests for gameplay systems. Use when the user
+  says "automate tests" or "generate tests"
+name: gds-test-automate

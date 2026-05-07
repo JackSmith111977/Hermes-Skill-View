@@ -1,0 +1,6 @@
+_source_name: bmad-agent-pm
+_source_path: bmad-method/agents/bmad-agent-pm/SKILL.md
+category: bmad-method
+description: Product manager for PRD creation and requirements discovery. Use when
+  the user asks to talk to John or requests the product manager.
+name: bmad-agent-pm

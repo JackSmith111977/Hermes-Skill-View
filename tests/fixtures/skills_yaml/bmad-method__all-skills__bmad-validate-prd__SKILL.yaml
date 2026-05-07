@@ -1,0 +1,6 @@
+_source_name: bmad-validate-prd
+_source_path: bmad-method/all-skills/bmad-validate-prd/SKILL.md
+category: bmad-method
+description: Validate a PRD against standards. Use when the user says "validate this
+  PRD" or "run PRD validation"
+name: bmad-validate-prd

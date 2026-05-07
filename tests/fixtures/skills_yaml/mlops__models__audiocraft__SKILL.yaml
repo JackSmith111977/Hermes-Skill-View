@@ -1,0 +1,27 @@
+_source_name: audiocraft
+_source_path: mlops/models/audiocraft/SKILL.md
+author: Orchestra Research
+category: mlops
+dependencies:
+- audiocraft
+- torch>=2.0.0
+- transformers>=4.30.0
+description: PyTorch library for audio generation including text-to-music (MusicGen)
+  and...
+license: MIT
+metadata:
+  hermes:
+    tags:
+    - Multimodal
+    - Audio Generation
+    - Text-to-Music
+    - Text-to-Audio
+    - MusicGen
+name: audiocraft-audio-generation
+triggers:
+- audiocraft audio generation
+- audiocraft-audio-generation
+- 音频生成
+- 音乐生成
+- 文生音乐
+version: 1.0.0

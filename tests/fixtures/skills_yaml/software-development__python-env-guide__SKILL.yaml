@@ -1,0 +1,29 @@
+_source_name: python-env-guide
+_source_path: software-development/python-env-guide/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- execute_code
+- patch
+category: software-development
+description: Hermes 环境下的 Python 使用最佳实践指南。涵盖 venv 管理、pip 用法、路径解析、错误处理、pathlib、if __name__...
+metadata:
+  hermes:
+    category: software-development
+    design_pattern: tool-wrapper
+    skill_type: library-reference
+    tags:
+    - python
+    - venv
+    - pip
+    - environment
+    - best-practices
+name: python-env-guide
+triggers:
+- python
+- venv
+- pip
+- 环境
+- logging
+version: 2.0.0

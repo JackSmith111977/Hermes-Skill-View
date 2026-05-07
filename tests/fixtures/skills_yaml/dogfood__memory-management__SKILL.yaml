@@ -1,0 +1,23 @@
+_source_name: memory-management
+_source_path: dogfood/memory-management/SKILL.md
+category: dogfood
+description: Hermes Agent 记忆库（Memory）智能管理与上下文窗口优化指南。涵盖 Memory 分层策略、Context Window
+  管理（滑动窗...
+metadata:
+  hermes:
+    category: dogfood
+    design_pattern: inversion
+    skill_type: operational
+    tags:
+    - memory
+    - context-management
+    - optimization
+    - sliding-window
+name: memory-management
+triggers:
+- 记忆
+- 上下文
+- memory
+- token
+- 遗忘
+version: 2.0.0

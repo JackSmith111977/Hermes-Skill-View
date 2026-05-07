@@ -1,0 +1,22 @@
+_source_name: anti-repetition-loop
+_source_path: dogfood/anti-repetition-loop/SKILL.md
+category: dogfood
+description: 检测和防止 AI 智能体在对话中重复循环回复相同内容。涵盖根因分析、实时检测、主动预防、自动恢复四大模块。
+metadata:
+  hermes:
+    category: dogfood
+    design_pattern: diagnosis
+    skill_type: inversion
+    tags:
+    - self-correction
+    - conversation-management
+    - quality-control
+name: anti-repetition-loop
+triggers:
+- 重复回复
+- 循环说话
+- 一直在说同一句话
+- 卡住了
+- repetition loop
+- 重复循环
+version: 1.0.0

@@ -1,0 +1,24 @@
+_source_name: opencode
+_source_path: autonomous-ai-agents/opencode/SKILL.md
+author: Hermes Agent
+category: autonomous-ai-agents
+description: Delegate coding tasks to OpenCode CLI agent for feature implementation,
+  ref...
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - claude-code
+    - codex
+    - hermes-agent
+    tags:
+    - Coding-Agent
+    - OpenCode
+    - Autonomous
+    - Refactoring
+    - Code-Review
+name: opencode
+triggers:
+- opencode
+- opencode
+version: 1.2.0

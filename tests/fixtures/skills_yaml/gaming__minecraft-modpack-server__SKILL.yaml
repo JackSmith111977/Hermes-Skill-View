@@ -1,0 +1,19 @@
+_source_name: minecraft-modpack-server
+_source_path: gaming/minecraft-modpack-server/SKILL.md
+category: gaming
+description: Set up a modded Minecraft server from a CurseForge/Modrinth server pack
+  zip...
+metadata:
+  hermes:
+    tags: []
+name: minecraft-modpack-server
+tags:
+- minecraft
+- gaming
+- server
+- neoforge
+- forge
+- modpack
+triggers:
+- minecraft modpack server
+- minecraft-modpack-server

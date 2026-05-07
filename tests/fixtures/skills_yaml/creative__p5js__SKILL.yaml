@@ -1,0 +1,26 @@
+_source_name: p5js
+_source_path: creative/p5js/SKILL.md
+category: creative
+description: Production pipeline for interactive and generative visual art using p5.js.
+  ...
+metadata:
+  hermes:
+    related_skills:
+    - ascii-video
+    - manim-video
+    - excalidraw
+    tags:
+    - creative-coding
+    - generative-art
+    - p5js
+    - canvas
+    - interactive
+    - visualization
+    - webgl
+    - shaders
+    - animation
+name: p5js
+triggers:
+- p5js
+- p5js
+version: 1.0.0

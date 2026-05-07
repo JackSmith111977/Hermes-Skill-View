@@ -1,0 +1,8 @@
+_source_name: bmad-party-mode
+_source_path: bmad-method/all-skills/bmad-party-mode/SKILL.md
+category: bmad-method
+description: Orchestrates group discussions between installed BMAD agents, enabling
+  natural multi-agent conversations where each agent is a real subagent with independent
+  thinking. Use when user requests party mode, wants multiple agent perspectives,
+  group discussion, roundtable, or multi-agent conversation about their project.
+name: bmad-party-mode

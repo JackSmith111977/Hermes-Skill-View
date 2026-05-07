@@ -1,0 +1,30 @@
+_source_name: proxy-finder
+_source_path: proxy-finder/SKILL.md
+allowed-tools:
+- terminal
+- read_file
+- write_file
+- patch
+- mcp_tavily_tavily_search
+- mcp_tavily_tavily_extract
+author: 小喵
+category: proxy-finder
+description: 免费代理机场搜集与节点测试技能。搜索可用机场订阅源、下载订阅、测试节点连通性、 筛选可用节点并写入 mihomo 配置。当用户需要找免费节点、测试代理...
+license: MIT
+metadata:
+  hermes:
+    category: devops
+    design_pattern: pipeline
+    skill_type: data-analysis
+    tags:
+    - proxy
+    - v2ray
+    - clash
+    - network
+    - automation
+    - scraping
+name: proxy-finder
+triggers:
+- proxy finder
+- proxy-finder
+version: 2.0.0

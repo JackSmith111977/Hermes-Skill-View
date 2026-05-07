@@ -1,0 +1,20 @@
+_source_name: baoyu-infographic
+_source_path: creative/baoyu-infographic/SKILL.md
+author: 宝玉 (JimLiu)
+category: creative
+description: Generate professional infographics with 21 layout types and 21 visual
+  style...
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-infographic
+    tags:
+    - infographic
+    - visual-summary
+    - creative
+    - image-generation
+name: baoyu-infographic
+triggers:
+- baoyu infographic
+- baoyu-infographic
+version: 1.56.1

@@ -1,0 +1,31 @@
+_source_name: architecture-trilemma
+_source_path: meta/architecture-trilemma/SKILL.md
+author: Emma (小喵)
+category: meta
+description: 运行时(Runtime) vs 技能(Skill) vs 工具(Tool) — 三种Agent扩展机制的架构决策模式。当你需要在系统中设计一个新的组件时，先判断它属于三者中的哪一种，再决定它的集成方式、文档格式和安装流程。
+license: MIT
+metadata:
+  hermes:
+    category: meta
+    design_pattern: decision-tree
+    skill_type: methodology
+    tags:
+    - architecture
+    - design-pattern
+    - decision-making
+    - runtime
+    - skill
+    - tool
+name: architecture-trilemma
+triggers:
+- 运行时
+- runtime
+- 技能
+- skill
+- 工具
+- tool
+- 架构设计
+- 组件分类
+- 决策模式
+- 设计哲学迁移
+version: 1.0.0

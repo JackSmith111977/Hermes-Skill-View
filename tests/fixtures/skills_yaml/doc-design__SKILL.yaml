@@ -1,0 +1,45 @@
+_source_name: doc-design
+_source_path: doc-design/SKILL.md
+author: 小喵
+category: doc-design
+depends_on:
+- pdf-layout-reportlab
+- pdf-layout-weasyprint
+- docx-guide
+- pptx-guide
+- markdown-guide
+- html-guide
+- latex-guide
+- epub-guide
+description: '文档排版设计索引技能。根据文档格式路由到对应的原子 skill。
+
+  当用户需要创建、编辑、美化任何格式的文档时使用此技能，
+
+  本 skill 负责识别格式...'
+license: MIT
+metadata:
+  hermes:
+    category: productivity
+    design_pattern: index
+    related_skills:
+    - pdf-layout-reportlab
+    - pdf-layout-weasyprint
+    - docx-guide
+    - pptx-guide
+    - markdown-guide
+    - html-guide
+    - latex-guide
+    - epub-guide
+    skill_type: doc-generation
+    tags:
+    - document
+    - design
+    - formatting
+    - index
+name: doc-design
+triggers:
+- 文档
+- 排版
+- doc
+- 排版设计
+version: 5.1.0

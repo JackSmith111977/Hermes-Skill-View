@@ -1,0 +1,31 @@
+_source_name: github-deploy-upload
+_source_path: github/github-deploy-upload/SKILL.md
+author: 小喵 (Hermes Agent)
+category: github
+description: 安全地将本地部署目录通过定时 cron 推送到 GitHub 仓库。涵盖认证令牌安全存储（独立文件 600 权限）、git remote
+  内容自动清理、远程分支适配等实践。
+license: MIT
+metadata:
+  hermes:
+    related_skills:
+    - github-repo-management
+    - github-auth
+    - hermes-ops-tips
+    tags:
+    - GitHub
+    - Deploy
+    - Security
+    - Git
+    - Cron
+    - Token
+name: github-deploy-upload
+triggers:
+- deploy upload
+- deploy-upload
+- 定时上传
+- 自动推送
+- github push token
+- github deploy token
+- 安全推送脚本
+- deploy-upload.sh
+version: 1.0.0

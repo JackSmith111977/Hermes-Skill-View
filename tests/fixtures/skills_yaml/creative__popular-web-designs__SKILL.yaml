@@ -1,0 +1,30 @@
+_source_name: popular-web-designs
+_source_path: creative/popular-web-designs/SKILL.md
+author: Hermes Agent + Teknium (design systems sourced from VoltAgent/awesome-design-md)
+category: creative
+description: 54 production-quality design systems extracted from real websites. Load
+  a t...
+license: MIT
+metadata:
+  hermes:
+    tags: []
+name: popular-web-designs
+tags:
+- design
+- css
+- html
+- ui
+- web-development
+- design-systems
+- templates
+triggers:
+- build a page that looks like
+- make it look like stripe
+- design like linear
+- vercel style
+- create a UI
+- web design
+- landing page
+- dashboard design
+- website styled like
+version: 1.0.0
