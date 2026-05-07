@@ -11,10 +11,10 @@ authors = [
     {name = "Emma (SRA Team)"},
 ]
 keywords = ["ai-agent", "skill-management", "runtime-advisor", "hermes", "llm", "daemon"]
+license = "MIT"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -27,6 +27,11 @@ dependencies = [
     "pyyaml>=5.1",
 ]
 requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/JackSmith111977/Hermes-Skill-View"
+Repository = "https://github.com/JackSmith111977/Hermes-Skill-View.git"
+Documentation = "https://github.com/JackSmith111977/Hermes-Skill-View#readme"
 
 [project.optional-dependencies]
 dev = [
