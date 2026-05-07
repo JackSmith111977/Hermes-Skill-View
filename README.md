@@ -107,10 +107,19 @@ sra config: ok (~/.sra/config.json)
 | `sra start` | 启动守护进程 |
 | `sra stop` | 停止守护进程 |
 | `sra status` | 查看运行状态 |
+| `sra restart` | 重启守护进程 |
+| `sra attach` | 前台运行（调试用） |
 | `sra recommend <输入>` | 查询技能推荐 |
-| `sra coverage` | 查看技能覆盖率 |
-| `sra stats` | 查看使用统计 |
+| `sra query <输入>` | 同 recommend |
+| `sra coverage` | 分析技能识别覆盖率 |
+| `sra stats` | 查看运行统计 |
+| `sra refresh` | 刷新技能索引 |
+| `sra record <技能> <输入>` | 记录技能使用 |
+| `sra config [show\|set\|reset]` | 配置管理 |
+| `sra adapters` | 列出支持的 Agent 类型 |
+| `sra install <agent>` | 安装到指定 Agent |
 | `sra version` | 显示版本 |
+| `sra help` | 显示帮助 |
 
 ---
 
@@ -119,9 +128,12 @@ sra config: ok (~/.sra/config.json)
 | 端点 | 方法 | 说明 |
 |------|------|------|
 | `/health` | GET | 健康检查 |
-| `/recommend` | POST | 技能推荐 |
-| `/targets` | GET | 列出当前 tab |
+| `/status` | GET | 详细运行状态 |
 | `/stats` | GET | 统计信息 |
+| `/recommend?q=<查询>` | GET | 技能推荐（GET 方式） |
+| `/recommend` | POST | 技能推荐（POST 方式，JSON body） |
+| `/record` | POST | 记录技能使用 |
+| `/refresh` | POST | 刷新技能索引 |
 
 ---
 

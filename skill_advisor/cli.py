@@ -117,7 +117,7 @@ def cmd_stats(args: List[str]):
     else:
         stats = result.get("stats", result)
         print("=" * 50)
-        print(f"📊 SRA Daemon 统计 v{stats.get('version', '1.0.0')}")
+        print(f"📊 SRA Daemon 统计 v{stats.get('version', '1.1.0')}")
         print("=" * 50)
         print(f"  状态: {stats.get('status', 'unknown')}")
         print(f"  技能数: {stats.get('skills_count', 0)}")
@@ -356,7 +356,7 @@ COMMANDS = {
 
 
 def print_help():
-    print("SRA — Skill Runtime Advisor v1.0")
+    print("SRA — Skill Runtime Advisor v1.1")
     print()
     print("用法: sra <command> [options]")
     print()
