@@ -1,20 +1,19 @@
+"""Minimal setup.py for backward compatibility.
+All project metadata is defined in pyproject.toml.
+"""
+import re
+from pathlib import Path
+
 from setuptools import setup, find_packages
 
+# Read version from __init__.py (single source of truth)
+init_path = Path("skill_advisor") / "__init__.py"
+version = re.search(
+    r'__version__\s*=\s*["\']([^"\']+)',
+    init_path.read_text()
+).group(1)
+
 setup(
-    name="sra-agent",
-    version="1.1.0",
+    version=version,
     packages=find_packages(),
-    include_package_data=True,
-    install_requires=[
-        "pyyaml>=5.1",
-    ],
-    extras_require={
-        "dev": ["pytest>=7.0", "pytest-benchmark>=4.0"],
-    },
-    entry_points={
-        "console_scripts": [
-            "sra=skill_advisor.cli:main",
-        ],
-    },
-    python_requires=">=3.8",
 )

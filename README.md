@@ -210,10 +210,19 @@ pre_process:
 | `sra start` | 启动守护进程 |
 | `sra stop` | 停止守护进程 |
 | `sra status` | 查看运行状态 |
+| `sra restart` | 重启守护进程 |
+| `sra attach` | 前台运行（调试用） |
 | `sra recommend <输入>` | 查询技能推荐 |
-| `sra coverage` | 查看技能覆盖率分析 |
-| `sra stats` | 查看使用统计 |
+| `sra query <输入>` | 同 recommend |
+| `sra coverage` | 分析技能识别覆盖率 |
+| `sra stats` | 查看运行统计 |
+| `sra refresh` | 刷新技能索引 |
+| `sra record <技能> <输入>` | 记录技能使用 |
+| `sra config [show\|set\|reset]` | 配置管理 |
+| `sra adapters` | 列出支持的 Agent 类型 |
+| `sra install <agent>` | 安装到指定 Agent |
 | `sra version` | 显示版本 |
+| `sra help` | 显示帮助 |
 
 ---
 
@@ -222,21 +231,12 @@ pre_process:
 | 端点 | 方法 | 说明 |
 |------|------|------|
 | `/health` | GET | 健康检查 |
-| `/recommend` | POST | 技能推荐（核心接口） |
-| `/targets` | GET | 列出当前已索引的技能 |
-| `/stats` | GET | 使用统计信息 |
-
-### 返回字段说明
-
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `rag_context` | string | 格式化的 RAG 上下文文本，可直接注入 Agent 系统提示 |
-| `recommendations` | array | 推荐技能列表，按得分降序 |
-| `top_skill` | string | 得分最高的技能名称 |
-| `should_auto_load` | bool | 最高分 ≥ 80 时为 true，建议 Agent 自动加载该技能 |
-| `sra_available` | bool | SRA 是否可用（daemon 健康状态） |
-| `sra_version` | string | SRA 版本 |
-| `timing_ms` | number | 处理耗时（毫秒），通常 < 10ms |
+| `/status` | GET | 详细运行状态 |
+| `/stats` | GET | 统计信息 |
+| `/recommend?q=<查询>` | GET | 技能推荐（GET 方式） |
+| `/recommend` | POST | 技能推荐（POST 方式，JSON body） |
+| `/record` | POST | 记录技能使用 |
+| `/refresh` | POST | 刷新技能索引 |
 
 ---
 
