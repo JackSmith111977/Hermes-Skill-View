@@ -9,14 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🚀 Planned
+
+- 同义词桥接修复（"发飞书消息"→himalaya、"画系统设计图"→NONE）
+- HTTP API 端点完善（GET /coverage, GET /recommend）
+- Cranfield 范式量化评估（Recall/MRR/NDCG）
+
+## [1.2.0] — 2026-05-07
+
+### 🚀 Added
+
+- **真实技能测试 Fixture**: 从 `~/.hermes/skills/` 提取全部 313 个真实技能 YAML
+  - `tests/fixtures/skills/` — 317 个 SKILL.md（按 67 个类别组织）
+  - `tests/fixtures/skills_yaml/` — 313 个独立 YAML + `_all_yamls.json` 合并数据源
+  - 可移植：不依赖外部环境，git clone 即跑
+- **测试门禁**: `assert skills >= 300` 阻止 CI 退化到用假数据
+- **L0-L4 五级验证体系**: pytest → CLI → HTTP API → 仿真 → 压力测试
+- **ROADMAP.md**: v1.2.0+ 开发路线图
+- **QA 经验沉淀**: `skill-eval-cranfield` 新增 §10.6-10.7（实战教训 + 盲区表）
+
 ### 🛠️ Changed
 
-- **CI/CD**: 添加 GitHub Actions 自动测试流水线（pytest × Python 3.10/3.11/3.12 + 构建验证）
-- **文档**: README 添加 CI 徽章、补全 CLI 命令表和 API 端点表
-- **文档**: RUNTIME.md 更新 watch_skills_dir 状态（已修复，30s 感知）
-- **元数据**: pyproject.toml 添加 license 字段和 project.urls
-- **元数据**: 版本号硬编码修复（cli.py help/stats 默认值）
-- **签名**: 增加 Kei 为共同作者
+- **测试改造**: `test_matcher.py` 新增 `test_all_skills_indexed` 验证 ≥ 90% 索引率
+- **测试改造**: `test_coverage.py` 基于真实 YAML 生成测试查询
+- **测试改造**: `test_benchmark.py` 扩展场景到 13 个查询
+- **文档**: 构建版本从 editable 改为 release wheel，安装到 Hermes venv
 
 ## [1.1.0] — 2026-05-04
 

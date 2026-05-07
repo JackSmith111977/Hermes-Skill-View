@@ -2,7 +2,7 @@
 # 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力。
 # License: MIT
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __author__ = "Emma (SRA Team), Kei"
 
 from .advisor import SkillAdvisor
