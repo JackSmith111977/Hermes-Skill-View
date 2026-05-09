@@ -113,6 +113,48 @@ def check_config():
         return True  # 不是致命错误
 
 
+def check_autostart():
+    """检查开机自启配置是否就绪"""
+    # Linux systemd
+    user_svc = os.path.expanduser("~/.config/systemd/user/srad.service")
+    sys_svc = "/etc/systemd/system/srad.service"
+    # macOS launchd
+    launchd_plist = os.path.expanduser("~/Library/LaunchAgents/com.sra.daemon.plist")
+    # WSL/Docker 入口脚本
+    entry_script = os.path.expanduser("~/.sra/sra-entry.sh")
+
+    found = False
+    details = []
+
+    if os.path.exists(user_svc):
+        details.append(f"user-level service ({user_svc})")
+        # 检查是否启用
+        if os.path.exists(os.path.expanduser("~/.config/systemd/user/default.target.wants/srad.service")):
+            details[-1] += " [enabled ✅]"
+        found = True
+
+    if os.path.exists(sys_svc):
+        details.append(f"system-level service ({sys_svc})")
+        found = True
+
+    if os.path.exists(launchd_plist):
+        details.append(f"macOS launchd ({launchd_plist})")
+        found = True
+
+    if os.path.exists(entry_script):
+        details.append(f"entry script ({entry_script})")
+        found = True
+
+    if found:
+        for d in details:
+            print(f"autostart: ok ({d})")
+        return True
+    else:
+        print("autostart: warn (未找到自启配置)")
+        print("  → 运行 sra install --systemd 或 bash install.sh --systemd 配置")
+        return True  # 非致命
+
+
 def main():
     # 解析参数
     port = 8536
@@ -138,6 +180,7 @@ def main():
         "sra_daemon": check_daemon(port),
         "skills_dir": check_skills_dir(skills_dir),
         "sra_config": check_config(),
+        "autostart": check_autostart(),
     }
 
     print()

@@ -688,55 +688,101 @@ def cmd_attach(args=None):
     daemon.attach()
 
 
-# ── systemd service 单元生成 ──────────────
+# ── systemd service 单元模板 ──────────────
 
-SYSTEMD_SERVICE = """[Unit]
+SYSTEMD_SERVICE_SYS = """[Unit]
 Description=SRA — Skill Runtime Advisor Daemon
+Documentation=https://github.com/JackSmith111977/Hermes-Skill-View
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 User=%s
-ExecStart=%s start
-ExecStop=%s stop
-ExecReload=%s restart
-PIDFile=%s
+ExecStart=%s attach
 Restart=on-failure
 RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=srad
 
 [Install]
 WantedBy=multi-user.target
 """
 
+SYSTEMD_SERVICE_USER = """[Unit]
+Description=SRA — Skill Runtime Advisor Daemon
+Documentation=https://github.com/JackSmith111977/Hermes-Skill-View
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%s attach
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=srad
+
+[Install]
+WantedBy=default.target
+"""
+
 
 def cmd_install_service(args=None):
-    """安装 systemd 服务"""
+    """安装 systemd 服务
+
+    支持 --user 标志生成用户级服务（无 sudo）。
+    默认生成系统级服务（需 sudo）。
+    """
     import getpass
     user = getpass.getuser()
     python_path = sys.executable
     sra_bin = os.path.join(os.path.dirname(python_path), "sra")
 
-    service_content = SYSTEMD_SERVICE % (user, sra_bin, sra_bin, sra_bin, PID_FILE)
-    service_path = f"/etc/systemd/system/srad.service"
+    # 解析 --user 标志
+    is_user = args and any(a in ("--user", "-u") for a in args)
 
-    print(f"📝 将安装 systemd 服务: {service_path}")
-    print(f"   用户: {user}")
-    print(f"   SRA 路径: {sra_bin}")
-    print()
-    print("需要 sudo 权限:")
+    if is_user:
+        xdg_config = os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
+        user_dir = os.path.join(xdg_config, "systemd", "user")
+        service_path = os.path.join(user_dir, "srad.service")
 
-    # 写入临时文件
-    tmp_path = "/tmp/srad.service"
-    with open(tmp_path, 'w') as f:
-        f.write(service_content)
-    print(f"   service 文件已生成: {tmp_path}")
-    print()
-    print("安装命令:")
-    print(f"  sudo cp {tmp_path} {service_path}")
-    print(f"  sudo systemctl daemon-reload")
-    print(f"  sudo systemctl enable srad")
-    print(f"  sudo systemctl start srad")
-    print()
-    print("管理命令:")
-    print(f"  sudo systemctl status srad")
-    print(f"  sudo journalctl -u srad -f")
+        service_content = SYSTEMD_SERVICE_USER % (sra_bin,)
+
+        os.makedirs(user_dir, exist_ok=True)
+        with open(service_path, 'w') as f:
+            f.write(service_content)
+
+        print(f"📝 用户级 systemd 服务已创建: {service_path}")
+        print(f"   SRA 路径: {sra_bin}")
+        print()
+        print("启动命令:")
+        print(f"  systemctl --user daemon-reload")
+        print(f"  systemctl --user enable --now srad")
+        print()
+        print("管理命令:")
+        print(f"  systemctl --user status srad")
+        print(f"  journalctl --user -u srad -f")
+    else:
+        service_content = SYSTEMD_SERVICE_SYS % (user, sra_bin)
+        service_path = "/etc/systemd/system/srad.service"
+
+        print(f"📝 将安装系统级 systemd 服务: {service_path}")
+        print(f"   用户: {user}")
+        print(f"   SRA 路径: {sra_bin}")
+        print()
+        print("需要 sudo 权限:")
+
+        tmp_path = "/tmp/srad.service"
+        with open(tmp_path, 'w') as f:
+            f.write(service_content)
+        print(f"   service 文件已生成: {tmp_path}")
+        print()
+        print("安装命令:")
+        print(f"  sudo cp {tmp_path} {service_path}")
+        print(f"  sudo systemctl daemon-reload")
+        print(f"  sudo systemctl enable --now srad")
+        print()
+        print("管理命令:")
+        print(f"  sudo systemctl status srad")
+        print(f"  sudo journalctl -u srad -f")

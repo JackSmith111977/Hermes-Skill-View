@@ -22,6 +22,71 @@ ok()    { echo -e "${GREEN}[OK]${NC} $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
+# ── 系统检测函数 ──────────────────────────
+SRA_OS="unknown"
+SRA_INIT="unknown"
+SRA_HAS_SUDO=false
+SRA_IS_WSL=false
+SRA_IS_DOCKER=false
+SRA_HAS_HERMES=false
+
+detect_os() {
+    case "$(uname -s)" in
+        Linux*)  SRA_OS="linux" ;;
+        Darwin*) SRA_OS="darwin" ;;
+        *)       SRA_OS="other" ;;
+    esac
+}
+
+detect_init() {
+    if [[ -d /run/systemd/system ]]; then
+        SRA_INIT="systemd"
+    elif command -v launchctl &>/dev/null; then
+        SRA_INIT="launchd"
+    else
+        SRA_INIT="other"
+    fi
+}
+
+check_sudo() {
+    if command -v sudo &>/dev/null && sudo -n true 2>/dev/null; then
+        SRA_HAS_SUDO=true
+    fi
+}
+
+check_wsl() {
+    if [[ -f /proc/version ]] && grep -qi microsoft /proc/version 2>/dev/null; then
+        SRA_IS_WSL=true
+    fi
+}
+
+check_docker() {
+    if [[ -f /.dockerenv ]]; then
+        SRA_IS_DOCKER=true
+    fi
+}
+
+check_hermes() {
+    if command -v hermes &>/dev/null; then
+        SRA_HAS_HERMES=true
+        return 0
+    fi
+    if systemctl --user show hermes-gateway.service &>/dev/null 2>&1; then
+        SRA_HAS_HERMES=true
+        return 0
+    fi
+    return 1
+}
+
+run_system_detect() {
+    detect_os
+    detect_init
+    check_sudo
+    check_wsl
+    check_docker
+    check_hermes
+}
+
 # ── 默认配置 ──────────────────────────────
 PREFIX="${SRA_PREFIX:-$HOME/.local}"
 AGENT_TYPE="${SRA_AGENT:-hermes}"
@@ -49,7 +114,9 @@ while [[ $# -gt 0 ]]; do
             echo "  --agent=TYPE       Agent 类型 (默认: hermes)"
             echo "                    可选: hermes, claude, codex, opencode, generic"
             echo "  --skills=PATH      技能目录路径 (默认: ~/.hermes/skills)"
-            echo "  --systemd          安装 systemd 服务（需要 sudo）"
+            echo "  --systemd          配置开机自启（自动检测系统，无需手动指定类型）"
+            echo "                    支持: Linux(systemd用户级/系统级), macOS(launchd),"
+            echo "                          WSL(入口脚本), Docker(入口脚本)"
             echo "  --proxy            安装 Proxy 模式（消息前置推理中间件）"
             echo "  --proxy-port=PORT  Proxy 端口 (默认: 8536)"
             echo "  --skip-pip         跳过 pip 安装（用于已安装的情况）"
@@ -70,6 +137,15 @@ info "Python: $(python3 --version 2>&1)"
 info "安装前缀: $PREFIX"
 info "Agent 类型: $AGENT_TYPE"
 info "技能目录: $SKILLS_DIR"
+# 运行系统检测
+run_system_detect
+info "系统: $SRA_OS, Init: $SRA_INIT, sudo: $SRA_HAS_SUDO"
+if [[ "$SRA_IS_WSL" == "true" ]]; then info "环境: WSL"; fi
+if [[ "$SRA_IS_DOCKER" == "true" ]]; then info "环境: Docker"; fi
+if [[ "$SRA_HAS_HERMES" == "true" ]]; then info "检测到: Hermes Agent"; fi
+if [[ "$INSTALL_SYSTEMD" == "true" ]]; then
+    info "自启: 启用（自动适配 $SRA_OS/$SRA_INIT）"
+fi
 if [[ "$PROXY_MODE" == "true" ]]; then
     info "安装模式: Proxy（消息前置推理中间件）"
     info "Proxy 端口: $PROXY_PORT"
@@ -204,44 +280,175 @@ else
     warn "SRA Daemon 未启动，请稍后运行: sra start"
 fi
 
-# ── 步骤 6: 安装 systemd 服务 ────────────
+# ── 步骤 6: 自启配置（跨平台自动适配）───
 if [[ "$INSTALL_SYSTEMD" == "true" ]]; then
-    info "安装 systemd 服务..."
-    if [[ "$PROXY_MODE" == "true" ]]; then
-        # Proxy 模式 service
-        PROXY_SCRIPT="$SRA_HOME/sra-proxy.sh"
-        SERVICE_NAME="sra-proxy"
-        cat > /tmp/sra-proxy.service << SERVICEEOF
+    echo ""
+    info "配置开机自启..."
+    echo "  检测: OS=$SRA_OS  Init=$SRA_INIT  sudo=$SRA_HAS_SUDO  WSL=$SRA_IS_WSL  Docker=$SRA_IS_DOCKER"
+    echo ""
+
+    SRA_BIN=$(which sra 2>/dev/null || echo "$PREFIX/bin/sra")
+
+    case "$SRA_OS-$SRA_INIT" in
+        linux-systemd)
+            if [[ "$SRA_HAS_SUDO" == "true" ]]; then
+                # ── 系统级 systemd service（有 sudo）──
+                info "安装系统级 systemd 服务..."
+                cat > /tmp/srad.service << SERVICEEOF
 [Unit]
-Description=SRA Proxy — 消息前置推理中间件 (v1.1.0)
+Description=SRA — Skill Runtime Advisor Daemon
 Documentation=https://github.com/JackSmith111977/Hermes-Skill-View
 After=network.target
 
 [Service]
 Type=simple
 User=$(whoami)
-ExecStart=$PROXY_SCRIPT
-Restart=always
+ExecStart=$SRA_BIN attach
+Restart=on-failure
 RestartSec=5
-Environment=SRA_PROXY_HOST=127.0.0.1
-Environment=SRA_PROXY_PORT=$PROXY_PORT
-Environment=PYTHONUNBUFFERED=1
 StandardOutput=journal
 StandardError=journal
+SyslogIdentifier=srad
 
 [Install]
 WantedBy=multi-user.target
 SERVICEEOF
-        echo "  Proxy service 文件: /tmp/sra-proxy.service"
-        echo "  安装命令:"
-        echo "    sudo cp /tmp/sra-proxy.service /etc/systemd/system/sra-proxy.service"
-        echo "    sudo systemctl daemon-reload"
-        echo "    sudo systemctl enable --now sra-proxy"
-    else
-        sra install service 2>/dev/null || {
-            warn "systemd 服务安装失败，请手动安装: sra install service"
-        }
-    fi
+                sudo cp /tmp/srad.service /etc/systemd/system/srad.service
+                sudo systemctl daemon-reload
+                sudo systemctl enable --now srad.service
+                ok "✅ 系统级 srad.service 已安装并启动 (sudo)"
+                # Proxy 模式共存
+                if [[ "$PROXY_MODE" == "true" ]]; then
+                    info "Proxy 模式: 直接通过 srad.service 提供 HTTP API"
+                fi
+            else
+                # ── 用户级 systemd service（无 sudo）──
+                info "安装用户级 systemd 服务..."
+                SYSTEMD_USER_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
+                mkdir -p "$SYSTEMD_USER_DIR"
+
+                cat > "$SYSTEMD_USER_DIR/srad.service" << SERVICEEOF
+[Unit]
+Description=SRA — Skill Runtime Advisor Daemon
+Documentation=https://github.com/JackSmith111977/Hermes-Skill-View
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=$SRA_BIN attach
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=srad
+
+[Install]
+WantedBy=default.target
+SERVICEEOF
+                ok "srad.service 已创建: $SYSTEMD_USER_DIR/srad.service"
+
+                # ── Hermes Gateway 依赖（自动检测）──
+                if [[ "$SRA_HAS_HERMES" == "true" ]]; then
+                    info "检测到 Hermes Agent，配置 Gateway 依赖..."
+                    mkdir -p "$SYSTEMD_USER_DIR/hermes-gateway.service.d"
+                    cat > "$SYSTEMD_USER_DIR/hermes-gateway.service.d/sra-dep.conf" << CONFIGEOF
+[Unit]
+# Auto-configured by SRA install.sh
+Requires=srad.service
+After=srad.service
+CONFIGEOF
+                    ok "🔗 Hermes Gateway 依赖已配置"
+                fi
+
+                systemctl --user daemon-reload
+                systemctl --user enable --now srad.service
+                ok "✅ 用户级 srad.service 已安装并启动"
+
+                if [[ "$SRA_HAS_HERMES" == "true" ]]; then
+                    echo ""
+                    info "下次重启 Hermes Gateway 时 SRA 自动随其启动:"
+                    echo "  systemctl --user restart hermes-gateway"
+                fi
+            fi
+            ;;
+
+        darwin-launchd)
+            # ── macOS launchd ──
+            info "安装 macOS launchd 服务..."
+            LAUNCH_AGENTS_DIR="$HOME/Library/LaunchAgents"
+            mkdir -p "$LAUNCH_AGENTS_DIR"
+            PLIST_FILE="$LAUNCH_AGENTS_DIR/com.sra.daemon.plist"
+
+            cat > "$PLIST_FILE" << PLISTEOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.sra.daemon</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$SRA_BIN</string>
+        <string>attach</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>$HOME/.sra/srad.log</string>
+    <key>StandardErrorPath</key>
+    <string>$HOME/.sra/srad.log</string>
+</dict>
+</plist>
+PLISTEOF
+
+            launchctl load -w "$PLIST_FILE" 2>/dev/null || {
+                warn "launchctl load 失败，请手动加载:"
+                echo "  launchctl load -w $PLIST_FILE"
+            }
+            ok "✅ macOS launchd 服务已安装: $PLIST_FILE"
+            ;;
+
+        darwin-*)
+            # ── macOS 无 launchd（罕见）──
+            warn "macOS 未检测到 launchctl，请手动配置自启"
+            ;;
+
+        *)
+            # ── 其他系统：生成入口脚本 + 引导提示 ──
+            ENTRY_SCRIPT="$SRA_HOME/sra-entry.sh"
+            cat > "$ENTRY_SCRIPT" << EOF
+#!/usr/bin/env bash
+# SRA Daemon 入口脚本 — 用于手动或开机自启配置
+# 由 install.sh --systemd 自动生成
+# 将此脚本添加到你的系统开机启动项中
+exec $SRA_BIN attach
+EOF
+            chmod +x "$ENTRY_SCRIPT"
+            ok "入口脚本已生成: $ENTRY_SCRIPT"
+
+            echo ""
+            warn "⚠️  未检测到已知的 init 系统，请手动配置自启:"
+            if [[ "$SRA_IS_WSL" == "true" ]]; then
+                echo "  📌 WSL 环境: 在 Windows 任务计划程序中添加:"
+                echo "     操作: 启动 wsl -d <发行版> -- $ENTRY_SCRIPT"
+                echo "     触发器: 系统启动时"
+            elif [[ "$SRA_IS_DOCKER" == "true" ]]; then
+                echo "  📌 Docker 环境: 在 docker run 命令中添加:"
+                echo "     docker run --restart=always ..."
+                echo "     或在 docker-compose.yml 中添加: restart: always"
+            else
+                echo "  📌 将以下命令添加到系统的开机启动项:"
+                echo "     $ENTRY_SCRIPT"
+                echo ""
+                echo "  或使用 screen/tmux 保持后台运行:"
+                echo "     screen -dmS sra $ENTRY_SCRIPT"
+            fi
+            echo ""
+            info "完整文档: https://github.com/JackSmith111977/Hermes-Skill-View"
+            ;;
+    esac
 fi
 
 # ── 步骤 7b: 运行环境检查 ─────────────────

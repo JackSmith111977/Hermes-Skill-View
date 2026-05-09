@@ -122,11 +122,27 @@ pip install sra-agent
 sra version    # 验证安装
 ```
 
-### 方式二：一键脚本（自动配置）
+### 方式二：一键脚本（自动配置 + 自启）
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
 ```
+
+带开机自启（自动检测系统，无需手动指定类型）：
+```bash
+curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash -s -- --systemd
+```
+
+支持的系统一览：
+
+| 系统 | Init 系统 | sudo | 自动配置结果 |
+|:---|:---|:---:|:---|
+| Linux | systemd | ✅ | `/etc/systemd/system/srad.service` 系统级服务 |
+| Linux | systemd | ❌ | `~/.config/systemd/user/srad.service` 用户级服务 |
+| Linux + Hermes | systemd | ❌ | 同上 + 自动配置 Gateway 依赖 |
+| macOS | launchd | — | `~/Library/LaunchAgents/com.sra.daemon.plist` |
+| WSL | 无 | — | `~/.sra/sra-entry.sh` + Windows 任务计划引导 |
+| Docker | 无 | — | `~/.sra/sra-entry.sh` + docker restart 引导 |
 
 ### 方式三：源码安装
 
