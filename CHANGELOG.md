@@ -9,11 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### 🚀 Planned
+### 🚀 Planned — v2.0 Enforcement Layer (EPIC-003)
 
-- 同义词桥接修复（"发飞书消息"→himalaya、"画系统设计图"→NONE）
-- HTTP API 端点完善（GET /coverage, GET /recommend）
-- Cranfield 范式量化评估（Recall/MRR/NDCG）
+See [EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者](docs/EPIC-003-v2-enforcement-layer.md)
+
+| 优先级 | 故事 | 描述 |
+|:------:|:-----|:------|
+| 🔴 P0 | Tool 层 SRA 校验 | `POST /validate` + pre_tool_call hook 集成 |
+| 🔴 P0 | 文件类型技能映射 | FILE_SKILL_MAP + 配置文件 |
+| 🟡 P1 | 技能使用轨迹记录 | POST /record 扩展 + loaded_skills 追踪 |
+| 🟡 P1 | 长任务上下文保护 | 每 5 轮重注入 + 漂移检测 |
+| 🟡 P1 | SRA 契约机制 | 任务开始时自动生成技能契约 |
+| 🟢 P2 | 可配置严格度 | relaxed / normal / strict 三级 |
+| 🟢 P2 | SOUL.md 压缩保护 | 保护 SRA 规则不被 Context Compaction 裁剪 |
+| 🟢 P2 | 遵循率仪表盘 | GET /stats/compliance + CLI 命令 |
+| 🟢 P2 | 推荐质量反馈闭环 | 采纳率自动调整推荐权重 |
 
 ## [1.2.0] — 2026-05-07
 
