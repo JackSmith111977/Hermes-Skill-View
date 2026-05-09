@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 📋 pending | 技能使用轨迹记录 (SRA-003-03) | 🟡 P1 | 2天 |
 | 📋 pending | 长任务上下文保护 (SRA-003-04) | 🟡 P1 | 2天 |
 | 📋 pending | SRA 契约机制 (SRA-003-05) | 🟡 P1 | 2天 |
+| 📋 pending | **运行时力度体系 (SRA-003-06)** | 🟡 P1 | 3天 |
 
 See [EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者](docs/EPIC-003-v2-enforcement-layer.md)
 

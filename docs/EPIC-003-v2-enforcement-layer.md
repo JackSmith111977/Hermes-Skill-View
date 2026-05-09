@@ -138,22 +138,78 @@ if block_message is not None:
 
 ---
 
-### Story 6: 可配置的严格度级别
+### Story 6: 运行时力度体系 — 多维度可配置强度
 
 > **作为** 在不同场景下使用 Hermes 的用户
-> **我希望** SRA 的校验严格度可配置
-> **以便** 开发调试时宽松，生产部署时严格
+> **我希望** SRA 的运行时验证力度按多个维度可配置（不仅是严格度）
+> **以便** 开发调试时宽松提醒，生产部署时严格阻断
+
+**设计理念**：力度不是一维的「严格→宽松」线性滑条，而是**4 个独立维度**的组合控制。
+
+```
+┌──────────────────────────────────────────────────────────┐
+│              运行时力度体系 (Runtime Force)                  │
+├───────────┬───────────┬───────────┬───────────────────────┤
+│  校验范围  │  触发动作  │  契约遵守  │  推荐置信度门槛       │
+│ (Scope)   │ (Action)  │ (Contract)│ (Confidence)          │
+├───────────┼───────────┼───────────┼───────────────────────┤
+│ off       │ silent    │ ignore    │ 0 (不过滤)             │
+│ core_only │ info      │ suggest   │ ≥ 30                  │
+│ all_tools │ warning   │ remind    │ ≥ 50                  │
+│ +args     │ block     │ enforce   │ ≥ 70                  │
+│ full      │ log+block │ strict    │ ≥ 90                  │
+└───────────┴───────────┴───────────┴───────────────────────┘
+```
+
+**4 维度详解**:
+
+| 维度 | 控制什么 | 可选值（低→高） |
+|:----|:---------|:--------------|
+| **校验范围 (scope)** | 哪些工具调用被 SRA 拦截校验 | `off` → `core_only` (write_file/patch/terminal/execute_code) → `all_tools` (全部工具) → `+args` (含参数内容分析) → `full` (含上下文图分析) |
+| **触发动作 (action)** | 技能不匹配时 SRA 做什么 | `silent` (仅记录日志) → `info` (SRA 提醒注入) → `warning` (警告+建议替代skill) → `block` (阻断工具调用) → `log+block` (阻断+记录到轨迹) |
+| **契约遵守 (contract)** | Agent 对 skill 契约的遵守要求 | `ignore` (忽略契约) → `suggest` (建议参考) → `remind` (每次不遵守发出提醒) → `enforce` (不遵守时阻断) → `strict` (阻断+记录到遵循率) |
+| **置信度门槛 (confidence)** | 推荐的 skill 最低分数才显示 | 数值 0-100，默认 30 |
+
+**预设力度模式**（5 种一键切换）：
+
+| 模式 | scope | action | contract | confidence | 适用场景 |
+|:----|:-----|:-------|:---------|:----------:|:---------|
+| 🌱 **seedling** (幼苗) | core_only | info | ignore | 0 | 刚安装 SRA，只记录不干预 |
+| 🌿 **casual** (随意) | core_only | info | suggest | 20 | 开发调试，低干扰 |
+| 🌳 **normal** (标准) | all_tools | warning | remind | 40 | **默认模式**，日常使用 |
+| 🪵 **strict** (严格) | +args | block | enforce | 60 | 生产部署，强制遵循 |
+| 🏔️ **fortress** (堡垒) | full | log+block | strict | 80 | 合规敏感场景 |
+
+**配置方式**:
+```yaml
+# ~/.sra/config.json
+{
+  "runtime_force": {
+    "mode": "normal",            # 预设模式名
+    # 或手动覆盖单个维度：
+    "scope": "all_tools",
+    "action": "warning",
+    "contract": "remind",
+    "confidence_threshold": 40
+  }
+}
+```
 
 **验收标准:**
-- [ ] 三个严格度级别：`relaxed`（仅提醒）/ `normal`（提醒+建议）/ `strict`（可阻断）
-- [ ] 级别配置在 `~/.sra/config.json` 中
-- [ ] 级别配置在 Hermes `~/.hermes/config.yaml` 中可覆盖
-- [ ] 不同级别影响 `/validate` 返回的 `severity` 字段
-- [ ] 默认级别为 `normal`
+- [ ] 4 维度力度体系设计完成：scope / action / contract / confidence
+- [ ] 5 种预设一键切换模式：seedling / casual / normal / strict / fortress
+- [ ] 预设模式在 `~/.sra/config.json` 中可配置
+- [ ] Hermes `~/.hermes/config.yaml` 可覆盖
+- [ ] 力度配置影响 `/validate` 返回的 `severity` 和 `action` 字段
+- [ ] `sra config set runtime_force.mode strict` CLI 命令
+- [ ] 默认模式为 `normal`
 
 **实现文件:**
-- 修改: `sra-latest/skill_advisor/runtime/daemon.py`（配置读取）
-- 修改: `hermes-agent/run_agent.py`（配置传递）
+- 新增: `sra-latest/skill_advisor/config/schema.py`（运行时力度配置模式定义）
+- 新增: `sra-latest/skill_advisor/runtime/force.py`（力度引擎）
+- 修改: `sra-latest/skill_advisor/runtime/daemon.py`（配置读取 + 端点集成）
+- 修改: `sra-latest/skill_advisor/cli.py`（`sra config` 命令）
+- 新增: `tests/test_force.py`
 
 ---
 
