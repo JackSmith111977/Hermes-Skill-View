@@ -213,6 +213,28 @@ if block_message is not None:
 
 ---
 
+### Story 10: SRA 用户级 systemd 服务自启动 (SRA-003-10)
+
+> **作为** 服务器管理员
+> **我希望** SRA Daemon 随 Hermes Gateway 自动启动，无需手动干预
+> **以便** 系统重启后 SRA 自动恢复，保持技能推荐服务的持续可用
+
+**验收标准:**
+- [x] 创建 `~/.config/systemd/user/srad.service` — 用户级 systemd 服务单元
+- [x] 服务使用 `Type=simple` + `sra attach` 前台运行模式
+- [x] 服务设置 `Restart=on-failure`，崩溃后自动重启
+- [x] 在 `hermes-gateway.service` 中添加 `Requires=srad.service` + `After=srad.service`
+- [x] `systemctl --user enable srad` 后用户登录自动启动
+- [x] SRA 在 Gateway 之前就绪，首次消息即有技能推荐
+- [x] 支持独立 `start/stop/restart/status` 管理
+
+**实现文件:**
+- 新增: `~/.config/systemd/user/srad.service`
+- 新增: `~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf`
+- 修改: `/tmp/sra-latest/docs/ROADMAP.md`（添加 Sprint 条目）
+
+---
+
 ## 🏗️ 架构变更
 
 ### v2.0 运行时架构
@@ -317,6 +339,7 @@ sra-latest/
 | 压缩保护 | SRA-003-07 | 🟢 P2 | 0.5d | 无 |
 | 遵循率仪表盘 | SRA-003-08 | 🟢 P2 | 1d | SRA-003-03 |
 | 推荐质量反馈闭环 | SRA-003-09 | 🟢 P2 | 2d | SRA-003-03 |
+| systemd 自启动部署 | SRA-003-10 | 🟢 P2 | 0.5d | 无 |
 
 **优先级说明：**
 - 🔴 P0 — 核心功能，必须完成才能发布 v2.0
