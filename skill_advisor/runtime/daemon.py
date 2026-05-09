@@ -31,6 +31,7 @@ from typing import Optional, Dict, Any
 
 from ..advisor import SkillAdvisor
 from ..indexer import SkillIndexer
+from .. import __version__
 
 logger = logging.getLogger("srad")
 
@@ -255,7 +256,7 @@ class SRaDDaemon:
                     self._send_json({
                         "status": "ok",
                         "sra_engine": True,
-                        "version": "1.1.0",
+                        "version": __version__,
                         "stats": {
                             "skills_scanned": stats.get("skills_count", 0),
                         },
@@ -350,7 +351,7 @@ class SRaDDaemon:
                         "timing_ms": timing_ms,
                         "provider_latency_ms": timing_ms,
                         "sra_available": True,
-                        "sra_version": "1.1.0",
+                        "sra_version": __version__,
                     })
                 elif self.path == "/record":
                     skill = data.get("skill", "")
@@ -514,7 +515,7 @@ class SRaDDaemon:
                 pass
 
         return {
-            "version": "1.1.0",
+            "version": __version__,
             "status": "running" if self.running else "stopped",
             "uptime_seconds": uptime,
             "skills_count": len(self.advisor.indexer.get_skills()),
