@@ -1,7 +1,7 @@
 # EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者
 
 > **Epic ID:** SRA-EPIC-003
-> **状态:** 📋 planning
+> **状态:** 🏃 sprint-1 (feat/v2.0-enforcement-layer)
 > **目标版本:** SRA v2.0.0 (+ Hermes 集成 v2.0)
 > **创建日期:** 2026-05-09
 > **分析者:** Emma (小玛)

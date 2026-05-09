@@ -70,18 +70,16 @@
 
 ---
 
-## 📋 当前 Sprint 状态
+## 📋 当前 Sprint 状态 — Sprint 1 [Started 2026-05-10]
+**分支**: `feat/v2.0-enforcement-layer`
+**计划**: `.hermes/plans/2026-05-10_SRA-v2.0-sprint1-plan.md`
 
-| 状态 | 任务 | Epic | 负责人 |
-|:----:|:-----|:----:|:-------|
-| 📋 planning | Tool 层 SRA 校验 (SRA-003-01) | EPIC-003 | — |
-| 📋 planning | 文件类型技能映射 (SRA-003-02) | EPIC-003 | — |
-| 📋 planning | 技能使用轨迹记录 (SRA-003-03) | EPIC-003 | — |
-| 📋 planning | 长任务上下文保护 (SRA-003-04) | EPIC-003 | — |
-| 📋 planning | SRA 契约机制 (SRA-003-05) | EPIC-003 | — |
-| 📋 planning | 可配置严格度 (SRA-003-06) | EPIC-003 | — |
-| 📋 planning | 压缩保护 (SRA-003-07) | EPIC-003 | — |
-| 📋 planning | 遵循率仪表盘 (SRA-003-08) | EPIC-003 | — |
-| 📋 planning | 推荐质量反馈闭环 (SRA-003-09) | EPIC-003 | — |
-| ✅ completed | **systemd 自启动部署 (SRA-003-10)** | EPIC-003 | — |
-| ✅ completed | **安装脚本自动配置 (SRA-003-11)** | EPIC-003 | — |
+| 状态 | 任务 | Epic | 优先级 | 估时 |
+|:----:|:-----|:----:|:------:|:----:|
+| 📋 pending | Tool 层 SRA 校验 (SRA-003-01) | EPIC-003 | 🔴 P0 | 3天 |
+| 📋 pending | 文件类型技能映射 (SRA-003-02) | EPIC-003 | 🔴 P0 | 2天 |
+| 📋 pending | 技能使用轨迹记录 (SRA-003-03) | EPIC-003 | 🟡 P1 | 2天 |
+| 📋 pending | 长任务上下文保护 (SRA-003-04) | EPIC-003 | 🟡 P1 | 2天 |
+| 📋 pending | SRA 契约机制 (SRA-003-05) | EPIC-003 | 🟡 P1 | 2天 |
+| ✅ completed | **systemd 自启动部署 (SRA-003-10)** | EPIC-003 | 🟢 P2 | — |
+| ✅ completed | **安装脚本自动配置 (SRA-003-11)** | EPIC-003 | 🟢 P2 | — |

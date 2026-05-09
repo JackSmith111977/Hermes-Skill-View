@@ -9,7 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### 🚀 Planned — v2.0 Enforcement Layer (EPIC-003)
+### 🚀 Sprint 1 — v2.0 Enforcement Layer (EPIC-003) [Started 2026-05-10]
+
+**分支**: `feat/v2.0-enforcement-layer`
+**Sprint 目标**: 完成 P0 + P1 核心功能，从被动推荐者 → 运行时守护者
+**计划文件**: `.hermes/plans/2026-05-10_SRA-v2.0-sprint1-plan.md`
+
+| 状态 | 故事 | 优先级 | 估时 |
+|:----:|:-----|:------:|:----:|
+| 📋 pending | Tool 层 SRA 校验 (SRA-003-01) | 🔴 P0 | 3天 |
+| 📋 pending | 文件类型技能映射 (SRA-003-02) | 🔴 P0 | 2天 |
+| 📋 pending | 技能使用轨迹记录 (SRA-003-03) | 🟡 P1 | 2天 |
+| 📋 pending | 长任务上下文保护 (SRA-003-04) | 🟡 P1 | 2天 |
+| 📋 pending | SRA 契约机制 (SRA-003-05) | 🟡 P1 | 2天 |
 
 See [EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者](docs/EPIC-003-v2-enforcement-layer.md)
 
