@@ -377,8 +377,10 @@ def cmd_upgrade(args: List[str]):
         print(f"📂 安装位置: {info.get('Location', '未知')}")
         is_editable = "Editable" in info
         print(f"🔗 安装模式: {'editable (-e)' if is_editable else '标准安装'}")
-        if is_editable and "Editable" in info:
-            sra_src = info["Editable"]
+        # pip show 输出的 key 是 "Editable project location"（不是 "Editable"）
+        editable_key = next((k for k in info if "Editable" in k and "Location" in k), None)
+        if is_editable and editable_key:
+            sra_src = info[editable_key]
             print(f"📁 源码目录: {sra_src}")
         if version:
             print(f"🎯 目标版本: v{version}")
