@@ -342,7 +342,7 @@ def cmd_version(args: List[str]):
 def cmd_upgrade(args: List[str]):
     """升级 SRA 到最新版本"""
     repo_url = "https://github.com/JackSmith111977/Hermes-Skill-View.git"
-    sra_src = "/tmp/sra-latest"
+    sra_src = "/tmp/sra-latest"  # 默认值
 
     # 解析参数
     version = None
@@ -360,7 +360,7 @@ def cmd_upgrade(args: List[str]):
     print("📦 SRA 升级工具")
     print("=" * 50)
 
-    # 2. 检查当前安装状态
+    # 2. 检查当前安装状态 + 自动检测源码路径
     pip_cmd = [sys.executable, "-m", "pip"]
     result = subprocess.run(
         pip_cmd + ["show", "sra-agent"],
@@ -377,6 +377,9 @@ def cmd_upgrade(args: List[str]):
         print(f"📂 安装位置: {info.get('Location', '未知')}")
         is_editable = "Editable" in info
         print(f"🔗 安装模式: {'editable (-e)' if is_editable else '标准安装'}")
+        if is_editable and "Editable" in info:
+            sra_src = info["Editable"]
+            print(f"📁 源码目录: {sra_src}")
         if version:
             print(f"🎯 目标版本: v{version}")
     else:
