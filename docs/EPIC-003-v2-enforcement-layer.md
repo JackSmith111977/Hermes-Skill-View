@@ -235,6 +235,39 @@ if block_message is not None:
 
 ---
 
+### Story 11: 安装脚本自动配置 — 跨平台自启方案 (SRA-003-11)
+
+> **作为** 在任何 Linux/macOS/Docker 机器上部署 SRA 的 AI Agent
+> **我希望** 运行 `bash install.sh --systemd` 后脚本自动检测我的系统并配置自启
+> **以便** 我不需要手动处理 systemd/launchd 等差异，一条命令完成全流程安装
+
+**背景:** Story 10 (SRA-003-10) 已在当前服务器上手动完成 systemd 配置。但项目要求**所有 Agent 通过阅读 README 就能自主安装**，因此需要将配置能力内置到 `install.sh` 中。
+
+**设计原则:**
+1. **不要"移植"文件** — 不要将 systemd 文件作为静态文件放入仓库
+2. **生成而非复制** — 安装脚本根据检测到的宿主系统自动生成适配的配置
+3. **每步必有验证** — 每个步骤后自动运行 `check-sra.py` 确认
+
+**验收标准:**
+- [ ] 系统检测模块：`install.sh` 在安装前自动检测 OS 类型、init 系统、sudo 权限
+- [ ] Linux + systemd + 有 sudo → 安装系统级 service (`/etc/systemd/system/`)
+- [ ] Linux + systemd + 无 sudo → 安装用户级 service (`~/.config/systemd/user/`)
+- [ ] Linux + systemd + 无 sudo + Hermes Gateway 检测到 → 自动配置 gateway 依赖
+- [ ] macOS → 生成 launchd plist (`~/Library/LaunchAgents/`)
+- [ ] WSL → 生成入口脚本 + 提示 WSL 自启方式
+- [ ] Docker → 生成入口脚本 + 提示 docker run 的 `--restart` 用法
+- [ ] 其他系统 → 提示手动配置 + 给出文档链接
+- [ ] 安装后自动运行 `check-sra.py` 验证自启配置是否生效
+- [ ] 所有路径使用 `$HOME` 等变量（跨用户兼容）
+
+**实现文件:**
+- 修改: `scripts/install.sh`（系统检测 + 多路径自启配置）
+- 修改: `skill_advisor/runtime/daemon.py`（`cmd_install_service` 增加 `--user` 标志）
+- 修改: `scripts/check-sra.py`（增加自启配置检测项）
+- 修改: `README.md`（更新安装说明，展示多平台支持）
+
+---
+
 ## 🏗️ 架构变更
 
 ### v2.0 运行时架构
@@ -340,6 +373,7 @@ sra-latest/
 | 遵循率仪表盘 | SRA-003-08 | 🟢 P2 | 1d | SRA-003-03 |
 | 推荐质量反馈闭环 | SRA-003-09 | 🟢 P2 | 2d | SRA-003-03 |
 | systemd 自启动部署 | SRA-003-10 | 🟢 P2 | 0.5d | 无 |
+| 安装脚本自动配置 | SRA-003-11 | 🟡 P1 | 1d | SRA-003-10 |
 
 **优先级说明：**
 - 🔴 P0 — 核心功能，必须完成才能发布 v2.0

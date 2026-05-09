@@ -84,3 +84,4 @@
 | 📋 planning | 遵循率仪表盘 (SRA-003-08) | EPIC-003 | — |
 | 📋 planning | 推荐质量反馈闭环 (SRA-003-09) | EPIC-003 | — |
 | ✅ completed | **systemd 自启动部署 (SRA-003-10)** | EPIC-003 | — |
+| 📋 planning | 安装脚本自动配置 (SRA-003-11) | EPIC-003 | — |
