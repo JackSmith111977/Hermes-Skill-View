@@ -249,16 +249,16 @@ if block_message is not None:
 3. **每步必有验证** — 每个步骤后自动运行 `check-sra.py` 确认
 
 **验收标准:**
-- [ ] 系统检测模块：`install.sh` 在安装前自动检测 OS 类型、init 系统、sudo 权限
-- [ ] Linux + systemd + 有 sudo → 安装系统级 service (`/etc/systemd/system/`)
-- [ ] Linux + systemd + 无 sudo → 安装用户级 service (`~/.config/systemd/user/`)
-- [ ] Linux + systemd + 无 sudo + Hermes Gateway 检测到 → 自动配置 gateway 依赖
-- [ ] macOS → 生成 launchd plist (`~/Library/LaunchAgents/`)
-- [ ] WSL → 生成入口脚本 + 提示 WSL 自启方式
-- [ ] Docker → 生成入口脚本 + 提示 docker run 的 `--restart` 用法
-- [ ] 其他系统 → 提示手动配置 + 给出文档链接
-- [ ] 安装后自动运行 `check-sra.py` 验证自启配置是否生效
-- [ ] 所有路径使用 `$HOME` 等变量（跨用户兼容）
+- [x] 系统检测模块：`install.sh` 在安装前自动检测 OS 类型、init 系统、sudo 权限
+- [x] Linux + systemd + 有 sudo → 安装系统级 service (`/etc/systemd/system/`)
+- [x] Linux + systemd + 无 sudo → 安装用户级 service (`~/.config/systemd/user/`)
+- [x] Linux + systemd + 无 sudo + Hermes Gateway 检测到 → 自动配置 gateway 依赖
+- [x] macOS → 生成 launchd plist (`~/Library/LaunchAgents/`)
+- [x] WSL → 生成入口脚本 + 提示 WSL 自启方式
+- [x] Docker → 生成入口脚本 + 提示 docker run 的 `--restart` 用法
+- [x] 其他系统 → 提示手动配置 + 给出文档链接
+- [x] 安装后自动运行 `check-sra.py` 验证自启配置是否生效
+- [x] 所有路径使用 `$HOME` 等变量（跨用户兼容）
 
 **实现文件:**
 - 修改: `scripts/install.sh`（系统检测 + 多路径自启配置）
