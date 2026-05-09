@@ -138,77 +138,86 @@ if block_message is not None:
 
 ---
 
-### Story 6: 运行时力度体系 — 多维度可配置强度
+### Story 6: 运行时力度体系 — 注入覆盖度驱动
 
 > **作为** 在不同场景下使用 Hermes 的用户
-> **我希望** SRA 的运行时验证力度按多个维度可配置（不仅是严格度）
-> **以便** 开发调试时宽松提醒，生产部署时严格阻断
+> **我希望** SRA 的运行时力度通过注入点的多少来控制
+> **以便** 最轻量只拦截用户消息注入推荐，最重量在所有钩子+周期性注入
 
-**设计理念**：力度不是一维的「严格→宽松」线性滑条，而是**4 个独立维度**的组合控制。
+**核心设计理念**：SRA **永不阻断**（no blocking）。强度只决定 **SRA 在哪些时机注入推荐上下文**。力度越高，注入点越多、注入频率越高。
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│              运行时力度体系 (Runtime Force)                  │
-├───────────┬───────────┬───────────┬───────────────────────┤
-│  校验范围  │  触发动作  │  契约遵守  │  推荐置信度门槛       │
-│ (Scope)   │ (Action)  │ (Contract)│ (Confidence)          │
-├───────────┼───────────┼───────────┼───────────────────────┤
-│ off       │ silent    │ ignore    │ 0 (不过滤)             │
-│ core_only │ info      │ suggest   │ ≥ 30                  │
-│ all_tools │ warning   │ remind    │ ≥ 50                  │
-│ +args     │ block     │ enforce   │ ≥ 70                  │
-│ full      │ log+block │ strict    │ ≥ 90                  │
-└───────────┴───────────┴───────────┴───────────────────────┘
+力度不是「阻断强度」，而是「注入覆盖度」：
+                       
+     用户消息    工具调用前    工具调用后    周期性注入
+       ↓           ↓           ↓           ↓
+L1 🐣  ●                                    
+L2 🦅  ●           ●                        
+L3 🦖  ●           ●           ●            
+L4 🐉  ●           ●           ●           ●
 ```
 
-**4 维度详解**:
+**4 个注入层级**：
 
-| 维度 | 控制什么 | 可选值（低→高） |
-|:----|:---------|:--------------|
-| **校验范围 (scope)** | 哪些工具调用被 SRA 拦截校验 | `off` → `core_only` (write_file/patch/terminal/execute_code) → `all_tools` (全部工具) → `+args` (含参数内容分析) → `full` (含上下文图分析) |
-| **触发动作 (action)** | 技能不匹配时 SRA 做什么 | `silent` (仅记录日志) → `info` (SRA 提醒注入) → `warning` (警告+建议替代skill) → `block` (阻断工具调用) → `log+block` (阻断+记录到轨迹) |
-| **契约遵守 (contract)** | Agent 对 skill 契约的遵守要求 | `ignore` (忽略契约) → `suggest` (建议参考) → `remind` (每次不遵守发出提醒) → `enforce` (不遵守时阻断) → `strict` (阻断+记录到遵循率) |
-| **置信度门槛 (confidence)** | 推荐的 skill 最低分数才显示 | 数值 0-100，默认 30 |
+| 层级 | 名称 | 注入点 | 行为描述 |
+|:----:|:-----|:-------|:---------|
+| 🐣 **L1 — basic** | 消息级注入 | 用户消息到达时 | 当前 v1 行为：`POST /recommend` 注入 rag_context |
+| 🦅 **L2 — medium** | 消息+关键工具钩子 | 用户消息 + pre_tool_call (write_file/patch/terminal/execute_code) | 关键工具调用前检查是否已加载对应 skill，未加载时注入 `[SRA 推荐]` 到助手回复 |
+| 🦖 **L3 — advanced** | 消息+全工具钩子+后检 | 用户消息 + pre_tool_call (全部工具) + post_tool_call | 全部工具调用前检查+调用后核查 skill 是否被遵守，未遵守时注入提醒 |
+| 🐉 **L4 — omni** | 全钩子+频率注入 | 全部 L3 注入点 + 每 N 轮对话周期性重注入 | 在 L3 基础上，每 5 轮对话自动重查询 SRA 并注入最新推荐，防止上下文漂移 |
 
-**预设力度模式**（5 种一键切换）：
+**各层级注入点详情**：
 
-| 模式 | scope | action | contract | confidence | 适用场景 |
-|:----|:-----|:-------|:---------|:----------:|:---------|
-| 🌱 **seedling** (幼苗) | core_only | info | ignore | 0 | 刚安装 SRA，只记录不干预 |
-| 🌿 **casual** (随意) | core_only | info | suggest | 20 | 开发调试，低干扰 |
-| 🌳 **normal** (标准) | all_tools | warning | remind | 40 | **默认模式**，日常使用 |
-| 🪵 **strict** (严格) | +args | block | enforce | 60 | 生产部署，强制遵循 |
-| 🏔️ **fortress** (堡垒) | full | log+block | strict | 80 | 合规敏感场景 |
-
-**配置方式**:
 ```yaml
 # ~/.sra/config.json
 {
   "runtime_force": {
-    "mode": "normal",            # 预设模式名
-    # 或手动覆盖单个维度：
-    "scope": "all_tools",
-    "action": "warning",
-    "contract": "remind",
-    "confidence_threshold": 40
+    "level": "medium",          # basic / medium / advanced / omni
+    
+    # 各层级自动展开为以下配置（用户无需手动修改）：
+    # "injection_points": {
+    #   "on_user_message": true,           # L1 起
+    #   "pre_tool_call": ["write_file", "patch", "terminal", "execute_code"],  # L2 起
+    #   "post_tool_call": true,            # L3 起
+    #   "periodic_injection": {            # L4 起
+    #     "interval_rounds": 5,
+    #     "strategy": "conversation_summary"
+    #   }
+    # }
   }
 }
 ```
 
+**各层级对比**：
+
+| 特性 | 🐣 basic | 🦅 medium | 🦖 advanced | 🐉 omni |
+|:-----|:--------:|:---------:|:-----------:|:-------:|
+| 用户消息时推荐注入 | ✅ | ✅ | ✅ | ✅ |
+| 关键工具调用前检查+注入 | — | ✅ | ✅ | ✅ |
+| 全部工具调用前检查+注入 | — | — | ✅ | ✅ |
+| 工具调用后核查遵守度 | — | — | ✅ | ✅ |
+| 周期性重注入防漂移 | — | — | — | ✅ |
+| 额外 Token 开销 | ~100 | ~300 | ~500 | ~800 |
+| 适用场景 | 尝鲜体验 | 日常开发 | 质量敏感 | 长任务/合规 |
+
+**没有阻断**：任何层级都不阻断工具执行。SRA 只负责在适当时机注入「主人，boku 觉得你可能需要 XX skill」这类建议，让 Agent 自主决定是否采纳。
+
 **验收标准:**
-- [ ] 4 维度力度体系设计完成：scope / action / contract / confidence
-- [ ] 5 种预设一键切换模式：seedling / casual / normal / strict / fortress
-- [ ] 预设模式在 `~/.sra/config.json` 中可配置
+- [ ] 4 级注入覆盖度体系：basic / medium / advanced / omni
+- [ ] 每级严格定义对应的注入点集合（非简单线性递增）
+- [ ] `~/.sra/config.json` 中 `runtime_force.level` 配置
 - [ ] Hermes `~/.hermes/config.yaml` 可覆盖
-- [ ] 力度配置影响 `/validate` 返回的 `severity` 和 `action` 字段
-- [ ] `sra config set runtime_force.mode strict` CLI 命令
-- [ ] 默认模式为 `normal`
+- [ ] 默认级别为 `medium`
+- [ ] `sra config set runtime_force.level advanced` CLI 命令
+- [ ] 所有注入点均为非阻塞（info/warning 级别，无 block）
+- [ ] L4 的周期性注入间隔可配置（默认 5 轮）
+- [ ] 编写测试用例验证各层级注入点启停
 
 **实现文件:**
-- 新增: `sra-latest/skill_advisor/config/schema.py`（运行时力度配置模式定义）
-- 新增: `sra-latest/skill_advisor/runtime/force.py`（力度引擎）
-- 修改: `sra-latest/skill_advisor/runtime/daemon.py`（配置读取 + 端点集成）
+- 新增: `sra-latest/skill_advisor/runtime/force.py`（力度引擎+注入点路由）
+- 修改: `sra-latest/skill_advisor/runtime/daemon.py`（按力度级别条件启用端点）
 - 修改: `sra-latest/skill_advisor/cli.py`（`sra config` 命令）
+- 修改: `sra-latest/skill_advisor/advisor.py`（周期性重注入 recheck 方法）
 - 新增: `tests/test_force.py`
 
 ---
