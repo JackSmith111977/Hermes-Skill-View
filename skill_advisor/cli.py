@@ -16,6 +16,8 @@ SRA CLI — 完整的命令行工具
   sra config       配置管理
   sra install      安装到 Agent
   sra adapters     列出 Agent 适配器
+  sra upgrade      升级到最新版本（从 GitHub）
+  sra uninstall    完全卸载
   sra version      版本信息
   sra help         帮助
 """
@@ -25,6 +27,8 @@ import os
 import json
 import socket
 import time
+import subprocess
+import shutil
 from typing import List, Optional
 
 from .runtime.daemon import (
@@ -333,6 +337,277 @@ def cmd_version(args: List[str]):
         print("Daemon: 未运行")
 
 
+# ── 升级 ────────────────────────────────────
+
+def cmd_upgrade(args: List[str]):
+    """升级 SRA 到最新版本"""
+    repo_url = "https://github.com/JackSmith111977/Hermes-Skill-View.git"
+    sra_src = "/tmp/sra-latest"
+
+    # 解析参数
+    version = None
+    for i, a in enumerate(args):
+        if a in ("--version", "-V") and i + 1 < len(args):
+            version = args[i + 1].lstrip("v")
+
+    # 1. 停止守护进程
+    if os.path.exists(PID_FILE):
+        print("⏹️  正在停止 SRA Daemon...")
+        cmd_stop(None)
+        time.sleep(1)
+
+    print("=" * 50)
+    print("📦 SRA 升级工具")
+    print("=" * 50)
+
+    # 2. 检查当前安装状态
+    pip_cmd = [sys.executable, "-m", "pip"]
+    result = subprocess.run(
+        pip_cmd + ["show", "sra-agent"],
+        capture_output=True, text=True
+    )
+
+    if result.returncode == 0:
+        info = {}
+        for line in result.stdout.split("\n"):
+            if ":" in line:
+                k, v = line.split(":", 1)
+                info[k.strip()] = v.strip()
+        print(f"📦 当前版本: {info.get('Version', '未知')}")
+        print(f"📂 安装位置: {info.get('Location', '未知')}")
+        is_editable = "Editable" in info
+        print(f"🔗 安装模式: {'editable (-e)' if is_editable else '标准安装'}")
+        if version:
+            print(f"🎯 目标版本: v{version}")
+    else:
+        print("⚠️  未检测到已安装的 SRA 包，将执行全新安装")
+
+    print()
+
+    # 3. 设置代理环境（国内服务器需要）
+    env = os.environ.copy()
+    if "https_proxy" not in env and "HTTPS_PROXY" not in env:
+        for port in [7890, 7891, 1080, 1087]:
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(0.3)
+                s.connect(("127.0.0.1", port))
+                s.close()
+                env["https_proxy"] = f"http://127.0.0.1:{port}"
+                env["http_proxy"] = f"http://127.0.0.1:{port}"
+                print(f"🌐 检测到代理: 127.0.0.1:{port}，已自动设置")
+                break
+            except (ConnectionRefusedError, OSError, socket.timeout):
+                continue
+
+    # 4. 获取最新代码
+    if os.path.exists(os.path.join(sra_src, ".git")):
+        print("🔄 从 Git 仓库拉取最新代码...")
+        result = subprocess.run(
+            ["git", "pull"],
+            cwd=sra_src, capture_output=True, text=True, env=env
+        )
+        if result.returncode == 0:
+            output = result.stdout.strip()
+            print(f"   {output}" if output else "   ✅ 已是最新")
+        else:
+            print(f"   ⚠️  Git pull 失败: {result.stderr.strip()[:100]}")
+            bak_dir = f"{sra_src}.bak.{int(time.time())}"
+            shutil.move(sra_src, bak_dir)
+            print(f"   → 已备份旧代码到 {bak_dir}")
+            print("   → 将重新克隆...")
+            result = subprocess.run(
+                ["git", "clone", repo_url, sra_src],
+                capture_output=True, text=True, env=env
+            )
+            if result.returncode != 0:
+                print(f"❌ 克隆失败: {result.stderr.strip()[:100]}")
+                print()
+                print("💡 提示：国内服务器请确保代理已启动")
+                print("   systemctl --user status mihomo")
+                return
+            print("✅ 代码克隆完成")
+    else:
+        if os.path.exists(sra_src):
+            bak_dir = f"{sra_src}.bak.{int(time.time())}"
+            shutil.move(sra_src, bak_dir)
+            print(f"📦 已备份旧目录到 {bak_dir}")
+
+        print("📥 从 GitHub 克隆最新代码...")
+        result = subprocess.run(
+            ["git", "clone", repo_url, sra_src],
+            capture_output=True, text=True, env=env
+        )
+        if result.returncode != 0:
+            print(f"❌ 克隆失败: {result.stderr.strip()[:100]}")
+            print()
+            print("💡 提示：国内服务器请确保代理已启动")
+            print("   systemctl --user status mihomo")
+            return
+        print("✅ 代码克隆完成")
+
+    # 如果指定了版本，切换到该 Tag
+    if version:
+        tag = f"v{version}" if not version.startswith("v") else version
+        print(f"🏷️  切换到版本 {tag}...")
+        r = subprocess.run(
+            ["git", "checkout", tag],
+            cwd=sra_src, capture_output=True, text=True, env=env
+        )
+        if r.returncode == 0:
+            print(f"   ✅ 已切换至 {tag}")
+        else:
+            print(f"   ⚠️  切换失败: {r.stderr.strip()[:80]}")
+            print("   💡 将使用最新代码")
+
+    print()
+
+    # 5. 重新安装
+    print("🔧 正在安装到当前 Python 环境...")
+    result = subprocess.run(
+        pip_cmd + ["install", "--no-build-isolation", "-e", sra_src],
+        capture_output=True, text=True
+    )
+
+    if result.returncode != 0:
+        print(f"   ⚠️  --no-build-isolation 失败，尝试标准安装...")
+        result = subprocess.run(
+            pip_cmd + ["install", "-e", sra_src],
+            capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            print(f"   ❌ 安装失败: {result.stderr.strip()[:200]}")
+            print()
+            print("💡 建议手动执行:")
+            print(f"   {sys.executable} -m pip install -e {sra_src}")
+            return
+
+    # 提取新版号
+    new_version = "未知"
+    for line in result.stdout.split("\n"):
+        if "sra-agent" in line:
+            for part in line.strip().split():
+                if part[0:1].isdigit() and "." in part:
+                    new_version = part.rstrip(",")
+                    break
+
+    print()
+    print("✅ " + "=" * 40)
+    print(f"✅ SRA 升级完成！")
+    print(f"   版本: {new_version}")
+    print(f"   源码: {sra_src}")
+    print("✅ " + "=" * 40)
+    print()
+    print("💡 接下来:")
+    print("   sra start          # 启动新版 Daemon")
+    print("   sra version        # 查看版本信息")
+    if version:
+        print("   sra --help         # 查看完整帮助")
+
+
+# ── 卸载 ────────────────────────────────────
+
+def cmd_uninstall(args: List[str]):
+    """卸载 SRA"""
+    remove_all = "--all" in args or "-a" in args
+    force = "-y" in args or "--yes" in args
+
+    print("=" * 50)
+    print("🗑️  SRA 卸载工具")
+    print("=" * 50)
+
+    pip_cmd = [sys.executable, "-m", "pip"]
+
+    # 检查是否已安装
+    check = subprocess.run(
+        pip_cmd + ["show", "sra-agent"],
+        capture_output=True, text=True
+    )
+    if check.returncode != 0:
+        print("ℹ️  SRA 未安装（pip 中未找到 sra-agent 包）")
+    else:
+        for line in check.stdout.split("\n"):
+            if line.startswith("Version:"):
+                print(f"📦 已安装版本: {line.split(':', 1)[1].strip()}")
+                break
+
+    print()
+
+    # 1. 停止守护进程
+    if os.path.exists(PID_FILE):
+        print("⏹️  正在停止 SRA Daemon...")
+        cmd_stop(None)
+        time.sleep(0.5)
+    else:
+        print("ℹ️  SRA Daemon 未运行")
+
+    print()
+
+    # 2. 移除 systemd 服务
+    user_service = os.path.expanduser("~/.config/systemd/user/srad.service")
+    sys_service = "/etc/systemd/system/srad.service"
+
+    if os.path.exists(user_service):
+        print("🗑️  移除用户级 systemd 服务...")
+        subprocess.run(
+            ["systemctl", "--user", "disable", "srad"],
+            capture_output=True
+        )
+        os.unlink(user_service)
+        subprocess.run(
+            ["systemctl", "--user", "daemon-reload"],
+            capture_output=True
+        )
+        print("   ✅ 用户级服务已移除")
+
+    if os.path.exists(sys_service):
+        print("🗑️  检测到系统级 systemd 服务")
+        print(f"   路径: {sys_service}")
+        print(f"   需要手动执行: sudo rm {sys_service}")
+        print("   然后: sudo systemctl daemon-reload")
+
+    print()
+
+    # 3. 卸载 Python 包
+    if check.returncode == 0:
+        print("📦 卸载 Python 包 sra-agent...")
+        result = subprocess.run(
+            pip_cmd + ["uninstall", "sra-agent", "-y"],
+            capture_output=True, text=True
+        )
+        if result.returncode == 0:
+            print("   ✅ Python 包已卸载")
+        else:
+            print(f"   ⚠️  卸载可能未完全: {result.stderr.strip()[:100]}")
+    else:
+        print("📦 Python 包: 未安装，跳过")
+
+    print()
+
+    # 4. 清理 ~/.sra/
+    sra_home = os.path.expanduser("~/.sra")
+    if os.path.exists(sra_home):
+        if remove_all or force:
+            print(f"🗑️  删除 {sra_home}/ ...")
+            shutil.rmtree(sra_home, ignore_errors=True)
+            print("   ✅ 配置和数据已清除")
+        else:
+            print(f"📁 配置目录 {sra_home}/ 已保留")
+            print("   如需删除请添加 --all 参数，或手动:")
+            print(f"   rm -rf {sra_home}")
+    else:
+        print("📁 配置目录不存在，跳过")
+
+    print()
+    print("✅ " + "=" * 40)
+    print("✅ SRA 卸载完成！")
+    print("✅ " + "=" * 40)
+    print()
+    print("💡 如果将来需要重新安装:")
+    print("   git clone https://github.com/JackSmith111977/Hermes-Skill-View.git /tmp/sra-latest")
+    print(f"   {sys.executable} -m pip install -e /tmp/sra-latest")
+
+
 # ── 主入口 ──────────────────────────────────
 
 COMMANDS = {
@@ -350,6 +625,8 @@ COMMANDS = {
     "config": cmd_config,
     "adapters": cmd_adapters,
     "install": cmd_install,
+    "upgrade": cmd_upgrade,
+    "uninstall": cmd_uninstall,
     "version": cmd_version,
     "help": lambda a: print_help(),
 }
@@ -382,6 +659,10 @@ def print_help():
     print("  adapters              列出支持的 Agent 类型")
     print("  install <agent>      安装到指定 Agent")
     print()
+    print("管理维护:")
+    print("  upgrade [--version <tag>]  升级 SRA 到最新版本")
+    print("  uninstall [-a|--all]        卸载 SRA（--all 清除配置）")
+    print()
     print("其他:")
     print("  version               版本信息")
     print("  help                  显示本帮助")
@@ -391,6 +672,10 @@ def print_help():
     print("  sra recommend 画架构图  # 查询推荐")
     print("  sra coverage           # 查看覆盖率")
     print("  sra install hermes     # 安装到 Hermes")
+    print("  sra upgrade            # 从 GitHub 升级到最新版")
+    print("  sra upgrade -V 1.2.0   # 升级到指定版本")
+    print("  sra uninstall          # 卸载 SRA（保留配置）")
+    print("  sra uninstall --all    # 完全卸载（含配置和索引数据）")
 
 
 def main():
