@@ -69,8 +69,9 @@ class SkillIndexer:
             if len(parts) >= 2:
                 try:
                     return yaml.safe_load(parts[1]) or {}
-                except:
-                    pass
+                except yaml.YAMLError as e:
+                    import logging
+                    logging.getLogger("sra.indexer").warning("YAML frontmatter parse failed: %s", e)
         return {}
 
     def _extract_triggers(self, frontmatter: dict) -> List[str]:
@@ -178,9 +179,9 @@ class SkillIndexer:
                 self._skills = data.get("skills", [])
                 if self._skills:
                     return self._skills
-            except:
-                pass
-        
+            except Exception:
+                import logging
+                logging.getLogger("sra.indexer").debug("索引缓存加载失败，重新构建")
         self.build()
         return self._skills
 

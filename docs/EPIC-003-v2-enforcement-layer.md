@@ -1,7 +1,7 @@
 # EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者
 
 > **Epic ID:** SRA-EPIC-003
-> **状态:** 📋 planning
+> **状态:** 🏃 sprint-1 (feat/v2.0-enforcement-layer)
 > **目标版本:** SRA v2.0.0 (+ Hermes 集成 v2.0)
 > **创建日期:** 2026-05-09
 > **分析者:** Emma (小玛)
@@ -138,22 +138,87 @@ if block_message is not None:
 
 ---
 
-### Story 6: 可配置的严格度级别
+### Story 6: 运行时力度体系 — 注入覆盖度驱动
 
 > **作为** 在不同场景下使用 Hermes 的用户
-> **我希望** SRA 的校验严格度可配置
-> **以便** 开发调试时宽松，生产部署时严格
+> **我希望** SRA 的运行时力度通过注入点的多少来控制
+> **以便** 最轻量只拦截用户消息注入推荐，最重量在所有钩子+周期性注入
+
+**核心设计理念**：SRA **永不阻断**（no blocking）。强度只决定 **SRA 在哪些时机注入推荐上下文**。力度越高，注入点越多、注入频率越高。
+
+```
+力度不是「阻断强度」，而是「注入覆盖度」：
+                       
+     用户消息    工具调用前    工具调用后    周期性注入
+       ↓           ↓           ↓           ↓
+L1 🐣  ●                                    
+L2 🦅  ●           ●                        
+L3 🦖  ●           ●           ●            
+L4 🐉  ●           ●           ●           ●
+```
+
+**4 个注入层级**：
+
+| 层级 | 名称 | 注入点 | 行为描述 |
+|:----:|:-----|:-------|:---------|
+| 🐣 **L1 — basic** | 消息级注入 | 用户消息到达时 | 当前 v1 行为：`POST /recommend` 注入 rag_context |
+| 🦅 **L2 — medium** | 消息+关键工具钩子 | 用户消息 + pre_tool_call (write_file/patch/terminal/execute_code) | 关键工具调用前检查是否已加载对应 skill，未加载时注入 `[SRA 推荐]` 到助手回复 |
+| 🦖 **L3 — advanced** | 消息+全工具钩子+后检 | 用户消息 + pre_tool_call (全部工具) + post_tool_call | 全部工具调用前检查+调用后核查 skill 是否被遵守，未遵守时注入提醒 |
+| 🐉 **L4 — omni** | 全钩子+频率注入 | 全部 L3 注入点 + 每 N 轮对话周期性重注入 | 在 L3 基础上，每 5 轮对话自动重查询 SRA 并注入最新推荐，防止上下文漂移 |
+
+**各层级注入点详情**：
+
+```yaml
+# ~/.sra/config.json
+{
+  "runtime_force": {
+    "level": "medium",          # basic / medium / advanced / omni
+    
+    # 各层级自动展开为以下配置（用户无需手动修改）：
+    # "injection_points": {
+    #   "on_user_message": true,           # L1 起
+    #   "pre_tool_call": ["write_file", "patch", "terminal", "execute_code"],  # L2 起
+    #   "post_tool_call": true,            # L3 起
+    #   "periodic_injection": {            # L4 起
+    #     "interval_rounds": 5,
+    #     "strategy": "conversation_summary"
+    #   }
+    # }
+  }
+}
+```
+
+**各层级对比**：
+
+| 特性 | 🐣 basic | 🦅 medium | 🦖 advanced | 🐉 omni |
+|:-----|:--------:|:---------:|:-----------:|:-------:|
+| 用户消息时推荐注入 | ✅ | ✅ | ✅ | ✅ |
+| 关键工具调用前检查+注入 | — | ✅ | ✅ | ✅ |
+| 全部工具调用前检查+注入 | — | — | ✅ | ✅ |
+| 工具调用后核查遵守度 | — | — | ✅ | ✅ |
+| 周期性重注入防漂移 | — | — | — | ✅ |
+| 额外 Token 开销 | ~100 | ~300 | ~500 | ~800 |
+| 适用场景 | 尝鲜体验 | 日常开发 | 质量敏感 | 长任务/合规 |
+
+**没有阻断**：任何层级都不阻断工具执行。SRA 只负责在适当时机注入「主人，boku 觉得你可能需要 XX skill」这类建议，让 Agent 自主决定是否采纳。
 
 **验收标准:**
-- [ ] 三个严格度级别：`relaxed`（仅提醒）/ `normal`（提醒+建议）/ `strict`（可阻断）
-- [ ] 级别配置在 `~/.sra/config.json` 中
-- [ ] 级别配置在 Hermes `~/.hermes/config.yaml` 中可覆盖
-- [ ] 不同级别影响 `/validate` 返回的 `severity` 字段
-- [ ] 默认级别为 `normal`
+- [ ] 4 级注入覆盖度体系：basic / medium / advanced / omni
+- [ ] 每级严格定义对应的注入点集合（非简单线性递增）
+- [ ] `~/.sra/config.json` 中 `runtime_force.level` 配置
+- [ ] Hermes `~/.hermes/config.yaml` 可覆盖
+- [ ] 默认级别为 `medium`
+- [ ] `sra config set runtime_force.level advanced` CLI 命令
+- [ ] 所有注入点均为非阻塞（info/warning 级别，无 block）
+- [ ] L4 的周期性注入间隔可配置（默认 5 轮）
+- [ ] 编写测试用例验证各层级注入点启停
 
 **实现文件:**
-- 修改: `sra-latest/skill_advisor/runtime/daemon.py`（配置读取）
-- 修改: `hermes-agent/run_agent.py`（配置传递）
+- 新增: `sra-latest/skill_advisor/runtime/force.py`（力度引擎+注入点路由）
+- 修改: `sra-latest/skill_advisor/runtime/daemon.py`（按力度级别条件启用端点）
+- 修改: `sra-latest/skill_advisor/cli.py`（`sra config` 命令）
+- 修改: `sra-latest/skill_advisor/advisor.py`（周期性重注入 recheck 方法）
+- 新增: `tests/test_force.py`
 
 ---
 
@@ -268,6 +333,172 @@ if block_message is not None:
 
 ---
 
+### Story 12: Daemon 单例守护 — 防多实例冲突 (SRA-003-12)
+
+> **作为** SRA 守护进程
+> **我希望** 在任何时刻最多只有一个 SRA Daemon 实例在运行
+> **以便** 防止端口冲突、状态文件损坏和资源竞争
+
+**问题背景：** 当前 `cmd_start` 通过 PID 文件做单例检查，但存在竞态条件（fork 前检查 → 无原子锁 → 两个 `start` 可同时通过）。且 `cmd_attach`（systemd 前台模式）完全不检查 PID 文件。实际运行已观察到 **3 个 SRA 实例同时运行**，争抢端口 8536。
+
+**根因分析：**
+
+| # | 漏洞 | 场景 | 严重程度 |
+|:---|:---|:---|:---:|
+| 1 | PID 检查无原子锁 | `sra start` 两次快速调用 | 🔴 竞态 → 多实例 |
+| 2 | `cmd_attach` 无 PID 检查 | systemd `sra attach` 调用 | 🔴 无条件多重启动 |
+| 3 | 端口级无保护 | HTTP 端口被前一个残骸占用 | 🟡 启动失败无声 |
+| 4 | `_update_status` 无归属验证 | 多个实例同时写 status.json | 🟡 状态文件损坏 |
+
+**验收标准：**
+- [ ] **OS 级文件锁**: `~/.sra/srad.lock` 使用 `fcntl.flock` 实现原子性获取，防止竞态条件
+- [ ] `cmd_start` 启动前先尝试获取文件锁，获取失败则打印「SRA Daemon 已在运行 (PID: xxx)」并优雅退出
+- [ ] `cmd_attach` 启动前同样检查文件锁，systemd 模式下也不会启动重复实例
+- [ ] **端口活性探测**: 绑定 HTTP 前检查 `0.0.0.0:{port}` 是否已被占用（`SO_REUSEADDR` 开启前先 `socket.connect` 探测）
+- [ ] **锁自动释放**: 进程异常退出时 lock 文件自动释放（`atexit` + `signal.SIGTERM/SIGINT` 处理器），无需手动清理
+- [ ] **状态文件归属验证**: `_update_status` 写入时验证当前 PID 是否为 lock 持有者，防止交叉写入
+- [ ] **优雅降级**: 检测到已有实例时新进程以 `exit code 0` 退出并打印可读信息，不抛 `RuntimeError`
+- [ ] **守护目录锁**: 在 `cmd_start` fork 之前获取锁，确保 fork 前后一致性
+- [ ] **测试用例**: 并发 `sra start` 场景、systemd `attach` 重复启动场景、端口冲突场景的集成测试
+- [ ] **文档补充**: 在 `sra start`/`sra attach` 的 `--help` 中说明单例机制
+
+**实现文件：**
+- 修改: `sra-latest/skill_advisor/runtime/daemon.py`
+  - `cmd_start()`: fork 前先获取文件锁
+  - `cmd_attach()`: 启动前检查文件锁
+  - `SRaDDaemon.start()`: HTTP 绑定前做端口活性探测
+  - 新增 `_acquire_lock()` / `_release_lock()` 辅助方法
+- 新增: `sra-latest/skill_advisor/runtime/lock.py`（文件锁 + 端口探测工具函数）
+- 新增: `tests/test_singleton.py`
+- 修改: `sra-latest/skill_advisor/cli.py`（`--help` 补充单例说明）
+
+---
+
+### 🧹 技术债修复 Stories
+
+以下 4 个 Story 基于 [`docs/TECHDEBT-ANALYSIS.md`](./TECHDEBT-ANALYSIS.md) 的全面分析，覆盖 **23 个已识别问题**中优先级最高的项目。
+
+---
+
+### Story 13: 紧急修复 — HTTP 架构 + 异常处理 (SRA-003-13)
+
+> **作为** SRA 守护进程的维护者
+> **我希望** 修复 HTTP 服务器的线程模型问题并消除所有被静默吞噬的异常
+> **以便** 保障多请求并发能力，以及致命错误不被隐藏
+
+**问题背景：** 
+1. HTTP 服务器使用 `handle_request()` 而非 `serve_forever()`，`ThreadingMixIn` 不生效，无法真正并发处理请求
+2. 全库 16 处 `except: pass` 隐藏真实错误，导致故障难以排查
+
+**验收标准：**
+- [ ] HTTP 服务器改用 `serve_forever()`，配合 `server.timeout` 实现可中断循环
+- [ ] 或采用 `select.poll()` 实现非阻塞事件循环
+- [ ] 所有 `except: pass` 升级为 `logger.warning()` / `logger.error()`（至少记录异常消息）
+- [ ] 关键路径（YAML 解析、配置加载、状态写入）的异常向上传播而非静默忽略
+- [ ] `SUPPRESSED_EXCEPTIONS` 白名单机制：明确标记哪些异常允许静默（如 `socket.timeout`）
+- [ ] 编写异常处理单元测试：验证不同异常场景不会静默吞没
+
+**实现文件：**
+- 修改: `skill_advisor/runtime/daemon.py`（`_run_http_server` 重构 + 所有 `except:` 增强）
+- 修改: `skill_advisor/indexer.py`（`except:` 增强）
+- 修改: `skill_advisor/memory.py`（`except:` 增强）
+- 修改: `skill_advisor/cli.py`（`except:` 增强）
+- 新增: `tests/test_daemon_http.py`
+
+---
+
+### Story 14: 测试覆盖 — 守护进程 + CLI (SRA-003-14)
+
+> **作为** SRA 开发团队
+> **我希望** 为 daemon.py（21 个函数）和 cli.py（700+ 行）增加自动化测试
+> **以便** 核心守护进程的任何修改都能自动验证，防止回归
+
+**问题背景：** daemon.py 和 cli.py 合计 ~1,500 行代码，测试覆盖率为 0%。当前所有测试（4 个测试文件）只覆盖 `indexer` 和 `matcher` 模块。
+
+**验收标准：**
+- [ ] daemon 核心类测试：
+  - [ ] `SRaDDaemon.__init__()` — 配置合并、目录创建
+  - [ ] `SRaDDaemon.start()` / `stop()` — 生命周期管理
+  - [ ] `get_stats()` — 统计数据正确性
+  - [ ] `_compute_skills_checksum()` — 校验和一致性（相同输入 → 相同输出）
+  - [ ] `_update_status()` — 状态文件写入
+  - [ ] `_handle_request()` — 各 action 分派
+- [ ] CLI 命令测试（通过 `_socket_request` mock）：
+  - [ ] `cmd_recommend()` — 有结果/无结果
+  - [ ] `cmd_stats()` — daemon 模式/本地模式
+  - [ ] `cmd_start()` — PID 文件创建/清理
+  - [ ] `cmd_stop()` — 信号发送/PID 清理
+  - [ ] `cmd_restart()` — 完整生命周期
+- [ ] HTTP API 集成测试（启动临时 server）：
+  - [ ] `GET /health` 返回 200
+  - [ ] `POST /recommend` 返回推荐结果
+  - [ ] `POST /refresh` 返回索引数
+- [ ] 所有测试使用 `tmp_path` fixture，不污染真实环境
+- [ ] 测试门禁：daemon 核心函数覆盖率 ≥ 60%
+
+**实现文件：**
+- 新增: `tests/test_daemon.py`
+- 新增: `tests/test_cli.py`
+- 新增: `tests/test_api_integration.py`
+
+---
+
+### Story 15: 质量增强 — 配置验证 + 日志统一 + 魔法数字 (SRA-003-15)
+
+> **作为** SRA 系统管理员
+> **我希望** 配置文件有 schema 验证、日志系统统一输出、匹配分值有命名常量
+> **以便** 减少配置错误、提高可调试性、降低维护成本
+
+**验收标准：**
+- [ ] 配置系统：
+  - [ ] 新增 `~/.sra/config.schema.json` 定义配置 schema
+  - [ ] 启动时自动校验配置合法性，非法字段打印警告
+  - [ ] `sra config validate` CLI 子命令
+  - [ ] 环境变量覆盖支持：`SRA_HTTP_PORT`, `SRA_LOG_LEVEL` 等
+- [ ] 日志系统：
+  - [ ] cli.py 改用 `logging` 统一输出
+  - [ ] 新增日志轮转（`RotatingFileHandler`, max 10MB × 5 份）
+  - [ ] DEBUG 级别日志覆盖核心路径（建索引、同义词匹配、请求处理）
+  - [ ] daemon 日志格式统一为 `[时间] [级别] [模块] 消息`
+- [ ] Matcher 魔法数字提取：
+  - [ ] 所有 14 个硬编码分值提取为 `MatchWeight` 命名空间常量
+  - [ ] `_match_lexical` 函数拆分为 3 个子函数（`_score_name`, `_score_triggers`, `_score_description`）
+  - [ ] `reasons` 去重改用 `set` 而非 `str(reasons)` 字符串匹配
+
+**实现文件：**
+- 修改: `skill_advisor/runtime/daemon.py`（配置验证 + 环境变量）
+- 新增: `~/.sra/config.schema.json`
+- 修改: `skill_advisor/cli.py`（日志统一 + `sra config validate`)
+- 修改: `skill_advisor/matcher.py`（魔法数字命名化 + 函数拆分）
+- 新增: `tests/test_config.py`
+
+---
+
+### Story 16: 架构优化 — 并发安全 + 路由统一 (SRA-003-16)
+
+> **作为** SRA 守护进程
+> **我希望** 多线程场景下状态一致、请求路由统一
+> **以便** 在高并发下不丢失数据、新增端点只需修改一处
+
+**问题背景：** `_update_status` 无锁写入、`memory.py` 的 load/save 非线程安全、双协议路由重复
+
+**验收标准：**
+- [ ] 并发安全：
+  - [ ] `_update_status()` 加锁保护（复用 `self._lock`）
+  - [ ] `memory.py` 的 `save()` 增加文件锁（`fcntl.flock`），防止多实例交叉写入
+  - [ ] `_last_refresh` 读写原子化（`threading.Lock` 或 `atomic` 操作）
+  - [ ] 所有 `self._stats` 的更新统一通过 `self._lock` 保护
+- [ ] 路由统一：
+  - [ ] 提取 `ROUTER = {"recommend": ..., "record": ..., "refresh": ...}` 路由表
+  - [ ] Socket `/action` 和 HTTP `POST /{action}` 共用同一路由
+  - [ ] 新增端点在路由表中注册即可，无需修改两处
+
+**实现文件：**
+- 修改: `skill_advisor/runtime/daemon.py`（并发安全 + 路由统一）
+- 修改: `skill_advisor/memory.py`（文件锁）
+- 新增: `tests/test_concurrency.py`
+- 修改: `tests/test_daemon.py`（路由测试）
+
 ## 🏗️ 架构变更
 
 ### v2.0 运行时架构
@@ -374,6 +605,11 @@ sra-latest/
 | 推荐质量反馈闭环 | SRA-003-09 | 🟢 P2 | 2d | SRA-003-03 |
 | systemd 自启动部署 | SRA-003-10 | 🟢 P2 | 0.5d | 无 |
 | 安装脚本自动配置 | SRA-003-11 | 🟡 P1 | 1d | SRA-003-10 |
+| **Daemon 单例守护** | **SRA-003-12** | **🔴 P0** | **0.5d** | **无** |
+| **HTTP 架构 + 异常处理** | **SRA-003-13** | **🔴 P0** | **1d** | **无** |
+| **测试覆盖增强** | **SRA-003-14** | **🟡 P1** | **2d** | **SRA-003-13** |
+| **配置验证 + 日志 + 魔法数字** | **SRA-003-15** | **🟡 P1** | **1d** | **无** |
+| **并发安全 + 路由统一** | **SRA-003-16** | **🟢 P2** | **1d** | **SRA-003-13** |
 
 **优先级说明：**
 - 🔴 P0 — 核心功能，必须完成才能发布 v2.0
@@ -384,19 +620,20 @@ sra-latest/
 
 ## 🚀 发布计划
 
-### v2.0.0-alpha (Phase 1: 核心校验)
+### v2.0.0-alpha (Phase 1: 核心校验 + 基础加固)
 
 | Sprint | Stories | 目标 |
 |:---|:---|:---|
-| Sprint 1 | SRA-003-01 + SRA-003-02 | 完成 `POST /validate` + FILE_SKILL_MAP，Hermes hook 集成 |
-| Sprint 2 | SRA-003-03 + SRA-003-04 | 完成轨迹记录 + 长任务保护 |
-| Sprint 3 | SRA-003-05 + SRA-003-06 + SRA-003-07 | 契约机制 + 严格度 + 压缩保护 |
+| Sprint 1 | SRA-003-01 + SRA-003-02 + **SRA-003-12** + **SRA-003-13** | 完成 `POST /validate` + FILE_SKILL_MAP + **单例守护** + **HTTP/异常修复**，Hermes hook 集成 |
+| Sprint 2 | SRA-003-03 + SRA-003-04 + **SRA-003-14** | 完成轨迹记录 + 长任务保护 + **测试覆盖增强** |
+| Sprint 3 | SRA-003-05 + SRA-003-06 + SRA-003-07 + **SRA-003-15** | 契约机制 + 严格度 + 压缩保护 + **配置/日志/魔法数字** |
 
-### v2.1.0 (Phase 2: 智能优化)
+### v2.1.0 (Phase 2: 智能优化 + 架构优化)
 
 | Sprint | Stories | 目标 |
 |:---|:---|:---|
 | Sprint 4 | SRA-003-08 + SRA-003-09 | 仪表盘 + 反馈闭环 |
+| Sprint 5 | SRA-003-16 | 并发安全 + 路由统一 |
 
 ---
 

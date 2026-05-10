@@ -123,9 +123,81 @@ class SkillAdvisor:
             "query": query,
         }
 
+    def recheck(self, conversation_summary: str, loaded_skills: List[str] = None,
+                 top_k: int = 5) -> Dict:
+        """
+        长任务上下文漂移重检
+
+        在长任务执行过程中定期调用，检测上下文是否漂移，
+        以及是否有新的技能应该被加载。
+
+        Args:
+            conversation_summary: 当前对话摘要
+            loaded_skills: 已经加载的技能名称列表
+            top_k: 推荐 top-k 技能
+
+        Returns:
+            {
+                "has_drift": bool,           # 是否检测到漂移
+                "missing_skills": [...],      # 推荐但未加载的技能
+                "drift_score": float,         # 漂移程度 (0-1)
+                "recommendations": [...],      # 完整推荐结果
+                "loaded_skills_count": int,
+                "processing_ms": float,
+            }
+        """
+        # 1. 运行推荐算法
+        result = self.recommend(conversation_summary, top_k=top_k)
+        recs = result.get("recommendations", [])
+        elapsed = result.get("processing_ms", 0)
+
+        # 2. 对比已加载技能
+        loaded = loaded_skills or []
+        loaded_lower = [s.lower() for s in loaded]
+        rec_names_lower = [r["skill"].lower() for r in recs]
+
+        missing = [r for r in recs if r["skill"].lower() not in loaded_lower]
+
+        # 3. 计算漂移分数
+        if recs:
+            drift_score = round(len(missing) / len(recs), 2)
+        else:
+            drift_score = 0.0
+        has_drift = len(missing) > 0 and drift_score >= 0.2
+
+        # 4. 记录推荐
+        if has_drift:
+            self.memory.increment_recommendations()
+
+        return {
+            "has_drift": has_drift,
+            "drift_score": drift_score,
+            "missing_skills": missing,
+            "recommendations": recs,
+            "loaded_skills_count": len(loaded),
+            "processing_ms": elapsed,
+            "query": conversation_summary[:100],
+        }
+
     def record_usage(self, skill_name: str, user_input: str, accepted: bool = True):
         """记录技能使用场景"""
         self.memory.record_usage(skill_name, user_input, accepted)
+
+    def record_view(self, skill_name: str):
+        """记录技能被查看"""
+        self.memory.record_view(skill_name)
+
+    def record_use(self, skill_name: str):
+        """记录技能被使用"""
+        self.memory.record_use(skill_name)
+
+    def record_skip(self, skill_name: str, reason: str = ""):
+        """记录技能被跳过"""
+        self.memory.record_skip(skill_name, reason)
+
+    def get_compliance_stats(self) -> Dict:
+        """获取遵循率统计"""
+        return self.memory.get_compliance_stats()
 
     def show_stats(self) -> Dict:
         """获取统计信息"""

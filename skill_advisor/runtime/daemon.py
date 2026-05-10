@@ -33,12 +33,15 @@ from ..advisor import SkillAdvisor
 from ..indexer import SkillIndexer
 from .. import __version__
 
+from .lock import FileLock, check_port_in_use
+
 logger = logging.getLogger("srad")
 
 
 # ── 路径常量 ─────────────────────────────────
 SRA_HOME = os.path.expanduser("~/.sra")
 PID_FILE = os.path.join(SRA_HOME, "srad.pid")
+LOCK_FILE = os.path.join(SRA_HOME, "srad.lock")
 SOCKET_FILE = os.path.join(SRA_HOME, "srad.sock")
 LOG_FILE = os.path.join(SRA_HOME, "srad.log")
 STATUS_FILE = os.path.join(SRA_HOME, "srad.status.json")
@@ -75,8 +78,8 @@ def load_config() -> dict:
                 user_config = json.load(f)
             merged = {**DEFAULT_CONFIG, **user_config}
             return merged
-        except:
-            pass
+        except Exception as e:
+            logger.warning("配置文件加载失败: %s", e)
     return dict(DEFAULT_CONFIG)
 
 
@@ -141,7 +144,7 @@ class SRaDDaemon:
         t = threading.Thread(target=self._auto_refresh_loop, daemon=True)
         t.start()
         self._threads.append(t)
-        logger.info(f"自动刷新间隔: {self.config['auto_refresh_interval']}s")
+        logger.info(f"自动刷新间隔: {self.config.get('auto_refresh_interval', 3600)}s")
 
         # 写入状态
         self._update_status("running")
@@ -154,8 +157,8 @@ class SRaDDaemon:
         if self._server_socket:
             try:
                 self._server_socket.close()
-            except:
-                pass
+            except OSError:
+                logger.debug("Socket close in stop: expected")
         self._update_status("stopped")
         logger.info("SRA Daemon 已停止")
 
@@ -217,13 +220,13 @@ class SRaDDaemon:
             logger.error(f"Socket 客户端处理错误: {e}")
             try:
                 conn.sendall(json.dumps({"error": str(e)}).encode("utf-8"))
-            except:
-                pass
+            except OSError:
+                logger.debug("Socket send in error handler failed")
         finally:
             try:
                 conn.close()
-            except:
-                pass
+            except OSError:
+                logger.debug("Socket close in finally: expected")
 
     def _run_http_server(self):
         """简易 HTTP 服务器（使用标准库）"""
@@ -270,6 +273,9 @@ class SRaDDaemon:
                 elif self.path == "/stats":
                     stats = self.daemon.get_stats()
                     self._send_json(stats)
+                elif self.path == "/stats/compliance":
+                    stats = self.daemon.advisor.get_compliance_stats()
+                    self._send_json({"status": "ok", "compliance": stats})
                 elif self.path.startswith("/recommend"):
                     import urllib.parse
                     parsed = urllib.parse.urlparse(self.path)
@@ -289,7 +295,8 @@ class SRaDDaemon:
                     body = self.rfile.read(length).decode("utf-8")
                     try:
                         data = json.loads(body)
-                    except:
+                    except json.JSONDecodeError:
+                        logger.debug("Invalid JSON in POST body, using empty dict")
                         data = {}
                 else:
                     data = {}
@@ -355,16 +362,42 @@ class SRaDDaemon:
                     })
                 elif self.path == "/record":
                     skill = data.get("skill", "")
-                    user_input = data.get("input", "")
-                    accepted = data.get("accepted", True)
-                    if skill and user_input:
-                        self.daemon.advisor.record_usage(skill, user_input, accepted)
+                    action = data.get("action", "")  # viewed/used/skipped
+                    if action:
+                        # 新式：轨迹追踪
+                        if action == "viewed":
+                            self.daemon.advisor.record_view(skill)
+                        elif action == "used":
+                            self.daemon.advisor.record_use(skill)
+                        elif action == "skipped":
+                            reason = data.get("reason", "")
+                            self.daemon.advisor.record_skip(skill, reason)
+                        else:
+                            self._send_json({"error": f"unknown action: {action}"}, 400)
+                            return
+                        self._send_json({"status": "ok"})
+                    elif skill and data.get("input", ""):
+                        # 旧式：记录推荐采纳
+                        accepted = data.get("accepted", True)
+                        self.daemon.advisor.record_usage(skill, data["input"], accepted)
                         self._send_json({"status": "ok"})
                     else:
                         self._send_json({"error": "missing skill or input"}, 400)
                 elif self.path == "/refresh":
                     count = self.daemon.advisor.refresh_index()
                     self._send_json({"status": "ok", "count": count})
+                elif self.path == "/validate":
+                    from .endpoints.validate import handle_validate
+                    result = handle_validate(data)
+                    self._send_json(result)
+                elif self.path == "/recheck":
+                    summary = data.get("conversation_summary", "")
+                    if not summary:
+                        self._send_json({"error": "missing conversation_summary"}, 400)
+                        return
+                    loaded_skills = data.get("loaded_skills", [])
+                    result = self.daemon.advisor.recheck(summary, loaded_skills)
+                    self._send_json({"status": "ok", "recheck": result})
                 else:
                     self._send_json({"error": "not_found"}, 404)
 
@@ -374,14 +407,28 @@ class SRaDDaemon:
             daemon_threads = True
 
         server = ThreadedHTTPServer(("0.0.0.0", port), SRAHTTPHandler)
+        server.timeout = 0.5  # 允许线程可中断
         self._http_server = server
         logger.info(f"HTTP API: http://0.0.0.0:{port}")
 
+        # 使用 serve_forever() 让 ThreadingMixIn 真正生效
+        # 在独立线程中运行，不阻塞主循环
+        import threading as _threading
+        http_thread = _threading.Thread(
+            target=server.serve_forever,
+            daemon=True,
+        )
+        http_thread.start()
+
+        # 监听 running 状态，用于优雅关闭
         while self.running:
             try:
-                server.handle_request()
-            except:
+                http_thread.join(timeout=1.0)
+            except KeyboardInterrupt:
                 break
+        
+        server.shutdown()
+        logger.info("HTTP 服务器已关闭")
 
     def _auto_refresh_loop(self):
         """自动刷新循环 — 双模式：定时刷新 + 文件变更检测"""
@@ -446,7 +493,7 @@ class SRaDDaemon:
                 try:
                     stat = os.stat(f)
                     checksum_parts.append(f"{f}:{stat.st_mtime}:{stat.st_size}")
-                except:
+                except OSError:
                     checksum_parts.append(f)
             return hashlib.md5("|".join(checksum_parts).encode()).hexdigest()
         except Exception as e:
@@ -474,6 +521,19 @@ class SRaDDaemon:
 
         elif action == "record":
             skill = params.get("skill", "")
+            action_type = params.get("action", "")  # viewed/used/skipped
+            if action_type:
+                if action_type == "viewed":
+                    self.advisor.record_view(skill)
+                elif action_type == "used":
+                    self.advisor.record_use(skill)
+                elif action_type == "skipped":
+                    reason = params.get("reason", "")
+                    self.advisor.record_skip(skill, reason)
+                else:
+                    return {"error": f"unknown action: {action_type}"}
+                return {"status": "ok"}
+            # 旧式：记录推荐采纳
             user_input = params.get("input", "")
             accepted = params.get("accepted", True)
             self.advisor.record_usage(skill, user_input, accepted)
@@ -493,11 +553,27 @@ class SRaDDaemon:
             result = self.advisor.analyze_coverage()
             return {"status": "ok", "result": result}
 
+        elif action == "stats/compliance":
+            stats = self.advisor.get_compliance_stats()
+            return {"status": "ok", "compliance": stats}
+
         elif action == "stop":
             # 远程停止
             t = threading.Thread(target=self.stop, daemon=True)
             t.start()
             return {"status": "ok", "message": "stopping"}
+
+        elif action == "validate":
+            from .endpoints.validate import handle_validate
+            return {"status": "ok", "result": handle_validate(params)}
+
+        elif action == "recheck":
+            summary = params.get("conversation_summary", "")
+            if not summary:
+                return {"error": "missing conversation_summary"}
+            loaded_skills = params.get("loaded_skills", [])
+            result = self.advisor.recheck(summary, loaded_skills)
+            return {"status": "ok", "recheck": result}
 
         else:
             return {"error": f"unknown action: {action}"}
@@ -511,8 +587,8 @@ class SRaDDaemon:
             try:
                 start = datetime.fromisoformat(self._stats["started_at"])
                 uptime = int((datetime.now() - start).total_seconds())
-            except:
-                pass
+            except Exception:
+                logger.debug("Could not parse start time, uptime=0")
 
         return {
             "version": __version__,
@@ -539,43 +615,63 @@ class SRaDDaemon:
                     "pid": os.getpid(),
                     "updated_at": datetime.now().isoformat(),
                 }, f)
-        except:
-            pass
+        except OSError as e:
+            logger.warning("状态文件写入失败: %s", e)
 
 
 # ── 命令行接口 ─────────────────────────────
 
 def cmd_start(args=None):
     """启动守护进程"""
-    # 确保 SRA 家目录存在
-    from .daemon import ensure_sra_home
     ensure_sra_home()
     
-    # 检查是否已在运行
+    # ── OS 级文件锁：原子性单例检测 ──
+    lock = FileLock(LOCK_FILE, timeout=0)  # 非阻塞尝试
+    if not lock.acquire():
+        # 锁已被其他进程持有
+        existing_pid = lock.get_lock_pid()
+        if existing_pid:
+            print(f"⚠️  SRA Daemon 已在运行 (PID: {existing_pid})")
+        else:
+            print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
+        print("   使用 'sra stop' 停止，或 'sra restart' 重启")
+        return
+    
+    # 检查是否已有 PID 文件（兼容旧版本残留）
     if os.path.exists(PID_FILE):
         try:
             with open(PID_FILE) as f:
                 pid = int(f.read().strip())
-            os.kill(pid, 0)  # 检查进程是否存在
+            os.kill(pid, 0)
+            lock.release()
             print(f"⚠️  SRA Daemon 已在运行 (PID: {pid})")
             print("   使用 'sra stop' 停止，或 'sra restart' 重启")
             return
         except (ProcessLookupError, ValueError):
-            # 进程不存在，清理 PID 文件
             os.unlink(PID_FILE)
 
     # 启动守护进程
     pid = os.fork()
     if pid > 0:
-        # 父进程 — 读取配置获取实际端口
+        # 父进程 — 写入 PID 到锁文件和 PID 文件
         config = load_config()
         http_port = config.get("http_port", 8536)
+        
+        # 将 PID 写入锁文件（供 get_lock_pid 查询）
+        try:
+            with open(LOCK_FILE, 'w') as f:
+                f.write(str(pid))
+        except OSError:
+            pass
+        
+        with open(PID_FILE, 'w') as f:
+            f.write(str(pid))
+        
         print(f"✅ SRA Daemon 已启动 (PID: {pid})")
         print(f"   Unix Socket: {SOCKET_FILE}")
         print(f"   HTTP API: http://localhost:{http_port}")
         print(f"   日志: {LOG_FILE}")
-        with open(PID_FILE, 'w') as f:
-            f.write(str(pid))
+        # 父进程退出，锁由子进程继承
     else:
         # 子进程
         os.setsid()
@@ -604,6 +700,23 @@ def cmd_start(args=None):
 def cmd_stop(args=None):
     """停止守护进程"""
     if not os.path.exists(PID_FILE):
+        # 检查锁文件
+        if os.path.exists(LOCK_FILE):
+            try:
+                lock = FileLock(LOCK_FILE, timeout=0)
+                if lock.acquire():
+                    # 能获取到锁 → 进程已经不在了
+                    lock.release()
+                    os.unlink(LOCK_FILE)
+                    print("⚠️  SRA Daemon 未在运行（已清理残留锁文件）")
+                    return
+                else:
+                    # 锁被持有但 PID 文件不存在 → 可能异常
+                    print("⚠️  SRA Daemon 状态异常（有锁但无 PID 文件）")
+                    print("   可以手动删除锁文件: rm -f ~/.sra/srad.lock")
+                    return
+            except Exception as e:
+                logger.warning("锁文件检查失败: %s", e)
         print("⚠️  SRA Daemon 未在运行")
         return
 
@@ -612,10 +725,21 @@ def cmd_stop(args=None):
             pid = int(f.read().strip())
         os.kill(pid, signal.SIGTERM)
         os.unlink(PID_FILE)
+        # 清理锁文件
+        if os.path.exists(LOCK_FILE):
+            try:
+                os.unlink(LOCK_FILE)
+            except OSError:
+                pass
         print(f"✅ SRA Daemon 已停止 (PID: {pid})")
     except ProcessLookupError:
         os.unlink(PID_FILE)
-        print("⚠️  SRA Daemon 进程不存在，已清理 PID 文件")
+        if os.path.exists(LOCK_FILE):
+            try:
+                os.unlink(LOCK_FILE)
+            except OSError:
+                pass
+        print("⚠️  SRA Daemon 进程不存在，已清理 PID 和锁文件")
     except Exception as e:
         print(f"❌ 停止失败: {e}")
 
@@ -631,8 +755,8 @@ def cmd_status(args=None):
                 print(f"📊 SRA Daemon 状态: {status.get('status', 'unknown')}")
                 print(f"   最后更新: {status.get('updated_at', 'unknown')}")
                 return
-            except:
-                pass
+            except Exception as e:
+                logger.warning("状态文件读取失败: %s", e)
         print("📭 SRA Daemon 未运行")
         return
 
@@ -684,9 +808,33 @@ def cmd_restart(args=None):
 
 def cmd_attach(args=None):
     """前台运行（调试）"""
+    ensure_sra_home()
+    
+    # 同样检查文件锁
+    lock = FileLock(LOCK_FILE, timeout=0)
+    if not lock.acquire():
+        existing_pid = lock.get_lock_pid()
+        if existing_pid:
+            print(f"⚠️  SRA Daemon 已在运行 (PID: {existing_pid})")
+        else:
+            print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
+        print("   使用 'sra stop' 停止")
+        return
+    
     config = load_config()
     daemon = SRaDDaemon(config)
-    daemon.attach()
+    
+    # 端口活性探测
+    http_port = config.get("http_port", 8536)
+    if check_port_in_use(http_port):
+        print(f"⚠️  端口 {http_port} 已被占用，请检查是否有其他 SRA 实例")
+        lock.release()
+        return
+    
+    try:
+        daemon.attach()
+    finally:
+        lock.release()
 
 
 # ── systemd service 单元模板 ──────────────
