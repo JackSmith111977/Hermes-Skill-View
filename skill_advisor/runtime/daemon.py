@@ -390,6 +390,14 @@ class SRaDDaemon:
                     from ..endpoints.validate import handle_validate
                     result = handle_validate(data)
                     self._send_json(result)
+                elif self.path == "/recheck":
+                    summary = data.get("conversation_summary", "")
+                    if not summary:
+                        self._send_json({"error": "missing conversation_summary"}, 400)
+                        return
+                    loaded_skills = data.get("loaded_skills", [])
+                    result = self.daemon.advisor.recheck(summary, loaded_skills)
+                    self._send_json({"status": "ok", "recheck": result})
                 else:
                     self._send_json({"error": "not_found"}, 404)
 
@@ -558,6 +566,14 @@ class SRaDDaemon:
         elif action == "validate":
             from ..endpoints.validate import handle_validate
             return {"status": "ok", "result": handle_validate(params)}
+
+        elif action == "recheck":
+            summary = params.get("conversation_summary", "")
+            if not summary:
+                return {"error": "missing conversation_summary"}
+            loaded_skills = params.get("loaded_skills", [])
+            result = self.advisor.recheck(summary, loaded_skills)
+            return {"status": "ok", "recheck": result}
 
         else:
             return {"error": f"unknown action: {action}"}
