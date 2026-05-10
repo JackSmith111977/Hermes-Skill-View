@@ -160,6 +160,46 @@ def cmd_coverage(args: List[str]):
             print(f"  - {s['name']} ({s['category']})")
 
 
+def cmd_compliance(args: List[str]):
+    """查看技能遵循率统计"""
+    result = _socket_request({"action": "stats/compliance"})
+
+    if "error" in result and "未运行" in result.get("error", ""):
+        print("⚠️  SRA Daemon 未运行，使用本地模式")
+        from .advisor import SkillAdvisor
+        advisor = SkillAdvisor()
+        stats = advisor.get_compliance_stats()
+    else:
+        stats = result.get("compliance", result.get("stats", {}))
+
+    summary = stats.get("summary", {})
+    per_skill = stats.get("per_skill", {})
+
+    print("=" * 60)
+    print("📊 SRA 技能遵循率统计")
+    print("=" * 60)
+    print(f"  总查看次数: {summary.get('total_views', 0)}")
+    print(f"  总使用次数: {summary.get('total_uses', 0)}")
+    print(f"  总跳过次数: {summary.get('total_skips', 0)}")
+    cr = summary.get("overall_compliance_rate", 1.0)
+    if cr is not None:
+        pct = cr * 100
+        bar = "█" * int(pct / 5) + "░" * (20 - int(pct / 5))
+        print(f"  整体遵循率: {bar} {pct:.0f}%")
+
+    if per_skill:
+        print(f"\n📈 按技能维度 ({len(per_skill)} 个):")
+        # 按使用次数排序
+        sorted_skills = sorted(per_skill.items(), key=lambda x: x[1].get("use_count", 0), reverse=True)
+        for name, s in sorted_skills[:15]:
+            uc = s.get("use_count", 0)
+            sc = s.get("skip_count", 0)
+            vc = s.get("view_count", 0)
+            sr = s.get("compliance_rate")
+            rate_str = f"{sr * 100:.0f}%" if sr is not None else "N/A"
+            print(f"  {name:<30} 👁️{vc} ✅{uc} ⏭️{sc} 遵循率: {rate_str}")
+
+
 def cmd_refresh(args: List[str]):
     """刷新技能索引"""
     result = _socket_request({"action": "refresh"})
@@ -625,6 +665,7 @@ COMMANDS = {
     "query": cmd_recommend,
     "stats": cmd_stats,
     "coverage": cmd_coverage,
+    "compliance": cmd_compliance,
     "refresh": cmd_refresh,
     "record": cmd_record,
     "config": cmd_config,
@@ -657,8 +698,9 @@ def print_help():
     print("  stats                 查看运行统计")
     print("  coverage              分析技能识别覆盖率")
     print("  refresh               刷新技能索引")
-    print("  record <skill> <输入>  记录技能使用")
-    print("  config [show|set|reset]  配置管理")
+    print("  record <name> <input>  记录技能使用场景")
+    print("  compliance             查看技能遵循率统计")
+    print("  config [show|set|reset] 配置管理")
     print()
     print("Agent 集成:")
     print("  adapters              列出支持的 Agent 类型")

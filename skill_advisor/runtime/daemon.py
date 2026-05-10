@@ -273,6 +273,9 @@ class SRaDDaemon:
                 elif self.path == "/stats":
                     stats = self.daemon.get_stats()
                     self._send_json(stats)
+                elif self.path == "/stats/compliance":
+                    stats = self.daemon.advisor.get_compliance_stats()
+                    self._send_json({"status": "ok", "compliance": stats})
                 elif self.path.startswith("/recommend"):
                     import urllib.parse
                     parsed = urllib.parse.urlparse(self.path)
@@ -359,10 +362,24 @@ class SRaDDaemon:
                     })
                 elif self.path == "/record":
                     skill = data.get("skill", "")
-                    user_input = data.get("input", "")
-                    accepted = data.get("accepted", True)
-                    if skill and user_input:
-                        self.daemon.advisor.record_usage(skill, user_input, accepted)
+                    action = data.get("action", "")  # viewed/used/skipped
+                    if action:
+                        # 新式：轨迹追踪
+                        if action == "viewed":
+                            self.daemon.advisor.record_view(skill)
+                        elif action == "used":
+                            self.daemon.advisor.record_use(skill)
+                        elif action == "skipped":
+                            reason = data.get("reason", "")
+                            self.daemon.advisor.record_skip(skill, reason)
+                        else:
+                            self._send_json({"error": f"unknown action: {action}"}, 400)
+                            return
+                        self._send_json({"status": "ok"})
+                    elif skill and data.get("input", ""):
+                        # 旧式：记录推荐采纳
+                        accepted = data.get("accepted", True)
+                        self.daemon.advisor.record_usage(skill, data["input"], accepted)
                         self._send_json({"status": "ok"})
                     else:
                         self._send_json({"error": "missing skill or input"}, 400)
@@ -496,6 +513,19 @@ class SRaDDaemon:
 
         elif action == "record":
             skill = params.get("skill", "")
+            action_type = params.get("action", "")  # viewed/used/skipped
+            if action_type:
+                if action_type == "viewed":
+                    self.advisor.record_view(skill)
+                elif action_type == "used":
+                    self.advisor.record_use(skill)
+                elif action_type == "skipped":
+                    reason = params.get("reason", "")
+                    self.advisor.record_skip(skill, reason)
+                else:
+                    return {"error": f"unknown action: {action_type}"}
+                return {"status": "ok"}
+            # 旧式：记录推荐采纳
             user_input = params.get("input", "")
             accepted = params.get("accepted", True)
             self.advisor.record_usage(skill, user_input, accepted)
@@ -514,6 +544,10 @@ class SRaDDaemon:
         elif action == "coverage":
             result = self.advisor.analyze_coverage()
             return {"status": "ok", "result": result}
+
+        elif action == "stats/compliance":
+            stats = self.advisor.get_compliance_stats()
+            return {"status": "ok", "compliance": stats}
 
         elif action == "stop":
             # 远程停止

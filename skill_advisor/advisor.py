@@ -127,6 +127,22 @@ class SkillAdvisor:
         """记录技能使用场景"""
         self.memory.record_usage(skill_name, user_input, accepted)
 
+    def record_view(self, skill_name: str):
+        """记录技能被查看"""
+        self.memory.record_view(skill_name)
+
+    def record_use(self, skill_name: str):
+        """记录技能被使用"""
+        self.memory.record_use(skill_name)
+
+    def record_skip(self, skill_name: str, reason: str = ""):
+        """记录技能被跳过"""
+        self.memory.record_skip(skill_name, reason)
+
+    def get_compliance_stats(self) -> Dict:
+        """获取遵循率统计"""
+        return self.memory.get_compliance_stats()
+
     def show_stats(self) -> Dict:
         """获取统计信息"""
         self._ensure_index()
