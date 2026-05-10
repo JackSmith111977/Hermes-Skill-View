@@ -283,6 +283,7 @@ def test_unrelated_query_should_get_low_score(): ...
 - [ ] 无魔法数字硬编码
 - [ ] 无 `except: pass`
 - [ ] 新增功能有完整类型标注
+- [ ] **已加载 commit-quality-check 并执行完整检查** ← 必做！
 - [ ] 测试覆盖率不低于修改前
 - [ ] 新功能有对应测试
 - [ ] 文档同步更新
