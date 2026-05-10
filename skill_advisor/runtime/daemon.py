@@ -369,6 +369,10 @@ class SRaDDaemon:
                 elif self.path == "/refresh":
                     count = self.daemon.advisor.refresh_index()
                     self._send_json({"status": "ok", "count": count})
+                elif self.path == "/validate":
+                    from ..endpoints.validate import handle_validate
+                    result = handle_validate(data)
+                    self._send_json(result)
                 else:
                     self._send_json({"error": "not_found"}, 404)
 
@@ -516,6 +520,10 @@ class SRaDDaemon:
             t = threading.Thread(target=self.stop, daemon=True)
             t.start()
             return {"status": "ok", "message": "stopping"}
+
+        elif action == "validate":
+            from ..endpoints.validate import handle_validate
+            return {"status": "ok", "result": handle_validate(params)}
 
         else:
             return {"error": f"unknown action: {action}"}
