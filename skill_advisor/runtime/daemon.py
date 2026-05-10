@@ -33,12 +33,15 @@ from ..advisor import SkillAdvisor
 from ..indexer import SkillIndexer
 from .. import __version__
 
+from .lock import FileLock, check_port_in_use
+
 logger = logging.getLogger("srad")
 
 
 # ── 路径常量 ─────────────────────────────────
 SRA_HOME = os.path.expanduser("~/.sra")
 PID_FILE = os.path.join(SRA_HOME, "srad.pid")
+LOCK_FILE = os.path.join(SRA_HOME, "srad.lock")
 SOCKET_FILE = os.path.join(SRA_HOME, "srad.sock")
 LOG_FILE = os.path.join(SRA_HOME, "srad.log")
 STATUS_FILE = os.path.join(SRA_HOME, "srad.status.json")
@@ -547,35 +550,55 @@ class SRaDDaemon:
 
 def cmd_start(args=None):
     """启动守护进程"""
-    # 确保 SRA 家目录存在
-    from .daemon import ensure_sra_home
     ensure_sra_home()
     
-    # 检查是否已在运行
+    # ── OS 级文件锁：原子性单例检测 ──
+    lock = FileLock(LOCK_FILE, timeout=0)  # 非阻塞尝试
+    if not lock.acquire():
+        # 锁已被其他进程持有
+        existing_pid = lock.get_lock_pid()
+        if existing_pid:
+            print(f"⚠️  SRA Daemon 已在运行 (PID: {existing_pid})")
+        else:
+            print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
+        print("   使用 'sra stop' 停止，或 'sra restart' 重启")
+        return
+    
+    # 检查是否已有 PID 文件（兼容旧版本残留）
     if os.path.exists(PID_FILE):
         try:
             with open(PID_FILE) as f:
                 pid = int(f.read().strip())
-            os.kill(pid, 0)  # 检查进程是否存在
+            os.kill(pid, 0)
+            lock.release()
             print(f"⚠️  SRA Daemon 已在运行 (PID: {pid})")
             print("   使用 'sra stop' 停止，或 'sra restart' 重启")
             return
         except (ProcessLookupError, ValueError):
-            # 进程不存在，清理 PID 文件
             os.unlink(PID_FILE)
 
     # 启动守护进程
     pid = os.fork()
     if pid > 0:
-        # 父进程 — 读取配置获取实际端口
+        # 父进程 — 写入 PID 到锁文件和 PID 文件
         config = load_config()
         http_port = config.get("http_port", 8536)
+        
+        # 将 PID 写入锁文件（供 get_lock_pid 查询）
+        try:
+            with open(LOCK_FILE, 'w') as f:
+                f.write(str(pid))
+        except OSError:
+            pass
+        
+        with open(PID_FILE, 'w') as f:
+            f.write(str(pid))
+        
         print(f"✅ SRA Daemon 已启动 (PID: {pid})")
         print(f"   Unix Socket: {SOCKET_FILE}")
         print(f"   HTTP API: http://localhost:{http_port}")
         print(f"   日志: {LOG_FILE}")
-        with open(PID_FILE, 'w') as f:
-            f.write(str(pid))
+        # 父进程退出，锁由子进程继承
     else:
         # 子进程
         os.setsid()
@@ -604,6 +627,23 @@ def cmd_start(args=None):
 def cmd_stop(args=None):
     """停止守护进程"""
     if not os.path.exists(PID_FILE):
+        # 检查锁文件
+        if os.path.exists(LOCK_FILE):
+            try:
+                lock = FileLock(LOCK_FILE, timeout=0)
+                if lock.acquire():
+                    # 能获取到锁 → 进程已经不在了
+                    lock.release()
+                    os.unlink(LOCK_FILE)
+                    print("⚠️  SRA Daemon 未在运行（已清理残留锁文件）")
+                    return
+                else:
+                    # 锁被持有但 PID 文件不存在 → 可能异常
+                    print("⚠️  SRA Daemon 状态异常（有锁但无 PID 文件）")
+                    print("   可以手动删除锁文件: rm -f ~/.sra/srad.lock")
+                    return
+            except Exception:
+                pass
         print("⚠️  SRA Daemon 未在运行")
         return
 
@@ -612,10 +652,21 @@ def cmd_stop(args=None):
             pid = int(f.read().strip())
         os.kill(pid, signal.SIGTERM)
         os.unlink(PID_FILE)
+        # 清理锁文件
+        if os.path.exists(LOCK_FILE):
+            try:
+                os.unlink(LOCK_FILE)
+            except OSError:
+                pass
         print(f"✅ SRA Daemon 已停止 (PID: {pid})")
     except ProcessLookupError:
         os.unlink(PID_FILE)
-        print("⚠️  SRA Daemon 进程不存在，已清理 PID 文件")
+        if os.path.exists(LOCK_FILE):
+            try:
+                os.unlink(LOCK_FILE)
+            except OSError:
+                pass
+        print("⚠️  SRA Daemon 进程不存在，已清理 PID 和锁文件")
     except Exception as e:
         print(f"❌ 停止失败: {e}")
 
@@ -684,9 +735,33 @@ def cmd_restart(args=None):
 
 def cmd_attach(args=None):
     """前台运行（调试）"""
+    ensure_sra_home()
+    
+    # 同样检查文件锁
+    lock = FileLock(LOCK_FILE, timeout=0)
+    if not lock.acquire():
+        existing_pid = lock.get_lock_pid()
+        if existing_pid:
+            print(f"⚠️  SRA Daemon 已在运行 (PID: {existing_pid})")
+        else:
+            print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
+        print("   使用 'sra stop' 停止")
+        return
+    
     config = load_config()
     daemon = SRaDDaemon(config)
-    daemon.attach()
+    
+    # 端口活性探测
+    http_port = config.get("http_port", 8536)
+    if check_port_in_use(http_port):
+        print(f"⚠️  端口 {http_port} 已被占用，请检查是否有其他 SRA 实例")
+        lock.release()
+        return
+    
+    try:
+        daemon.attach()
+    finally:
+        lock.release()
 
 
 # ── systemd service 单元模板 ──────────────
