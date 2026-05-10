@@ -81,13 +81,13 @@
 
 | 状态 | 任务 | Epic | 优先级 | 估时 |
 |:----:|:-----|:----:|:------:|:----:|
-| 📋 pending | Tool 层 SRA 校验 (SRA-003-01) | EPIC-003 | 🔴 P0 | 3天 |
-| 📋 pending | 文件类型技能映射 (SRA-003-02) | EPIC-003 | 🔴 P0 | 2天 |
+| ✅ completed | **Tool 层 SRA 校验 (SRA-003-01)** | EPIC-003 | 🔴 P0 | 3天 |
+| ✅ completed | **文件类型技能映射 (SRA-003-02)** | EPIC-003 | 🔴 P0 | 2天 |
 | 📋 pending | 技能使用轨迹记录 (SRA-003-03) | EPIC-003 | 🟡 P1 | 2天 |
 | 📋 pending | 长任务上下文保护 (SRA-003-04) | EPIC-003 | 🟡 P1 | 2天 |
 | 📋 pending | SRA 契约机制 (SRA-003-05) | EPIC-003 | 🟡 P1 | 2天 |
 | 📋 pending | **运行时力度体系 (SRA-003-06)** | EPIC-003 | 🟡 P1 | 3天 |
-| 📋 pending | **Daemon 单例守护 (SRA-003-12)** | EPIC-003 | 🔴 P0 | 0.5天 |
-| 📋 pending | **HTTP 架构 + 异常处理 (SRA-003-13)** | EPIC-003 | 🔴 P0 | 1天 |
+| ✅ completed | **Daemon 单例守护 (SRA-003-12)** | EPIC-003 | 🔴 P0 | 0.5天 |
+| ✅ completed | **HTTP 架构 + 异常处理 (SRA-003-13)** | EPIC-003 | 🔴 P0 | 1天 |
 | ✅ completed | **systemd 自启动部署 (SRA-003-10)** | EPIC-003 | 🟢 P2 | — |
 | ✅ completed | **安装脚本自动配置 (SRA-003-11)** | EPIC-003 | 🟢 P2 | — |
