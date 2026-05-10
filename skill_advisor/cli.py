@@ -331,8 +331,8 @@ def cmd_version(args: List[str]):
                 pid = int(f.read().strip())
             os.kill(pid, 0)
             print(f"Daemon: 运行中 (PID: {pid})")
-        except:
-            print("Daemon: 未运行")
+        except (ProcessLookupError, ValueError):
+            print("Daemon: 未运行（PID 文件残留）")
     else:
         print("Daemon: 未运行")
 

@@ -78,8 +78,8 @@ def load_config() -> dict:
                 user_config = json.load(f)
             merged = {**DEFAULT_CONFIG, **user_config}
             return merged
-        except:
-            pass
+        except Exception as e:
+            logger.warning("配置文件加载失败: %s", e)
     return dict(DEFAULT_CONFIG)
 
 
@@ -144,7 +144,7 @@ class SRaDDaemon:
         t = threading.Thread(target=self._auto_refresh_loop, daemon=True)
         t.start()
         self._threads.append(t)
-        logger.info(f"自动刷新间隔: {self.config['auto_refresh_interval']}s")
+        logger.info(f"自动刷新间隔: {self.config.get('auto_refresh_interval', 3600)}s")
 
         # 写入状态
         self._update_status("running")
@@ -157,8 +157,8 @@ class SRaDDaemon:
         if self._server_socket:
             try:
                 self._server_socket.close()
-            except:
-                pass
+            except OSError:
+                logger.debug("Socket close in stop: expected")
         self._update_status("stopped")
         logger.info("SRA Daemon 已停止")
 
@@ -220,13 +220,13 @@ class SRaDDaemon:
             logger.error(f"Socket 客户端处理错误: {e}")
             try:
                 conn.sendall(json.dumps({"error": str(e)}).encode("utf-8"))
-            except:
-                pass
+            except OSError:
+                logger.debug("Socket send in error handler failed")
         finally:
             try:
                 conn.close()
-            except:
-                pass
+            except OSError:
+                logger.debug("Socket close in finally: expected")
 
     def _run_http_server(self):
         """简易 HTTP 服务器（使用标准库）"""
@@ -292,7 +292,8 @@ class SRaDDaemon:
                     body = self.rfile.read(length).decode("utf-8")
                     try:
                         data = json.loads(body)
-                    except:
+                    except json.JSONDecodeError:
+                        logger.debug("Invalid JSON in POST body, using empty dict")
                         data = {}
                 else:
                     data = {}
@@ -377,14 +378,28 @@ class SRaDDaemon:
             daemon_threads = True
 
         server = ThreadedHTTPServer(("0.0.0.0", port), SRAHTTPHandler)
+        server.timeout = 0.5  # 允许线程可中断
         self._http_server = server
         logger.info(f"HTTP API: http://0.0.0.0:{port}")
 
+        # 使用 serve_forever() 让 ThreadingMixIn 真正生效
+        # 在独立线程中运行，不阻塞主循环
+        import threading as _threading
+        http_thread = _threading.Thread(
+            target=server.serve_forever,
+            daemon=True,
+        )
+        http_thread.start()
+
+        # 监听 running 状态，用于优雅关闭
         while self.running:
             try:
-                server.handle_request()
-            except:
+                http_thread.join(timeout=1.0)
+            except KeyboardInterrupt:
                 break
+        
+        server.shutdown()
+        logger.info("HTTP 服务器已关闭")
 
     def _auto_refresh_loop(self):
         """自动刷新循环 — 双模式：定时刷新 + 文件变更检测"""
@@ -449,7 +464,7 @@ class SRaDDaemon:
                 try:
                     stat = os.stat(f)
                     checksum_parts.append(f"{f}:{stat.st_mtime}:{stat.st_size}")
-                except:
+                except OSError:
                     checksum_parts.append(f)
             return hashlib.md5("|".join(checksum_parts).encode()).hexdigest()
         except Exception as e:
@@ -514,8 +529,8 @@ class SRaDDaemon:
             try:
                 start = datetime.fromisoformat(self._stats["started_at"])
                 uptime = int((datetime.now() - start).total_seconds())
-            except:
-                pass
+            except Exception:
+                logger.debug("Could not parse start time, uptime=0")
 
         return {
             "version": __version__,
@@ -542,8 +557,8 @@ class SRaDDaemon:
                     "pid": os.getpid(),
                     "updated_at": datetime.now().isoformat(),
                 }, f)
-        except:
-            pass
+        except OSError as e:
+            logger.warning("状态文件写入失败: %s", e)
 
 
 # ── 命令行接口 ─────────────────────────────
@@ -642,8 +657,8 @@ def cmd_stop(args=None):
                     print("⚠️  SRA Daemon 状态异常（有锁但无 PID 文件）")
                     print("   可以手动删除锁文件: rm -f ~/.sra/srad.lock")
                     return
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("锁文件检查失败: %s", e)
         print("⚠️  SRA Daemon 未在运行")
         return
 
@@ -682,8 +697,8 @@ def cmd_status(args=None):
                 print(f"📊 SRA Daemon 状态: {status.get('status', 'unknown')}")
                 print(f"   最后更新: {status.get('updated_at', 'unknown')}")
                 return
-            except:
-                pass
+            except Exception as e:
+                logger.warning("状态文件读取失败: %s", e)
         print("📭 SRA Daemon 未运行")
         return
 

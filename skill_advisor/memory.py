@@ -31,7 +31,9 @@ class SceneMemory:
         try:
             with open(self.stats_file) as f:
                 self._cache = json.load(f)
-        except:
+        except (FileNotFoundError, json.JSONDecodeError):
+            import logging
+            logging.getLogger("sra.memory").debug("场景记忆文件不存在或格式错误，使用默认值")
             self._cache = {
                 "skills": {},
                 "scene_patterns": [],
