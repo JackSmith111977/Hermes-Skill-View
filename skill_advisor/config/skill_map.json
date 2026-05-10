@@ -1,0 +1,22 @@
+{
+  "ext_map": {
+    "md": ["markdown-guide"],
+    "pdf": ["pdf-layout", "pdf-layout-weasyprint", "pdf-pro-design"],
+    "docx": ["docx-guide"],
+    "pptx": ["pptx-guide"],
+    "xlsx": ["xlsx-guide"],
+    "epub": ["epub-guide"],
+    "html": ["html-guide", "html-presentation"],
+    "svg": ["architecture-diagram", "concept-diagrams"],
+    "png": ["image-generation", "pixel-art"],
+    "py": ["python-env-guide", "test-driven-development"],
+    "mmd": ["mermaid-guide"],
+    "sh": []
+  },
+  "pattern_map": {
+    "dockerfile*": ["docker-management"],
+    "makefile": [],
+    "changelog*": ["markdown-guide"]
+  },
+  "_description": "文件扩展名到技能名称的映射表。用户可在此添加自定义映射。ext_map 按扩展名匹配，pattern_map 按文件名通配匹配。"
+}
