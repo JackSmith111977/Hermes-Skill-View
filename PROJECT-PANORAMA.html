@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRA — Skill Runtime Advisor 项目全貌</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --pink: #f778ba;
+    --cyan: #39d2c0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 40px 20px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .header h1 {
+    font-size: 2.4em;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header .subtitle { color: var(--text2); font-size: 1.1em; }
+  .header .badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    margin: 12px 4px 0;
+  }
+  .badge-blue { background: #1f6feb33; color: var(--accent); border: 1px solid #1f6feb66; }
+  .badge-green { background: #3fb95033; color: var(--green); border: 1px solid #3fb95066; }
+  .badge-orange { background: #d2992233; color: var(--orange); border: 1px solid #d2992266; }
+
+  /* ── Sections ── */
+  section {
+    background: var(--bg2);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+  section h2 {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  section h2 .icon { font-size: 1.2em; }
+  section h3 {
+    font-size: 1.1em;
+    margin: 20px 0 12px;
+    color: var(--accent);
+  }
+  section h4 {
+    font-size: 0.95em;
+    margin: 14px 0 8px;
+    color: var(--cyan);
+  }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .card .label { color: var(--text2); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card .value { font-size: 1.6em; font-weight: 600; margin-top: 4px; }
+  .card .sub { font-size: 0.85em; color: var(--text2); margin-top: 4px; }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.92em;
+  }
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--text2); font-weight: 500; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.3px; }
+  tr:hover td { background: #ffffff08; }
+  .status-done { color: var(--green); }
+  .status-pending { color: var(--orange); }
+  .status-future { color: var(--text2); }
+
+  /* ── Code ── */
+  code, pre {
+    font-family: 'JetBrains Mono','Fira Code','Consolas',monospace;
+    background: #0d1117;
+    border-radius: 6px;
+  }
+  code { padding: 2px 6px; font-size: 0.88em; color: var(--cyan); }
+  pre {
+    padding: 14px 16px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    font-size: 0.85em;
+    line-height: 1.5;
+    margin: 10px 0;
+  }
+  pre .comment { color: var(--text2); }
+  pre .keyword { color: var(--purple); }
+  pre .string { color: var(--green); }
+  pre .number { color: var(--orange); }
+
+  /* ── Tree ── */
+  .tree { padding-left: 20px; }
+  .tree-item { padding: 3px 0; color: var(--text2); }
+  .tree-item .name { color: var(--text); }
+  .tree-item .note { color: var(--text2); font-size: 0.85em; margin-left: 8px; }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    display: flex;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg3);
+    margin: 8px 0;
+  }
+  .progress-bar .fill { height: 100%; border-radius: 0; transition: width 0.3s; }
+  .fill-green { background: var(--green); }
+  .fill-orange { background: var(--orange); }
+  .fill-red { background: var(--red); }
+  .fill-blue { background: var(--accent); }
+
+  /* ── Arch diagrams ── */
+  .arch-box {
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin: 4px 0;
+  }
+  .arch-layer { padding: 6px 0; }
+  .arch-layer .label { font-size: 0.75em; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+  .arch-module {
+    display: inline-block;
+    padding: 6px 14px;
+    margin: 3px;
+    border-radius: 6px;
+    font-size: 0.88em;
+    border: 1px solid var(--border);
+  }
+  .am-cli { background: #1f6feb22; border-color: #1f6feb66; }
+  .am-http { background: #3fb95022; border-color: #3fb95066; }
+  .am-socket { background: #d2992222; border-color: #d2992266; }
+  .am-core { background: #bc8cff22; border-color: #bc8cff66; }
+  .am-data { background: #f778ba22; border-color: #f778ba66; }
+
+  .arch-arrow { text-align: center; color: var(--text2); font-size: 0.8em; padding: 2px 0; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.8em; }
+    section { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ════════════════════════════════ HEADER ════════════════════════════════ -->
+<div class="header">
+  <h1>🔮 SRA — Skill Runtime Advisor</h1>
+  <div class="subtitle">让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力</div>
+  <div>
+    <span class="badge badge-blue">v1.2.1</span>
+    <span class="badge badge-green">EPIC-003 Sprint 2 ✅</span>
+    <span class="badge badge-orange">174 tests</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PROJECT OVERVIEW ═══════════════════════════ -->
+<section>
+<h2><span class="icon">📋</span> 项目概览</h2>
+<div class="grid-3">
+  <div class="card">
+    <div class="label">名称</div>
+    <div class="value">SRA Agent</div>
+    <div class="sub">sra-agent</div>
+  </div>
+  <div class="card">
+    <div class="label">版本</div>
+    <div class="value">1.2.1</div>
+    <div class="sub">MIT License</div>
+  </div>
+  <div class="card">
+    <div class="label">Python</div>
+    <div class="value">≥ 3.8</div>
+    <div class="sub">依赖: pyyaml</div>
+  </div>
+</div>
+
+<div style="margin-top:12px;">
+<p><strong>SRA</strong> 是一个运行在 AI Agent 旁的守护进程，在 Agent 收到用户消息时自动分析语义、推荐最匹配的 Hermes Skill，并通过 <code>pre_tool_call</code> 钩子系统在校验工具调用前检查技能遵循度。</p>
+<br>
+<table>
+  <tr><th>属性</th><th>值</th></tr>
+  <tr><td>作者</td><td>Emma (SRA Team), Kei</td></tr>
+  <tr><td>仓库</td><td><code>github.com/JackSmith111977/Hermes-Skill-View</code></td></tr>
+  <tr><td>入口 CLI</td><td><code>sra</code> / <code>srad</code></td></tr>
+  <tr><td>守护端口</td><td>HTTP <code>:8536</code> + Unix Socket <code>~/.sra/srad.sock</code></td></tr>
+  <tr><td>技能来源</td><td><code>~/.hermes/skills/**/SKILL.md</code> (YAML frontmatter)</td></tr>
+  <tr><td>数据持久化</td><td><code>~/.sra/data/</code></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ═══════════════════════════════ ARCHITECTURE ═══════════════════════════════ -->
+<section>
+<h2><span class="icon">🏗️</span> 三层架构</h2>
+
+<div class="arch-layer">
+  <div class="label">Layer 3 — 接口层 Interface</div>
+  <div style="text-align:center;padding:8px 0;">
+    <span class="arch-module am-cli">CLI (sra)</span>
+    <span class="arch-module am-http">HTTP API (:8536)</span>
+    <span class="arch-module am-socket">Unix Socket (~/.sra/srad.sock)</span>
+  </div>
+</div>
+<div class="arch-arrow">⬇ 委托 ⬇</div>
+<div class="arch-layer">
+  <div class="label">Layer 2 — 业务逻辑层 Service</div>
+  <div style="text-align:center;padding:8px 0;">
+    <span class="arch-module am-core">SRaDDaemon (daemon.py)</span><br>
+    <span class="arch-module am-core">SkillAdvisor (advisor.py)</span>
+    <span class="arch-module am-core">SkillMatcher (matcher.py)</span>
+    <span class="arch-module am-core">SkillIndexer (indexer.py)</span>
+    <span class="arch-module am-core">SceneMemory (memory.py)</span>
+    <span class="arch-module am-core">Synonyms (synonyms.py)</span>
+  </div>
+</div>
+<div class="arch-arrow">⬇ 读写 ⬇</div>
+<div class="arch-layer">
+  <div class="label">Layer 1 — 数据层 Data</div>
+  <div style="text-align:center;padding:8px 0;">
+    <span class="arch-module am-data">~/.hermes/skills/</span>
+    <span class="arch-module am-data">~/.sra/data/</span>
+    <span class="arch-module am-data">~/.sra/config.json</span>
+  </div>
+</div>
+
+<h3>核心模块职责</h3>
+<table>
+  <tr><th>模块</th><th>文件</th><th>职责</th><th>关键方法</th></tr>
+  <tr><td>SkillAdvisor</td><td><code>advisor.py</code></td><td>推荐引擎主入口，Facade 封装</td><td><code>recommend()</code>, <code>recheck()</code>, <code>record_view/use/skip()</code>, <code>analyze_coverage()</code></td></tr>
+  <tr><td>SRaDDaemon</td><td><code>runtime/daemon.py</code></td><td>守护进程，HTTP + Socket 双协议</td><td><code>start()</code>, <code>stop()</code>, <code>_handle_request()</code>, <code>get_stats()</code></td></tr>
+  <tr><td>SkillMatcher</td><td><code>matcher.py</code></td><td>四维匹配引擎（词法/语义/场景/类别）</td><td><code>score()</code></td></tr>
+  <tr><td>SkillIndexer</td><td><code>indexer.py</code></td><td>技能扫描、索引构建、关键词提取</td><td><code>build()</code>, <code>load_or_build()</code>, <code>get_skills()</code></td></tr>
+  <tr><td>SceneMemory</td><td><code>memory.py</code></td><td>场景记忆 + 技能轨迹追踪 + 遵循率统计</td><td><code>record_view/use/skip()</code>, <code>get_compliance_stats()</code></td></tr>
+  <tr><td>Validate</td><td><code>runtime/endpoints/validate.py</code></td><td>工具调用前技能校验</td><td><code>handle_validate()</code></td></tr>
+  <tr><td>SkillMap</td><td><code>skill_map.py</code></td><td>文件扩展名→技能映射注册表</td><td><code>get_required_skills()</code></td></tr>
+  <tr><td>CLI</td><td><code>cli.py</code></td><td>命令行接口 + 降级策略</td><td><code>cmd_*()</code> + <code>_socket_request()</code></td></tr>
+  <tr><td>Lock</td><td><code>runtime/lock.py</code></td><td>OS 级文件锁（fcntl.flock 单例保障）</td><td><code>acquire_lock()</code></td></tr>
+</table>
+</section>
+
+<!-- ═══════════════════════════ ALL ENDPOINTS ═══════════════════════════ -->
+<section>
+<h2><span class="icon">🔌</span> 全部 API 端点</h2>
+
+<h3>HTTP API (port 8536)</h3>
+<table>
+  <tr><th>方法</th><th>路径</th><th>说明</th><th>Sprint</th></tr>
+  <tr><td>GET</td><td><code>/health</code></td><td>健康检查 + 基本统计</td><td>v1.x</td></tr>
+  <tr><td>GET</td><td><code>/status</code></td><td>引擎状态 + 配置</td><td>v1.x</td></tr>
+  <tr><td>GET</td><td><code>/stats</code></td><td>运行统计详情</td><td>v1.x</td></tr>
+  <tr><td>GET</td><td><code>/stats/compliance</code></td><td>技能遵循率统计</td><td>Sprint 2 🆕</td></tr>
+  <tr><td>GET</td><td><code>/recommend?q=...</code></td><td>技能推荐（GET 方式）</td><td>v1.x</td></tr>
+  <tr><td>POST</td><td><code>/recommend</code></td><td>技能推荐（POST 方式 + rag_context）</td><td>v1.x</td></tr>
+  <tr><td>POST</td><td><code>/record</code></td><td>记录使用/查看/跳过（action 扩展）</td><td>Sprint 2 🆕</td></tr>
+  <tr><td>POST</td><td><code>/refresh</code></td><td>刷新技能索引</td><td>v1.x</td></tr>
+  <tr><td>POST</td><td><code>/validate</code></td><td>工具调用前技能遵循度校验</td><td>Sprint 1 🆕</td></tr>
+  <tr><td>POST</td><td><code>/recheck</code></td><td>长任务上下文漂移重检</td><td>Sprint 2 🆕</td></tr>
+</table>
+
+<h3>Unix Socket API (~/.sra/srad.sock)</h3>
+<table>
+  <tr><th>action</th><th>params</th><th>说明</th><th>Sprint</th></tr>
+  <tr><td><code>ping</code></td><td><code>{}</code></td><td>心跳检测</td><td>v1.x</td></tr>
+  <tr><td><code>recommend</code></td><td><code>{query, top_k?}</code></td><td>技能推荐</td><td>v1.x</td></tr>
+  <tr><td><code>record</code></td><td><code>{skill, action?, input?, accepted?}</code></td><td>记录使用/查看/跳过</td><td>Sprint 2 🆕</td></tr>
+  <tr><td><code>refresh</code></td><td><code>{}</code></td><td>刷新索引</td><td>v1.x</td></tr>
+  <tr><td><code>stats</code></td><td><code>{}</code></td><td>运行统计</td><td>v1.x</td></tr>
+  <tr><td><code>stats/compliance</code></td><td><code>{}</code></td><td>遵循率统计</td><td>Sprint 2 🆕</td></tr>
+  <tr><td><code>coverage</code></td><td><code>{}</code></td><td>覆盖率分析</td><td>v1.x</td></tr>
+  <tr><td><code>validate</code></td><td><code>{tool, args, loaded_skills?}</code></td><td>技能校验</td><td>Sprint 1 🆕</td></tr>
+  <tr><td><code>recheck</code></td><td><code>{conversation_summary, loaded_skills?}</code></td><td>漂移重检</td><td>Sprint 2 🆕</td></tr>
+  <tr><td><code>stop</code></td><td><code>{}</code></td><td>远程停止守护进程</td><td>v1.x</td></tr>
+</table>
+
+<div style="margin-top:16px;padding:12px 16px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+  <strong>🆕 新增端点说明 (Sprint 2):</strong><br>
+  <code>POST /record {action: "viewed"|"used"|"skipped"}</code> — 技能轨迹追踪<br>
+  <code>GET /stats/compliance</code> — 查看历史遵循率、按技能维度排行<br>
+  <code>POST /recheck {conversation_summary, loaded_skills[]}</code> — 长任务上下文漂移检测
+</div>
+</section>
+
+<!-- ═════════════════════════ CLI COMMANDS ═════════════════════════ -->
+<section>
+<h2><span class="icon">💻</span> CLI 命令全集</h2>
+
+<h3>守护进程管理</h3>
+<table>
+  <tr><th>命令</th><th>说明</th><th>降级策略</th></tr>
+  <tr><td><code>sra start</code></td><td>启动后台守护进程</td><td>—</td></tr>
+  <tr><td><code>sra stop</code></td><td>停止守护进程</td><td>—</td></tr>
+  <tr><td><code>sra status</code></td><td>查看运行状态</td><td>—</td></tr>
+  <tr><td><code>sra restart</code></td><td>重启守护进程</td><td>—</td></tr>
+  <tr><td><code>sra attach</code></td><td>前台运行（调试）</td><td>—</td></tr>
+</table>
+
+<h3>查询命令</h3>
+<table>
+  <tr><th>命令</th><th>说明</th><th>降级策略</th></tr>
+  <tr><td><code>sra recommend &lt;query&gt;</code></td><td>技能推荐</td><td>✅ 本地模式</td></tr>
+  <tr><td><code>sra stats</code></td><td>运行统计</td><td>✅ 本地模式</td></tr>
+  <tr><td><code>sra coverage</code></td><td>覆盖率分析</td><td>✅ 本地模式</td></tr>
+  <tr><td><code>sra compliance</code></td><td>技能遵循率统计 🆕</td><td>✅ 本地模式</td></tr>
+  <tr><td><code>sra refresh</code></td><td>刷新索引</td><td>✅ 本地模式</td></tr>
+  <tr><td><code>sra record &lt;skill&gt; &lt;input&gt;</code></td><td>记录使用</td><td>✅ 本地模式</td></tr>
+</table>
+
+<h3>管理命令</h3>
+<table>
+  <tr><th>命令</th><th>说明</th></tr>
+  <tr><td><code>sra config [show|set|reset]</code></td><td>配置管理</td></tr>
+  <tr><td><code>sra install &lt;agent&gt;</code></td><td>安装到 Agent</td></tr>
+  <tr><td><code>sra upgrade [-V &lt;version&gt;]</code></td><td>升级 SRA</td></tr>
+  <tr><td><code>sra uninstall [--all]</code></td><td>卸载 SRA</td></tr>
+  <tr><td><code>sra version</code></td><td>版本信息</td></tr>
+  <tr><td><code>sra list-adapters</code></td><td>列出 Agent 适配器</td></tr>
+  <tr><td><code>sra help</code></td><td>帮助信息</td></tr>
+</table>
+
+<div style="margin-top:12px;padding:10px 14px;background:#d2992211;border-radius:8px;border:1px solid #d2992244;">
+  <strong>⚡ 降级策略:</strong> 所有查询命令在 Daemon 未运行时自动降级为本地模式（直接 import SkillAdvisor），无需守护进程也可使用核心功能。
+</div>
+</section>
+
+<!-- ═════════════════════════ DATA LAYER ═════════════════════════ -->
+<section>
+<h2><span class="icon">📁</span> 数据层 & 文件结构</h2>
+
+<table>
+  <tr><th>类型</th><th>路径</th><th>格式</th></tr>
+  <tr><td>技能文件</td><td><code>~/.hermes/skills/**/SKILL.md</code></td><td>YAML frontmatter + Markdown</td></tr>
+  <tr><td>索引缓存</td><td><code>~/.sra/data/skill_full_index.json</code></td><td>JSON</td></tr>
+  <tr><td>场景记忆</td><td><code>~/.sra/data/skill_usage_stats.json</code></td><td>JSON（含遵循率）</td></tr>
+  <tr><td>配置</td><td><code>~/.sra/config.json</code></td><td>JSON</td></tr>
+  <tr><td>状态</td><td><code>~/.sra/srad.status.json</code></td><td>JSON</td></tr>
+  <tr><td>PID 文件</td><td><code>~/.sra/srad.pid</code></td><td>文本</td></tr>
+  <tr><td>Lock 文件</td><td><code>~/.sra/srad.lock</code></td><td>二进制（fcntl）</td></tr>
+  <tr><td>Unix Socket</td><td><code>~/.sra/srad.sock</code></td><td>二进制</td></tr>
+  <tr><td>日志</td><td><code>~/.sra/srad.log</code></td><td>文本</td></tr>
+  <tr><td>技能映射配置</td><td><code>skill_advisor/config/skill_map.json</code></td><td>JSON</td></tr>
+</table>
+
+<h3>项目源码结构</h3>
+<pre>
+sra/
+├── skill_advisor/              # 核心源码
+│   ├── __init__.py             # 版本号 (v1.2.1)
+│   ├── advisor.py              # SkillAdvisor 推荐引擎
+│   ├── cli.py                  # CLI 命令 + 降级策略 (702行)
+│   ├── indexer.py              # SkillIndexer 索引构建
+│   ├── matcher.py              # SkillMatcher 四维匹配
+│   ├── memory.py               # SceneMemory 场景记忆 + 轨迹追踪
+│   ├── skill_map.py            # 文件类型→技能映射
+│   ├── synonyms.py             # 同义词映射表
+│   ├── config/skill_map.json   # 默认文件映射配置
+│   ├── runtime/
+│   │   ├── daemon.py           # SRaDDaemon 守护进程 (937行)
+│   │   ├── lock.py             # OS 级文件锁
+│   │   ├── validate_core.py    # 校验核心逻辑
+│   │   └── endpoints/
+│   │       └── validate.py     # POST /validate 端点
+│   └── adapters/__init__.py    # Agent 适配器
+├── tests/                      # 174 个测试
+│   ├── test_memory.py          # 27 tests (Sprint 2 🆕)
+│   ├── test_daemon.py          # 22 tests (Sprint 2 🆕)
+│   ├── test_cli.py             # 22 tests (Sprint 2 🆕)
+│   ├── test_daemon_http.py     # 10 tests
+│   ├── test_indexer.py         # 已有测试
+│   ├── test_matcher.py         # 已有测试
+│   ├── test_validate.py        # 已有测试
+│   ├── test_skill_map.py       # 已有测试
+│   ├── test_singleton.py       # 已有测试
+│   ├── test_coverage.py        # 已有测试
+│   └── test_benchmark.py       # 基准测试
+├── docs/                       # 文档
+│   ├── ARCHITECTURE.md         # 架构标准
+│   ├── API-REFERENCE.md        # API 参考
+│   ├── EPIC-003-v2-enforcement-layer.md  # Epic 规划
+│   ├── TECHDEBT-ANALYSIS.md    # 技术债分析
+│   └── ...
+├── scripts/                    # 部署脚本
+│   ├── install.sh              # 跨平台自动安装
+│   ├── check-sra.py            # 安装验证
+│   └── install-hermes-integration.sh
+├── ROADMAP.md                  # 开发路线图
+├── pyproject.toml              # 项目配置
+└── setup.py                    # 安装入口
+</pre>
+</section>
+
+<!-- ═══════════════════════ EPIC-003 STATUS ═══════════════════════ -->
+<section>
+<h2><span class="icon">🎯</span> EPIC-003 完成状态</h2>
+<p style="color:var(--text2);margin-bottom:16px;">从「技能推荐者」升级为「运行时守护者」</p>
+
+<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
+  <div class="card" style="flex:1;min-width:120px;">
+    <div class="label">总故事数</div>
+    <div class="value">13</div>
+  </div>
+  <div class="card" style="flex:1;min-width:120px;">
+    <div class="label">已完成</div>
+    <div class="value" style="color:var(--green);">9</div>
+  </div>
+  <div class="card" style="flex:1;min-width:120px;">
+    <div class="label">进行中</div>
+    <div class="value" style="color:var(--orange);">0</div>
+  </div>
+  <div class="card" style="flex:1;min-width:120px;">
+    <div class="label">待办</div>
+    <div class="value" style="color:var(--red);">4</div>
+  </div>
+</div>
+
+<div class="progress-bar">
+  <div class="fill fill-green" style="width:69%"></div>
+</div>
+<div style="text-align:right;font-size:0.85em;color:var(--text2);">EPIC-003 整体进度: 69%</div>
+
+<h3>已完成的 Story</h3>
+<table>
+  <tr><th>ID</th><th>Story</th><th>Pri</th><th>Sprint</th><th>核心交付</th></tr>
+  <tr>
+    <td><code>SRA-003-01</code></td><td>Tool 层 SRA 校验</td>
+    <td><span style="color:var(--red);">🔴 P0</span></td><td>Sprint 1</td>
+    <td><code>POST /validate</code> + pre_tool_call hook</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-02</code></td><td>文件类型技能映射</td>
+    <td><span style="color:var(--red);">🔴 P0</span></td><td>Sprint 1</td>
+    <td><code>FILE_SKILL_MAP</code> + 配置文件</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-10</code></td><td>systemd 自启动部署</td>
+    <td><span style="color:var(--text2);">🟢 P2</span></td><td>Sprint 1</td>
+    <td>用户级 systemd service</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-11</code></td><td>安装脚本自动配置</td>
+    <td><span style="color:var(--text2);">🟢 P2</span></td><td>Sprint 1</td>
+    <td>跨平台自动检测 + 生成自启配置</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-12</code></td><td>Daemon 单例守护</td>
+    <td><span style="color:var(--red);">🔴 P0</span></td><td>Sprint 1</td>
+    <td>OS 级文件锁（fcntl）防多实例</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-13</code></td><td>HTTP 架构 + 异常处理</td>
+    <td><span style="color:var(--red);">🔴 P0</span></td><td>Sprint 1</td>
+    <td>ThreadingMixIn + serve_forever + 消除 except:pass</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-03</code></td><td>技能使用轨迹记录</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>Sprint 2</td>
+    <td><code>record_view/use/skip</code> + <code>compliance</code></td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-04</code></td><td>长任务上下文漂移保护</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>Sprint 2</td>
+    <td><code>recheck()</code> + <code>POST /recheck</code></td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-14</code></td><td>测试覆盖增强</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>Sprint 2</td>
+    <td>71 个新测试, daemon/CLI/memory 覆盖</td>
+  </tr>
+</table>
+
+<h3>待完成的 Story</h3>
+<table>
+  <tr><th>ID</th><th>Story</th><th>Pri</th><th>估时</th><th>说明</th></tr>
+  <tr>
+    <td><code>SRA-003-05</code></td><td>SRA 契约机制</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>2d</td>
+    <td>任务开始时生成技能契约 <code>{task_type, required_skills[]}</code></td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-06</code></td><td>运行时力度体系</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>3d</td>
+    <td>basic/medium/advanced/omni 四级注入覆盖度</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-15</code></td><td>质量增强</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>3d</td>
+    <td>配置 Schema 校验、日志轮转、魔法数字命名化</td>
+  </tr>
+  <tr>
+    <td><code>SRA-003-16</code></td><td>架构优化</td>
+    <td><span style="color:var(--orange);">🟡 P1</span></td><td>2d</td>
+    <td>并发安全、路由统一、记忆文件锁</td>
+  </tr>
+</table>
+</section>
+
+<!-- ═══════════════════════ SPRINT HISTORY ═══════════════════════ -->
+<section>
+<h2><span class="icon">📊</span> Sprint 历史</h2>
+
+<h3>Sprint 1 — P0 基础设施</h3>
+<table>
+  <tr><th>指标</th><th>值</th></tr>
+  <tr><td>周期</td><td>2026-05-10</td></tr>
+  <tr><td>完成故事</td><td>6 个 (3×P0, 2×P2, 1×架构)</td></tr>
+  <tr><td>新端点</td><td>POST /validate</td></tr>
+  <tr><td>新文件</td><td>lock.py, validate.py, validate_core.py, skill_map.py, skill_map.json</td></tr>
+  <tr><td>测试</td><td>39 → 103 (+64)</td></tr>
+  <tr><td>Bug 修复</td><td>ThreadingMixIn 非并发、16 处 except:pass</td></tr>
+  <tr><td>关键修复</td><td>HTTP 服务器改用 serve_forever() + ThreadingMixIn</td></tr>
+</table>
+
+<h3>Sprint 2 — 观测能力 + 测试安全网</h3>
+<table>
+  <tr><th>指标</th><th>值</th></tr>
+  <tr><td>周期</td><td>2026-05-10</td></tr>
+  <tr><td>完成故事</td><td>3 个 (全部 P1)</td></tr>
+  <tr><td>新端点</td><td>POST /record (扩展), GET /stats/compliance, POST /recheck</td></tr>
+  <tr><td>新测试文件</td><td>test_memory.py (27), test_daemon.py (22), test_cli.py (22)</td></tr>
+  <tr><td>测试</td><td>103 → 174 (+71)</td></tr>
+  <tr><td>Bug 修复</td><td>validate 导入路径 (..endpoints → .endpoints)</td></tr>
+  <tr><td>新增 CLS 命令</td><td>sra compliance</td></tr>
+</table>
+
+<div style="margin-top:20px;">
+  <h3>Git 提交历史（最近 10 条）</h3>
+  <pre>
+17ca595 feat(tests): 测试覆盖增强 (SRA-003-14) — +71 tests, 174 total
+06bd5c4 feat(drift): 长任务上下文漂移保护 (SRA-003-04)
+a889e98 feat(trace): 技能使用轨迹记录 (SRA-003-03)
+c846a56 docs: Sprint 2 计划 + ROADMAP 更新
+28376af feat(validate): POST /validate 端点
+a353f49 feat(skill-map): 文件扩展名→技能映射注册表
+910feca docs: 强制 commit-quality-check 开发流程
+5326c25 fix(http): ThreadingMixIn + 消除 except:pass
+dbfc02f feat(singleton): OS 级文件锁单例保护
+3475bb9 refactor(force): 注入覆盖度系统（无阻断）</pre>
+</div>
+</section>
+
+<!-- ═══════════════════════ TEST COVERAGE ═══════════════════════ -->
+<section>
+<h2><span class="icon">🧪</span> 测试覆盖详情</h2>
+
+<div class="grid-4">
+  <div class="card">
+    <div class="label">总测试数</div>
+    <div class="value" style="color:var(--green);">174</div>
+    <div class="sub">Sprint 1: 103 → Sprint 2: +71</div>
+  </div>
+  <div class="card">
+    <div class="label">测试文件</div>
+    <div class="value">11</div>
+    <div class="sub">3 个 Sprint 2 新增</div>
+  </div>
+  <div class="card">
+    <div class="label">测试通过率</div>
+    <div class="value" style="color:var(--green);">100%</div>
+    <div class="sub">174/174 全部通过</div>
+  </div>
+  <div class="card">
+    <div class="label">运行时间</div>
+    <div class="value">~23s</div>
+    <div class="sub">全量 pytest</div>
+  </div>
+</div>
+
+<h3>测试文件清单</h3>
+<table>
+  <tr><th>文件</th><th>测试数</th><th>覆盖目标</th><th>Sprint</th></tr>
+  <tr><td><code>test_indexer.py</code></td><td>10</td><td>SkillIndexer 索引构建</td><td>v1.x</td></tr>
+  <tr><td><code>test_matcher.py</code></td><td>39</td><td>SkillMatcher 四维匹配</td><td>v1.x</td></tr>
+  <tr><td><code>test_coverage.py</code></td><td>2</td><td>真实 skill 覆盖率门禁 (≥300)</td><td>v1.x</td></tr>
+  <tr><td><code>test_benchmark.py</code></td><td>4</td><td>性能基准测试</td><td>v1.x</td></tr>
+  <tr><td><code>test_daemon_http.py</code></td><td>10</td><td>HTTP 服务器并发性</td><td>Sprint 1</td></tr>
+  <tr><td><code>test_validate.py</code></td><td>9</td><td>POST /validate 端点</td><td>Sprint 1</td></tr>
+  <tr><td><code>test_skill_map.py</code></td><td>11</td><td>文件类型→技能映射</td><td>Sprint 1</td></tr>
+  <tr><td><code>test_singleton.py</code></td><td>18</td><td>OS 级文件锁单例</td><td>Sprint 1</td></tr>
+  <tr><td><code>test_memory.py</code></td><td><strong>27</strong></td><td>SceneMemory 轨迹追踪</td><td><strong>Sprint 2 🆕</strong></td></tr>
+  <tr><td><code>test_daemon.py</code></td><td><strong>22</strong></td><td>SRaDDaemon 生命周期 + 12 actions</td><td><strong>Sprint 2 🆕</strong></td></tr>
+  <tr><td><code>test_cli.py</code></td><td><strong>22</strong></td><td>CLI 命令（mock socket）</td><td><strong>Sprint 2 🆕</strong></td></tr>
+</table>
+
+<div style="margin-top:16px;padding:12px 16px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+  <strong>📌 测试门禁:</strong> <code>test_coverage.py</code> 中的 L0 测试断言 <code>skills >= 300</code>，确保从真实 313 个 Hermes Skill YAML 提取的测试数据不被虚假数据替换。
+</div>
+</section>
+
+<!-- ═══════════════════════ DEVELOPMENT ═══════════════════════ -->
+<section>
+<h2><span class="icon">🛠️</span> 开发工作流</h2>
+
+<h3>强制流程（AGENTS.md）</h3>
+<pre>
+<span class="comment"># 每步开发前必须执行</span>
+1. <span class="keyword">Pre-Flight:</span>   python3 ~/.hermes/scripts/pre_flight.py "&lt;Task&gt;"
+2. <span class="keyword">Skill Discovery:</span> python3 ~/.hermes/skills/.../skill_finder.py "&lt;Keywords&gt;"
+3. <span class="keyword">如果匹配≥30:</span>  skill_view(name) 加载 skill
+4. <span class="keyword">对齐文档:</span>  确认 docs/API-REFERENCE.md + docs/ARCHITECTURE.md + <strong>PROJECT-PANORAMA.html</strong> 一致
+5. <span class="keyword">实现 → 测试 → 提交</span>
+</pre>
+
+<h3>Sprint 完成后的交付物</h3>
+<ol style="padding-left:20px;color:var(--text2);">
+  <li style="margin:6px 0;">更新 <strong>PROJECT-PANORAMA.html</strong>（本文档）</li>
+  <li style="margin:6px 0;">发送 HTML 文件给主人</li>
+  <li style="margin:6px 0;">更新 ROADMAP.md + Sprint plan 文件</li>
+  <li style="margin:6px 0;">更新 docs/API-REFERENCE.md（新端点）</li>
+  <li style="margin:6px 0;">确保所有测试通过（pytest -q）</li>
+  <li style="margin:6px 0;">重启 daemon 验证集成</li>
+</ol>
+
+<h3>后端依赖</h3>
+<table>
+  <tr><th>环境</th><th>类型</th><th>说明</th></tr>
+  <tr><td>Hermes Agent</td><td>集成目标</td><td>通过 pre_tool_call hook + SRA Proxy 消息注入集成</td></tr>
+  <tr><td>systemd</td><td>自启</td><td>用户级 srad.service + hermes-gateway 依赖</td></tr>
+  <tr><td>~/.sra/</td><td>运行时数据</td><td>自动创建（config/data/logs/sock/lock/pid）</td></tr>
+  <tr><td>pyyaml &gt;= 5.1</td><td>唯一依赖</td><td>YAML frontmatter 解析</td></tr>
+</table>
+</section>
+
+<!-- ═══════════════════════ FUTURE VISION ═══════════════════════ -->
+<section>
+<h2><span class="icon">🔮</span> 远期规划</h2>
+
+<h3>v2.x — 多 Agent 适配器生态</h3>
+<table>
+  <tr><th>功能</th><th>说明</th><th>状态</th></tr>
+  <tr><td>标准协议层</td><td>统一各 Agent 的 skill 接口</td><td><span class="status-future">⏳ 待启动</span></td></tr>
+  <tr><td>Claude Code 适配器</td><td>适配 Anthropic CLI agent</td><td><span class="status-future">⏳ 待启动</span></td></tr>
+  <tr><td>Codex CLI 适配器</td><td>适配 OpenAI Codex</td><td><span class="status-future">⏳ 待启动</span></td></tr>
+  <tr><td>自定义 Agent SDK</td><td>适配器开发工具包</td><td><span class="status-future">⏳ 待启动</span></td></tr>
+</table>
+
+<h3>v3.x — 智能推荐引擎</h3>
+<table>
+  <tr><th>功能</th><th>说明</th></tr>
+  <tr><td>场景记忆持久化</td><td>跨会话记忆用户偏好</td></tr>
+  <tr><td>用户行为学习</td><td>基于 accept/reject 反馈调整权重</td></tr>
+  <tr><td>负反馈学习</td><td>明确不推荐的 skill</td></tr>
+  <tr><td>组合技能推荐</td><td>多 skill 编排推荐</td></tr>
+  <tr><td>主动学习</td><td>根据场景记忆自动调整推荐权重</td></tr>
+</table>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<div style="text-align:center;padding:30px;color:var(--text2);font-size:0.85em;border-top:1px solid var(--border);margin-top:40px;">
+  <p>🔮 <strong>SRA — Skill Runtime Advisor</strong> v1.2.1</p>
+  <p>生成日期: 2026-05-10 | 分支: feat/v2.0-enforcement-layer</p>
+  <p style="margin-top:8px;">本文档在每个 Sprint 完成后更新，作为项目全貌的单一参考源</p>
+  <p style="margin-top:4px;">开发流程中请与 <code>docs/API-REFERENCE.md</code> + <code>docs/ARCHITECTURE.md</code> 对齐</p>
+</div>
+
+</div>
+</body>
+</html>
