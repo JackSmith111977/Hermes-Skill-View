@@ -650,19 +650,27 @@ dbfc02f feat(singleton): OS 级文件锁单例保护
 1. <span class="keyword">Pre-Flight:</span>   python3 ~/.hermes/scripts/pre_flight.py "&lt;Task&gt;"
 2. <span class="keyword">Skill Discovery:</span> python3 ~/.hermes/skills/.../skill_finder.py "&lt;Keywords&gt;"
 3. <span class="keyword">如果匹配≥30:</span>  skill_view(name) 加载 skill
-4. <span class="keyword">对齐文档:</span>  确认 docs/API-REFERENCE.md + docs/ARCHITECTURE.md + <strong>PROJECT-PANORAMA.html</strong> 一致
-5. <span class="keyword">实现 → 测试 → 提交</span>
+4. <span class="keyword">开发实现:</span> 实现 → 测试 → 验证
+5. <span class="keyword">文档对齐 (MANDATORY):</span>
+   - skill_view(name="doc-alignment")
+   - 执行 5 步文档对齐协议
+   - 更新 PROJECT-PANORAMA.html
+   - 更新 docs/API-REFERENCE.md (端点变更时)
+   - 更新 ROADMAP.md (Story 完成时)
+   - 更新 docs/ARCHITECTURE.md (架构变更时)
+6. <span class="keyword">提交:</span> 代码变更 + 文档变更 = 同一次提交
 </pre>
 
-<h3>Sprint 完成后的交付物</h3>
-<ol style="padding-left:20px;color:var(--text2);">
-  <li style="margin:6px 0;">更新 <strong>PROJECT-PANORAMA.html</strong>（本文档）</li>
-  <li style="margin:6px 0;">发送 HTML 文件给主人</li>
-  <li style="margin:6px 0;">更新 ROADMAP.md + Sprint plan 文件</li>
-  <li style="margin:6px 0;">更新 docs/API-REFERENCE.md（新端点）</li>
-  <li style="margin:6px 0;">确保所有测试通过（pytest -q）</li>
-  <li style="margin:6px 0;">重启 daemon 验证集成</li>
-</ol>
+<h3>为什么需要文档对齐？</h3>
+<div style="padding:12px 16px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);margin:8px 0;">
+  <strong>🧠 上下文污染问题：</strong><br><br>
+  文档陈旧是 AI 项目最大的隐患之一。当文档描述与实际代码不一致时：<br>
+  - AI Agent 加载旧文档 → 基于错误上下文决策 → 产出质量下降<br>
+  - 新端点未被记录 → 后续开发不知道已有此功能 → 重复造轮子<br>
+  - Story 状态仍标记 pending → Sprint 规划错误<br><br>
+  <strong>解决方案：</strong><code>doc-alignment</code> skill（~/.hermes/skills/dogfood/doc-alignment/）<br>
+  每次完成任务后运行此协议，防止上下文污染累积。
+</div>
 
 <h3>后端依赖</h3>
 <table>
