@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sra-agent"
-version = "1.3.0"
+version = "1.4.0-dev"
 description = "Skill Runtime Advisor — 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力。带守护进程、多 Agent 适配器、完整 CLI、消息前置推理中间件。"
 readme = "README.md"
 authors = [
