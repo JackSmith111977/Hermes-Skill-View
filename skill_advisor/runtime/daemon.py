@@ -62,7 +62,7 @@ DEFAULT_CONFIG = {
 }
 
 
-def ensure_sra_home():
+def ensure_sra_home() -> None:
     """确保 SRA 家目录存在"""
     os.makedirs(SRA_HOME, exist_ok=True)
     os.makedirs(os.path.join(SRA_HOME, "data"), exist_ok=True)
@@ -83,7 +83,7 @@ def load_config() -> dict:
     return dict(DEFAULT_CONFIG)
 
 
-def save_config(config: dict):
+def save_config(config: dict) -> None:
     """保存配置"""
     ensure_sra_home()
     with open(CONFIG_FILE, 'w') as f:
@@ -93,7 +93,7 @@ def save_config(config: dict):
 class SRaDDaemon:
     """SRA 守护进程"""
 
-    def __init__(self, config: dict = None):
+    def __init__(self, config: dict = None) -> None:
         self.config = config or load_config()
         self.advisor = SkillAdvisor(
             skills_dir=self.config["skills_dir"],
@@ -115,7 +115,7 @@ class SRaDDaemon:
 
     # ── 生命周期 ──────────────────────────────
 
-    def start(self):
+    def start(self) -> None:
         """启动守护进程"""
         ensure_sra_home()
         self.running = True
@@ -151,7 +151,7 @@ class SRaDDaemon:
 
         logger.info("🚀 SRA Daemon 启动完成")
 
-    def stop(self):
+    def stop(self) -> None:
         """停止守护进程"""
         self.running = False
         if self._server_socket:
@@ -162,7 +162,7 @@ class SRaDDaemon:
         self._update_status("stopped")
         logger.info("SRA Daemon 已停止")
 
-    def attach(self):
+    def attach(self) -> None:
         """前台运行（调试用）"""
         try:
             self.start()
@@ -174,7 +174,7 @@ class SRaDDaemon:
 
     # ── 内部服务 ──────────────────────────────
 
-    def _run_socket_server(self):
+    def _run_socket_server(self) -> None:
         """Unix Socket 服务器"""
         socket_path = self.config["socket_path"]
         # 清理旧 socket
@@ -204,7 +204,7 @@ class SRaDDaemon:
             except Exception as e:
                 logger.error(f"Socket 接受连接错误: {e}")
 
-    def _handle_socket_client(self, conn: socket.socket):
+    def _handle_socket_client(self, conn: socket.socket) -> None:
         """处理 Unix Socket 客户端请求"""
         try:
             data = conn.recv(65536).decode("utf-8")
@@ -228,7 +228,7 @@ class SRaDDaemon:
             except OSError:
                 logger.debug("Socket close in finally: expected")
 
-    def _run_http_server(self):
+    def _run_http_server(self) -> None:
         """简易 HTTP 服务器（使用标准库）"""
         import http.server
         import socketserver
@@ -430,7 +430,7 @@ class SRaDDaemon:
         server.shutdown()
         logger.info("HTTP 服务器已关闭")
 
-    def _auto_refresh_loop(self):
+    def _auto_refresh_loop(self) -> None:
         """自动刷新循环 — 双模式：定时刷新 + 文件变更检测"""
         interval = self.config.get("auto_refresh_interval", 3600)
         
@@ -472,7 +472,7 @@ class SRaDDaemon:
             
             time.sleep(5)  # 每 5 秒检查一次循环条件
 
-    def _compute_skills_checksum(self):
+    def _compute_skills_checksum(self) -> str:
         """计算技能目录的校验和（文件数量 + 所有 SKILL.md 的 mtime + 大小）
         
         用于快速检测技能目录是否有新增/删除/修改。
@@ -606,7 +606,7 @@ class SRaDDaemon:
                 },
             }
 
-    def _update_status(self, status: str):
+    def _update_status(self, status: str) -> None:
         """更新状态文件"""
         ensure_sra_home()
         try:
@@ -622,7 +622,7 @@ class SRaDDaemon:
 
 # ── 命令行接口 ─────────────────────────────
 
-def cmd_start(args=None):
+def cmd_start(args=None) -> None:
     """启动守护进程"""
     ensure_sra_home()
     
@@ -702,7 +702,7 @@ def cmd_start(args=None):
             time.sleep(1)
 
 
-def cmd_stop(args=None):
+def cmd_stop(args=None) -> None:
     """停止守护进程"""
     if not os.path.exists(PID_FILE):
         # 检查锁文件
@@ -749,7 +749,7 @@ def cmd_stop(args=None):
         print(f"❌ 停止失败: {e}")
 
 
-def cmd_status(args=None):
+def cmd_status(args=None) -> None:
     """查看守护进程状态"""
     if not os.path.exists(PID_FILE):
         # 检查状态文件
@@ -804,14 +804,14 @@ def cmd_status(args=None):
         print(f"❌ 状态查询失败: {e}")
 
 
-def cmd_restart(args=None):
+def cmd_restart(args=None) -> None:
     """重启守护进程"""
     cmd_stop(args)
     time.sleep(1)
     cmd_start(args)
 
 
-def cmd_attach(args=None):
+def cmd_attach(args=None) -> None:
     """前台运行（调试）"""
     ensure_sra_home()
     
@@ -882,7 +882,7 @@ WantedBy=default.target
 """
 
 
-def cmd_install_service(args=None):
+def cmd_install_service(args=None) -> None:
     """安装 systemd 服务
 
     支持 --user 标志生成用户级服务（无 sudo）。
