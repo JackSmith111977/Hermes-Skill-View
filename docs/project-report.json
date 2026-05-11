@@ -5,7 +5,7 @@
     "package": "sra-agent",
     "version": "1.4.0-dev",
     "description": "让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力",
-    "long_description": "是一个运行在 AI Agent 旁的守护进程，在 Agent 收到用户消息时自动分析语义、推荐最匹配的 Hermes Skill，并通过 <code>pre_tool_call</code> 钩子系统在校验工具调用前检查技能遵循度。",
+    "long_description": "是一个运行在 AI Agent 旁的守护进程，在 Agent 收到用户消息时自动分析语义、推荐最匹配的 Hermes Skill，并通过 <code>pre_tool_call</code> 钩子系统在校验工具调用前检查技能遵循度。<br><br>⚠️ 版本由 setuptools-scm 从 git tag 自动推导（<code>__init__.py</code> 含多级 fallback，静态 regex 不可靠）。当前 dev 版，正式版见 git tag。",
     "author": "Emma (SRA Team), Kei",
     "repo": "github.com/JackSmith111977/Hermes-Skill-View",
     "license": "MIT",
