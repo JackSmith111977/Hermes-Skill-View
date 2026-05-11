@@ -9,22 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### 🚀 Sprint 1 — v2.0 Enforcement Layer (EPIC-003) [Started 2026-05-10]
+### 🚀 Sprint 2 — v2.0 Enforcement Layer (EPIC-003) [Started 2026-05-10]
 
 **分支**: `feat/v2.0-enforcement-layer`
-**Sprint 目标**: 完成 P0 + P1 核心功能，从被动推荐者 → 运行时守护者
-**计划文件**: `.hermes/plans/2026-05-10_SRA-v2.0-sprint1-plan.md`
+**Sprint 目标**: 完成 P0 + P1 核心功能 + 质量修复
+**计划文件**: `.hermes/plans/2026-05-10_sprint2-plan.md`
 
 | 状态 | 故事 | 优先级 | 估时 |
 |:----:|:-----|:------:|:----:|
-| 📋 pending | Tool 层 SRA 校验 (SRA-003-01) | 🔴 P0 | 3天 |
-| 📋 pending | 文件类型技能映射 (SRA-003-02) | 🔴 P0 | 2天 |
-| 📋 pending | 技能使用轨迹记录 (SRA-003-03) | 🟡 P1 | 2天 |
-| 📋 pending | 长任务上下文保护 (SRA-003-04) | 🟡 P1 | 2天 |
+| ✅ completed | Tool 层 SRA 校验 (SRA-003-01) | 🔴 P0 | 3天 |
+| ✅ completed | 文件类型技能映射 (SRA-003-02) | 🔴 P0 | 2天 |
+| ✅ completed | 技能使用轨迹记录 (SRA-003-03) | 🟡 P1 | 1天 |
+| ✅ completed | 长任务上下文保护 (SRA-003-04) | 🟡 P1 | 2天 |
 | 📋 pending | SRA 契约机制 (SRA-003-05) | 🟡 P1 | 2天 |
 | 📋 pending | **运行时力度体系 (SRA-003-06)** | 🟡 P1 | 3天 |
+| ✅ completed | **Daemon 单例守护 (SRA-003-12)** | 🔴 P0 | 0.5天 |
+| ✅ completed | **HTTP 架构 + 异常处理 (SRA-003-13)** | 🔴 P0 | 1天 |
+| ✅ completed | **测试覆盖增强 (SRA-003-14)** | 🟡 P1 | 2天 |
+| ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | 🟡 P1 | 0.5天 |
+| 📋 pending | **质量修复 Sprint (SRA-003-18)** | 🔴 P0 | 3h |
 
-#### 🔧 Sprint 1 中间修复
+#### 🔧 Sprint 2 修复
 
 | 修复 | 问题 | 修复方案 |
 |:----|:-----|:---------|

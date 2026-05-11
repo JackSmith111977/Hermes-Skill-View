@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SRA — Skill Runtime Advisor 环境检查脚本 v1.1.0
+SRA — Skill Runtime Advisor 环境检查脚本 v1.2.1
 
 AI 友好设计：运行此脚本即可获得完整的安装状态诊断。
 每个检查项输出标准化格式，AI 能自动判断是否通过。
@@ -206,7 +206,7 @@ def main():
             skills_dir = arg.split("=", 1)[1]
 
     print("=" * 50)
-    print("  SRA — 环境检查 v1.1.0")
+    print("  SRA — 环境检查 v1.2.1")
     print("=" * 50)
     print()
 

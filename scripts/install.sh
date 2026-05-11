@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ===============================================================
-# SRA — Skill Runtime Advisor 一键安装脚本 v1.1.0
+# SRA — Skill Runtime Advisor 一键安装脚本 v1.2.1
 # ===============================================================
 # 用法:
 #   curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh | bash
@@ -93,7 +93,7 @@ AGENT_TYPE="${SRA_AGENT:-hermes}"
 SKILLS_DIR="${SRA_SKILLS_DIR:-$HOME/.hermes/skills}"
 INSTALL_SYSTEMD=false
 SKIP_PIP=false
-PROXY_MODE=false     # v1.1.0: Proxy 模式（消息前置推理中间件）
+PROXY_MODE=false     # v1.2.1: Proxy 模式（消息前置推理中间件）
 PROXY_PORT=8536      # Proxy 默认端口
 INSTALL_UNINSTALL=false
 
@@ -109,7 +109,7 @@ while [[ $# -gt 0 ]]; do
         --proxy-port=*) PROXY_PORT="${1#*=}"; shift ;;
         --uninstall) INSTALL_UNINSTALL=true; shift ;;
         --help)
-            echo "SRA — Skill Runtime Advisor 一键安装脚本 v1.1.0"
+            echo "SRA — Skill Runtime Advisor 一键安装脚本 v1.2.1"
             echo
             echo "选项:"
             echo "  --prefix=PATH      安装前缀 (默认: ~/.local)"
@@ -182,7 +182,7 @@ fi
 
 # ── 步骤 1: 检查环境 ──────────────────────
 echo "=============================================="
-echo "  SRA — Skill Runtime Advisor v1.1.0"
+echo "  SRA — Skill Runtime Advisor v1.2.1"
 echo "=============================================="
 echo
 
@@ -241,7 +241,7 @@ if [[ "$SKIP_PIP" != "true" ]]; then
     
     # 安装后验证
     if command -v sra &>/dev/null; then
-        ok "sra CLI 安装成功: $(sra version 2>/dev/null || echo 'v1.1.0')"
+        ok "sra CLI 安装成功: $(sra version 2>/dev/null || echo 'v1.2.1')"
     else
         warn "sra 命令未在 PATH 中找到，可能是 ~/.local/bin 未加入 PATH"
         info "运行: export PATH=\$PATH:\$HOME/.local/bin"
@@ -276,7 +276,7 @@ if [[ "$PROXY_MODE" == "true" ]]; then
     SRA_BIN=$(which sra 2>/dev/null || echo "$PREFIX/bin/sra")
     cat > "$SRA_HOME/sra-proxy.sh" << PROXYEOF
 #!/usr/bin/env bash
-# SRA Proxy — 消息前置推理中间件 (v1.1.0)
+# SRA Proxy — 消息前置推理中间件 (v1.2.1)
 # 用 sra daemon 的 HTTP API 直接提供 Proxy 服务
 export SRA_PROXY_ENABLED=true
 export SRA_PROXY_URL=http://127.0.0.1:${PROXY_PORT}
@@ -563,7 +563,7 @@ esac
 # ── 完成 ──────────────────────────────────
 echo
 echo "=============================================="
-echo -e "${GREEN}  ✅ SRA v1.1.0 安装完成！${NC}"
+echo -e "${GREEN}  ✅ SRA v1.2.1 安装完成！${NC}"
 echo "=============================================="
 echo
 echo "📋 安装后自检："

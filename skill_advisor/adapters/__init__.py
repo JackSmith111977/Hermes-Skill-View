@@ -109,7 +109,7 @@ class HermesAdapter(BaseAdapter):
         count = skills_count or s.get("skills_count", 0)
 
         return (
-            f"\n## SRA Runtime ({s.get('version', '1.1.0')})\n"
+            f"\n## SRA Runtime ({s.get('version', '1.2.1')})\n"
             f"SRA 是一个独立运行的技能推荐引擎。\n"
             f"当前管理 {count} 个技能。\n"
             f"API: Unix Socket ({SOCKET_FILE}) / HTTP (:{s.get('config', {}).get('http_port', 8536)})\n"

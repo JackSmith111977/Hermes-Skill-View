@@ -122,7 +122,7 @@ def cmd_stats(args: List[str]):
     else:
         stats = result.get("stats", result)
         print("=" * 50)
-        print(f"📊 SRA Daemon 统计 v{stats.get('version', '1.1.0')}")
+        print(f"📊 SRA Daemon 统计 v{stats.get('version', '1.2.1')}")
         print("=" * 50)
         print(f"  状态: {stats.get('status', 'unknown')}")
         print(f"  技能数: {stats.get('skills_count', 0)}")

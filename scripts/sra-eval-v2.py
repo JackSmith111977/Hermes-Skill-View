@@ -110,8 +110,8 @@ def load_all_skills():
                 try:
                     s = json.loads(raw[i:j])
                     skills.append(s)
-                except:
-                    pass
+                except Exception as e:
+                    logging.warning("sra-eval-v2: %s", e)
                 i = j
             else:
                 i += 1

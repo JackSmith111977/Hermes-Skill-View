@@ -312,6 +312,9 @@ pre_process:
 | `sra adapters` | 列出支持的 Agent 类型 |
 | `sra install <agent>` | 安装到指定 Agent |
 | `sra version` | 显示版本 |
+| `sra upgrade` | 升级 SRA 到最新版本 |
+| `sra uninstall` | 卸载 SRA（清理文件 + systemd 服务 + drop-in） |
+| `sra dep-check` | 检查 systemd 依赖链健康度 |
 | `sra help` | 显示帮助 |
 
 ---
@@ -353,9 +356,9 @@ python3 scripts/check-sra.py
 预期输出：
 ```
 python: ok (3.11.5)
-sra cli: ok (sra v1.1.0)
-sra daemon: ok (port 8536, 275 skills indexed)
-skills dir: ok (~/.hermes/skills, 62 skills)
+sra cli: ok (sra v1.2.1)
+sra daemon: ok (port 8536, 313+ skills indexed)
+skills dir: ok (~/.hermes/skills, 313+ skills)
 sra config: ok (~/.sra/config.json)
 ```
 

@@ -7,6 +7,7 @@ import re
 import json
 import glob
 import yaml
+import threading
 from datetime import datetime, timedelta
 from typing import List, Dict, Set, Optional
 
@@ -20,6 +21,7 @@ class SkillIndexer:
         self.skills_dir = skills_dir
         self.index_file = os.path.join(data_dir, "skill_full_index.json")
         self._skills: List[Dict] = []
+        self._lock = threading.RLock()
         
         # 缓存
         self._synonyms = SYNONYMS
@@ -154,7 +156,8 @@ class SkillIndexer:
             except Exception as e:
                 print(f"⚠️  跳过 {f}: {e}")
         
-        self._skills = index
+        with self._lock:
+            self._skills = index
         
         # 持久化
         os.makedirs(os.path.dirname(self.index_file), exist_ok=True)
@@ -169,22 +172,24 @@ class SkillIndexer:
 
     def load_or_build(self) -> List[Dict]:
         """加载或构建索引"""
-        if self._skills:
-            return self._skills
-        
-        if os.path.exists(self.index_file):
-            try:
-                with open(self.index_file) as f:
-                    data = json.load(f)
-                self._skills = data.get("skills", [])
-                if self._skills:
-                    return self._skills
-            except Exception:
-                import logging
-                logging.getLogger("sra.indexer").debug("索引缓存加载失败，重新构建")
-        self.build()
-        return self._skills
+        with self._lock:
+            if self._skills:
+                return list(self._skills)
+            
+            if os.path.exists(self.index_file):
+                try:
+                    with open(self.index_file) as f:
+                        data = json.load(f)
+                    self._skills = data.get("skills", [])
+                    if self._skills:
+                        return list(self._skills)
+                except Exception:
+                    import logging
+                    logging.getLogger("sra.indexer").debug("索引缓存加载失败，重新构建")
+            self.build()
+            return list(self._skills)
 
     def get_skills(self) -> List[Dict]:
-        """获取技能列表"""
-        return self._skills
+        """获取技能列表（线程安全：返回副本）"""
+        with self._lock:
+            return list(self._skills)

@@ -582,28 +582,29 @@ class SRaDDaemon:
 
     def get_stats(self) -> dict:
         """获取运行统计"""
-        uptime = 0
-        if self._stats["started_at"]:
-            try:
-                start = datetime.fromisoformat(self._stats["started_at"])
-                uptime = int((datetime.now() - start).total_seconds())
-            except Exception:
-                logger.debug("Could not parse start time, uptime=0")
+        with self._lock:
+            uptime = 0
+            if self._stats["started_at"]:
+                try:
+                    start = datetime.fromisoformat(self._stats["started_at"])
+                    uptime = int((datetime.now() - start).total_seconds())
+                except Exception:
+                    logger.debug("Could not parse start time, uptime=0")
 
-        return {
-            "version": __version__,
-            "status": "running" if self.running else "stopped",
-            "uptime_seconds": uptime,
-            "skills_count": len(self.advisor.indexer.get_skills()),
-            "total_requests": self._stats["total_requests"],
-            "total_recommendations": self._stats["total_recommendations"],
-            "errors": self._stats["errors"],
-            "last_refresh": self._last_refresh,
-            "config": {
-                k: v for k, v in self.config.items()
-                if k in ("http_port", "auto_refresh_interval", "enable_http", "enable_unix_socket")
-            },
-        }
+            return {
+                "version": __version__,
+                "status": "running" if self.running else "stopped",
+                "uptime_seconds": uptime,
+                "skills_count": len(self.advisor.indexer.get_skills()),
+                "total_requests": self._stats["total_requests"],
+                "total_recommendations": self._stats["total_recommendations"],
+                "errors": self._stats["errors"],
+                "last_refresh": self._last_refresh,
+                "config": {
+                    k: v for k, v in self.config.items()
+                    if k in ("http_port", "auto_refresh_interval", "enable_http", "enable_unix_socket")
+                },
+            }
 
     def _update_status(self, status: str):
         """更新状态文件"""
@@ -652,6 +653,10 @@ def cmd_start(args=None):
 
     # 启动守护进程
     pid = os.fork()
+    # ⚠️ os.fork() + 线程不兼容风险: fork 后只有调用线程存活，
+    # 其他线程中的锁状态未定义。已在子进程起始处调用
+    # logging.basicConfig(force=True) 重新初始化日志系统。
+    # 长期建议: 改用 multiprocessing.set_start_method('spawn')
     if pid > 0:
         # 父进程 — 写入 PID 到锁文件和 PID 文件
         config = load_config()

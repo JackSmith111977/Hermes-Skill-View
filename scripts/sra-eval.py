@@ -363,13 +363,12 @@ def load_skills_meta():
     """从 SRA Daemon 加载技能元数据"""
     try:
         # 从索引文件或daemon加载
-        index_file = os.path.expanduser("~/.sra/data/skill_full_index.json")
         if os.path.exists(index_file):
             with open(index_file) as f:
                 data = json.load(f)
             return data.get("skills", [])
-    except:
-        pass
+    except Exception as e:
+        logging.warning("sra-eval: %s", e)
     return []
 
 

@@ -1,7 +1,7 @@
 # SRA 开发路线图 (Roadmap)
 
 > Skill Runtime Advisor — 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力。
-> 版本: v1.2.0 | 更新: 2026-05-09
+> 版本: v1.2.1 | 更新: 2026-05-11
 
 ---
 
@@ -88,8 +88,10 @@
 | ✅ completed | 测试覆盖增强 (SRA-003-14) | EPIC-003 | 🟡 P1 | 2天 |
 || 📋 pending | SRA 契约机制 (SRA-003-05) | EPIC-003 | 🟡 P1 | 2天 |
 || 📋 pending | **运行时力度体系 (SRA-003-06)** | EPIC-003 | 🟡 P1 | 3天 |
-|| ✅ completed | **Daemon 单例守护 (SRA-003-12)** | EPIC-003 | 🔴 P0 | 0.5天 |
+| | ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | EPIC-003 | 🟡 P1 | 0.5天 |
+||| 📋 pending | **质量修复 Sprint (SRA-003-18)** | EPIC-003 | 🔴 P0 | 3h |
 || ✅ completed | **HTTP 架构 + 异常处理 (SRA-003-13)** | EPIC-003 | 🔴 P0 | 1天 |
 || ✅ completed | **systemd 自启动部署 (SRA-003-10)** | EPIC-003 | 🟢 P2 | — |
 || ✅ completed | **安装脚本自动配置 (SRA-003-11)** | EPIC-003 | 🟢 P2 | — |
-|| ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | EPIC-003 | 🟡 P1 | 0.5天 |
+| | ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | EPIC-003 | 🟡 P1 | 0.5天 |
+||| 📋 pending | **质量修复 Sprint (SRA-003-18)** | EPIC-003 | 🔴 P0 | 3h |

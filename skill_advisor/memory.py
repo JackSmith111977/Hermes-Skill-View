@@ -8,6 +8,7 @@ import os
 import json
 from datetime import datetime
 from typing import Dict, List, Optional
+import threading
 
 
 class SceneMemory:
@@ -16,29 +17,31 @@ class SceneMemory:
     def __init__(self, data_dir: str):
         self.stats_file = os.path.join(data_dir, "skill_usage_stats.json")
         self._cache = None
+        self._lock = threading.RLock()
 
     def load(self) -> Dict:
         """加载场景记忆"""
-        if self._cache is not None:
+        with self._lock:
+            if self._cache is not None:
+                return self._cache
+
+            if not os.path.exists(self.stats_file):
+                self._cache = self._default_stats()
+                return self._cache
+
+            try:
+                with open(self.stats_file) as f:
+                    data = json.load(f)
+                # 确保新字段存在（向前兼容）
+                if "compliance" not in data:
+                    data["compliance"] = self._default_compliance()
+                self._cache = data
+            except (FileNotFoundError, json.JSONDecodeError):
+                import logging
+                logging.getLogger("sra.memory").debug("场景记忆文件不存在或格式错误，使用默认值")
+                self._cache = self._default_stats()
+
             return self._cache
-
-        if not os.path.exists(self.stats_file):
-            self._cache = self._default_stats()
-            return self._cache
-
-        try:
-            with open(self.stats_file) as f:
-                data = json.load(f)
-            # 确保新字段存在（向前兼容）
-            if "compliance" not in data:
-                data["compliance"] = self._default_compliance()
-            self._cache = data
-        except (FileNotFoundError, json.JSONDecodeError):
-            import logging
-            logging.getLogger("sra.memory").debug("场景记忆文件不存在或格式错误，使用默认值")
-            self._cache = self._default_stats()
-
-        return self._cache
 
     def _default_stats(self) -> Dict:
         return {
@@ -59,19 +62,21 @@ class SceneMemory:
 
     def save(self):
         """保存场景记忆"""
-        if self._cache is None:
-            return
-        os.makedirs(os.path.dirname(self.stats_file), exist_ok=True)
-        with open(self.stats_file, 'w') as f:
-            json.dump(self._cache, f, indent=2, ensure_ascii=False)
+        with self._lock:
+            if self._cache is None:
+                return
+            os.makedirs(os.path.dirname(self.stats_file), exist_ok=True)
+            with open(self.stats_file, 'w') as f:
+                json.dump(self._cache, f, indent=2, ensure_ascii=False)
 
     # ── 推荐记录（原有） ──────────────────────────────────────────
 
     def increment_recommendations(self):
         """增加推荐计数"""
-        stats = self.load()
-        stats["total_recommendations"] = stats.get("total_recommendations", 0) + 1
-        self.save()
+        with self._lock:
+            stats = self.load()
+            stats["total_recommendations"] = stats.get("total_recommendations", 0) + 1
+            self.save()
 
     def record_usage(self, skill_name: str, user_input: str, accepted: bool = True):
         """记录技能使用场景（推荐 → 被采纳/被拒绝）"""
