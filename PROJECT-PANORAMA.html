@@ -73,12 +73,12 @@ code { background: #1c2333; padding: 2px 6px; border-radius: 4px; font-size: 0.9
   <h1>🔮 SRA — Skill Runtime Advisor</h1>
   <div class="subtitle">让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力</div>
   <div>
-    <span class="badge badge-blue">v1.3.0</span>
+    <span class="badge badge-blue">v1.4.0-dev</span>
     <span class="badge badge-orange">290 tests</span>
     <span class="badge badge-green">MIT License</span>
   </div>
   <div style="margin-top:8px;color:#8b949e;font-size:0.85em;">
-    生成于 2026-05-11 17:40 | 由 generate-project-report.py 数据驱动自动生成
+    生成于 2026-05-11 19:09 | 由 generate-project-report.py 数据驱动自动生成
   </div>
 </div>
 
@@ -86,7 +86,7 @@ code { background: #1c2333; padding: 2px 6px; border-radius: 4px; font-size: 0.9
 <section>
 <h2><span class="icon">📋</span> 项目概览</h2>
 <div class="grid-3">
-<div class="card"><div class="label">名称</div><div class="value">SRA Agent</div><div class="sub">sra-agent</div></div><div class="card"><div class="label">版本</div><div class="value">1.3.0</div><div class="sub">MIT License</div></div><div class="card"><div class="label">Python</div><div class="value">≥ 3.8</div><div class="sub">依赖: pyyaml</div></div>
+<div class="card"><div class="label">名称</div><div class="value">SRA Agent</div><div class="sub">sra-agent</div></div><div class="card"><div class="label">版本</div><div class="value">1.4.0-dev</div><div class="sub">MIT License</div></div><div class="card"><div class="label">Python</div><div class="value">≥ 3.8</div><div class="sub">依赖: pyyaml</div></div>
 </div>
 <div style="margin-top:12px;">
 <p><strong>SRA — Skill Runtime Advisor</strong> 是一个运行在 AI Agent 旁的守护进程，在 Agent 收到用户消息时自动分析语义、推荐最匹配的 Hermes Skill，并通过 <code>pre_tool_call</code> 钩子系统在校验工具调用前检查技能遵循度。</p>
@@ -151,11 +151,11 @@ code { background: #1c2333; padding: 2px 6px; border-radius: 4px; font-size: 0.9
 <section>
 <h2><span class="icon">📊</span> EPIC & Story 状态</h2>
 
-<h3>EPIC-003: v2.0 Enforcement Layer (15/17)</h3>
-<div class="progress-bar"><div class="fill" style="width:88%;background:#3fb950;"></div></div>
+<h3>EPIC-003: v2.0 Enforcement Layer (17/19)</h3>
+<div class="progress-bar"><div class="fill" style="width:89%;background:#3fb950;"></div></div>
 <table>
   <tr><th>ID</th><th>Story</th><th>优先级</th><th>Sprint</th></tr>
-  <tr><td><code>SRA-003-01</code></td><td>✅ Tool 层 SRA 校验</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-02</code></td><td>✅ 文件类型技能映射</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-10</code></td><td>✅ systemd 自启动部署</td><td><span style="color:var(--text2);">P2</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-11</code></td><td>✅ 安装脚本自动配置</td><td><span style="color:var(--text2);">P2</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-12</code></td><td>✅ Daemon 单例守护</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-13</code></td><td>✅ HTTP 架构 + 异常处理</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-03</code></td><td>✅ 技能使用轨迹记录</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-04</code></td><td>✅ 长任务上下文漂移保护</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-14</code></td><td>✅ 测试覆盖增强</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-05</code></td><td>✅ SRA 契约机制</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">v1.3.0</span></td></tr>  <tr><td><code>SRA-003-06</code></td><td>✅ 运行时力度体系</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">v1.3.0</span></td></tr>  <tr><td><code>SRA-003-17</code></td><td>✅ Drop-in 生命周期管理</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-18</code></td><td>✅ 质量修复 Sprint 1</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-19</code></td><td>✅ 质量修复 Sprint 2</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-20</code></td><td>✅ 质量修复 Sprint 3</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-15</code></td><td>📋 质量增强（Schema/日志/魔法数字）</td><td><span style="color:var(--orange);">P1</span></td><td></td></tr>  <tr><td><code>SRA-003-16</code></td><td>📋 架构优化（并发安全/路由统一）</td><td><span style="color:var(--orange);">P1</span></td><td></td></tr>
+  <tr><td><code>SRA-003-01</code></td><td>✅ Tool 层 SRA 校验</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-02</code></td><td>✅ 文件类型技能映射</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-10</code></td><td>✅ systemd 自启动部署</td><td><span style="color:var(--text2);">P2</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-11</code></td><td>✅ 安装脚本自动配置</td><td><span style="color:var(--text2);">P2</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-12</code></td><td>✅ Daemon 单例守护</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-13</code></td><td>✅ HTTP 架构 + 异常处理</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 1</span></td></tr>  <tr><td><code>SRA-003-03</code></td><td>✅ 技能使用轨迹记录</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-04</code></td><td>✅ 长任务上下文漂移保护</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-14</code></td><td>✅ 测试覆盖增强</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-05</code></td><td>✅ SRA 契约机制</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">v1.3.0</span></td></tr>  <tr><td><code>SRA-003-06</code></td><td>✅ 运行时力度体系</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">v1.3.0</span></td></tr>  <tr><td><code>SRA-003-17</code></td><td>✅ Drop-in 生命周期管理</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-18</code></td><td>✅ 质量修复 Sprint 1</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-19</code></td><td>✅ 质量修复 Sprint 2</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-20</code></td><td>✅ 质量修复 Sprint 3</td><td><span style="color:var(--orange);">P1</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 2</span></td></tr>  <tr><td><code>SRA-003-15</code></td><td>📋 质量增强（Schema/日志/魔法数字）</td><td><span style="color:var(--orange);">P1</span></td><td></td></tr>  <tr><td><code>SRA-003-16</code></td><td>📋 架构优化（并发安全/路由统一）</td><td><span style="color:var(--orange);">P1</span></td><td></td></tr>  <tr><td><code>SRA-003-21</code></td><td>✅ 分支同步与 v1.3.0 发布</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 3</span></td></tr>  <tr><td><code>SRA-003-22</code></td><td>✅ os.fork()→subprocess.Popen (A-8)</td><td><span style="color:var(--red);">P0</span></td><td><span class="badge badge-blue" style="font-size:0.75em;">Sprint 3</span></td></tr>
 </table>
 </section>
 
@@ -187,14 +187,14 @@ code { background: #1c2333; padding: 2px 6px; border-radius: 4px; font-size: 0.9
 <h2><span class="icon">🏃</span> Sprint 历史</h2>
 <table>
   <tr><th>Sprint</th><th>版本</th><th>日期</th><th>完成的 Story</th><th>测试增长</th></tr>
-  <tr><td>Sprint 1</td><td>v2.0-alpha</td><td>2026-05-09</td><td>7</td><td>38→103</td></tr>  <tr><td>Sprint 2</td><td>v1.3.0</td><td>2026-05-11</td><td>11</td><td>174→290</td></tr>
+  <tr><td>Sprint 1</td><td>v2.0-alpha</td><td>2026-05-09</td><td>7</td><td>38→103</td></tr>  <tr><td>Sprint 2</td><td>v1.3.0</td><td>2026-05-11</td><td>11</td><td>174→290</td></tr>  <tr><td>Sprint 3 (in-progress)</td><td>v1.4.0-dev</td><td>2026-05-11</td><td>0</td><td>290→290</td></tr>
 </table>
 </section>
 
 <!-- ═══════ FOOTER ═══════ -->
 <div style="text-align:center;padding:30px;color:#8b949e;font-size:0.85em;">
-  <p>🔮 <strong>SRA — Skill Runtime Advisor</strong> v1.3.0</p>
-  <p>由 <code>generate-project-report.py</code> 于 2026-05-11 17:40 生成</p>
+  <p>🔮 <strong>SRA — Skill Runtime Advisor</strong> v1.4.0-dev</p>
+  <p>由 <code>generate-project-report.py</code> 于 2026-05-11 19:09 生成</p>
 </div>
 
 </div>
