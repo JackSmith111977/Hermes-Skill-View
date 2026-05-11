@@ -7,11 +7,14 @@ import re
 import json
 import glob
 import yaml
+import logging
 import threading
 from datetime import datetime, timedelta
 from typing import List, Dict, Set, Optional
 
 from .synonyms import SYNONYMS
+
+logger = logging.getLogger("sra.indexer")
 
 
 class SkillIndexer:
@@ -99,7 +102,7 @@ class SkillIndexer:
     def build(self) -> int:
         """构建完整技能索引"""
         if not os.path.exists(self.skills_dir):
-            print(f"⚠️  技能目录不存在: {self.skills_dir}")
+            logger.warning("技能目录不存在: %s", self.skills_dir)
             return 0
         
         sk_files = glob.glob(os.path.join(self.skills_dir, '**/SKILL.md'), recursive=True)
@@ -154,7 +157,7 @@ class SkillIndexer:
                     "full_description": description[:1000],
                 })
             except Exception as e:
-                print(f"⚠️  跳过 {f}: {e}")
+                logger.warning("跳过 %s: %s", f, e)
         
         with self._lock:
             self._skills = index
