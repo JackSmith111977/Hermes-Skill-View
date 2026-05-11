@@ -3,7 +3,7 @@
 # SRA — Skill Runtime Advisor 一键安装脚本 v1.1.0
 # ===============================================================
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh | bash
 #   或
 #   bash install.sh [--help] [--prefix=/path] [--agent=hermes] [--proxy]
 # ===============================================================

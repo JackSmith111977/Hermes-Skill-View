@@ -115,31 +115,121 @@ As Hermes Agent's skill library (`~/.hermes/skills/`) grows (60+ and counting), 
 
 ## ⚡ Installation
 
+> ⚠️ **China users**: raw.githubusercontent.com and github.com may be blocked. Use a proxy or the workarounds below if you encounter timeouts.
+
 ### Option 1: pip install (Recommended)
 
 ```bash
+# Recommended: install in a virtual environment
+python3 -m venv sra-env
+source sra-env/bin/activate
 pip install sra-agent
-sra version    # verify installation
+
+# Or use --user mode (global install)
+pip install --user sra-agent
+
+# Verify installation
+sra version
 ```
 
-### Option 2: One-line installer (auto-configure)
+> 💡 If the `sra` command is not found, make sure `~/.local/bin` is in your PATH:
+> ```bash
+> export PATH=$PATH:$HOME/.local/bin
+> echo 'export PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc
+> ```
+
+---
+
+### Option 2: One-line installer (auto-configure + autostart)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
+# Basic install
+curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh | bash
+
+# With autostart (auto-detects your system)
+curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh | bash -s -- --systemd
 ```
+
+**China users**: raw.githubusercontent.com may be blocked. Try one of these:
+
+```bash
+# Option A: Use a proxy
+export https_proxy=http://127.0.0.1:7890
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh)"
+
+# Option B: Clone the repo first
+git clone --depth 1 https://github.com/JackSmith111977/Hermes-Skill-View.git
+cd Hermes-Skill-View
+bash scripts/install.sh
+```
+
+Supported systems:
+
+| OS | Init System | sudo | Result |
+|:---|:---|:---:|:---|
+| Linux | systemd | ✅ | `/etc/systemd/system/srad.service` (system-level) |
+| Linux | systemd | ❌ | `~/.config/systemd/user/srad.service` (user-level) |
+| Linux + Hermes | systemd | ❌ | Same + Gateway dependency (`Wants=` soft dep) |
+| macOS | launchd | — | `~/Library/LaunchAgents/com.sra.daemon.plist` |
+| WSL | none | — | `~/.sra/sra-entry.sh` + Windows Task Scheduler guide |
+| Docker | none | — | `~/.sra/sra-entry.sh` + docker restart guide |
+
+> 💡 Use `--proxy` flag to enable Proxy mode (pre-message reasoning middleware):
+> ```bash
+> bash scripts/install.sh --systemd --proxy
+> ```
+
+---
 
 ### Option 3: From source
 
 ```bash
-git clone https://github.com/JackSmith111977/Hermes-Skill-View.git
+git clone --depth 1 https://github.com/JackSmith111977/Hermes-Skill-View.git
 cd Hermes-Skill-View
-pip install -e .
+python3 -m venv venv
+source venv/bin/activate
+pip install --no-build-isolation -e .
 ```
+
+> ⚠️ Requires `setuptools>=61.0`; `--no-build-isolation` bypasses the system setuptools version check.
+
+---
 
 ### Option 4: Proxy mode (pre-message reasoning)
 
+Proxy mode is a flag for the one-line installer (Option 2), not a standalone installation method:
+
 ```bash
-bash scripts/install.sh --proxy
+# Add --proxy to install.sh
+bash scripts/install.sh --systemd --proxy
+
+# Or run from source
+cd Hermes-Skill-View
+python3 venv/bin/sra attach --proxy
+```
+
+Proxy mode provides full JSON responses with RAG context at the `POST /recommend` endpoint, allowing Agent to query before processing each message.
+
+---
+
+### Uninstall SRA
+
+```bash
+# 1. Stop and disable systemd service
+systemctl --user stop srad 2>/dev/null || sudo systemctl stop srad 2>/dev/null
+systemctl --user disable srad 2>/dev/null || sudo systemctl disable srad 2>/dev/null
+
+# 2. Uninstall Python package
+pip uninstall sra-agent -y
+
+# 3. Clean up config and data
+rm -rf ~/.sra ~/.config/systemd/user/srad.service
+rm -f ~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf
+systemctl --user daemon-reload
+
+# 4. If using system-level service
+sudo rm -f /etc/systemd/system/srad.service
+sudo systemctl daemon-reload
 ```
 
 ---

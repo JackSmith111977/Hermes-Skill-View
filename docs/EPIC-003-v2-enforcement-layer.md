@@ -296,7 +296,7 @@ L4 🐉  ●           ●           ●           ●
 **实现文件:**
 - 新增: `~/.config/systemd/user/srad.service`
 - 新增: `~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf`
-- 修改: `/tmp/sra-latest/docs/ROADMAP.md`（添加 Sprint 条目）
+- 修改: `docs/ROADMAP.md`（添加 Sprint 条目）
 
 ---
 
