@@ -6,6 +6,10 @@
 > **创建日期:** 2026-05-09
 > **完成日期:** 2026-05-11
 > **分析者:** Emma (小玛)
+> **测试数据契约:**
+>   - source: tests/fixtures/skills (317 个真实技能)
+>   - ci_independent: true
+>   - pattern_reference: test_matcher.py::TestAdvisor
 
 ---
 

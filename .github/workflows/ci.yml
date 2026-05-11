@@ -35,6 +35,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
+      - name: ✅ Verify test fixture integrity
+        run: python3 tests/check_fixtures.py 2>&1 || { echo "❌ Fixture 检查失败"; exit 1; }
+
       - name: 🔍 Verify version (setuptools-scm)
         run: |
           python -c "from skill_advisor import __version__; print(f'Version: {__version__}')"
