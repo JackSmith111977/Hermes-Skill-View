@@ -2,7 +2,7 @@
 
 > **版本:** v1.2.1 | **更新:** 2026-05-10 | **协议:** HTTP REST + Unix Socket
 >
-> **文档对齐状态:** 已同步 Sprint 2 (SRA-003-03, SRA-003-04, SRA-003-14)
+> **文档对齐状态:** 已同步 Sprint 2 (SRA-003-03, SRA-003-04, SRA-003-14, SRA-003-17)
 
 ---
 
@@ -439,8 +439,9 @@ print(json.loads(response))
 | `sra install <agent>` | 安装到 Agent | `sra install hermes` |
 | `sra upgrade [-V <version>]` | 升级 SRA | `sra upgrade -V 1.2.0` |
 | `sra uninstall [--all]` | 卸载 SRA | `sra uninstall --all` |
+| `sra dep-check` | 检查 Gateway 依赖链健康度 🆕 | `sra dep-check` |
 | `sra version` | 版本信息 | `sra version` |
-| `sra list-adapters` | 列出 Agent 适配器 | `sra list-adapters` |
+| `sra adapters` | 列出 Agent 适配器 | `sra adapters` |
 
 ### 3.4 降级策略
 
