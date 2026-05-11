@@ -7,10 +7,10 @@
 
 import pytest
 
-from skill_advisor.advisor import SkillAdvisor
-
 # 使用 conftest.py 中定义的 FIXTURES_DIR
 from conftest import FIXTURES_DIR
+
+from skill_advisor.advisor import SkillAdvisor
 
 
 @pytest.fixture
