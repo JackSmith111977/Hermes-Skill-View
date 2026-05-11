@@ -65,6 +65,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | **Drop-in 生命周期管理 (SRA-003-17)** | SRA 迁移/卸载后 `sra-dep.conf` 成为孤儿配置 | 新增 Story 17：`install.sh --uninstall` + `check-sra.py` 健康检查 + `sra dep-check` 命令 |
 | **README 安装部分全面修复** | 4 项问题：`main`→`master` 404、无 venv 说明、`raw.githubusercontent.com` 被 GFW 屏蔽、方式四是伪独立方式 | 4 种安装方式全部重写 + 中国用户指引 + 卸载说明 + `pyproject.toml` license 字段 |
 
+#### 🔧 Sprint 1 中间修复
+
+| 修复 | 问题 | 修复方案 |
+|:----|:-----|:---------|
+| **sra-dep.conf `Requires=` → `Wants=`** | `Requires=srad.service` 导致 `srad.service` 不存在时 Gateway 启动失败（exit 5, `Unit srad.service not found`） | 改为 `Wants=` 软依赖；SRA 存在时按序启动，不存在时 Gateway 不受影响 |
+| **Drop-in 生命周期管理 (SRA-003-17)** | SRA 迁移/卸载后 `sra-dep.conf` 成为孤儿配置 | 新增 Story 17：`install.sh --uninstall` + `check-sra.py` 健康检查 + `sra dep-check` 命令 |
+| **README 安装部分全面修复** | 4 项问题：`main`→`master` 404、无 venv 说明、`raw.githubusercontent.com` 被 GFW 屏蔽、方式四是伪独立方式 | 4 种安装方式全部重写 + 中国用户指引 + 卸载说明 + `pyproject.toml` license 字段 |
+
 See [EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者](docs/EPIC-003-v2-enforcement-layer.md)
 
 | 优先级 | 故事 | 描述 |
