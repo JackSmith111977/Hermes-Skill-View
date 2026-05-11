@@ -37,9 +37,30 @@
     - **IF** a skill is found (Match >= 30), you **MUST** load it with `skill_view`.
     - **NEVER** skip this step to "save time".
 
-## 🧹 POST-TASK: MANDATORY DOCUMENTATION ALIGNMENT
+## 🧹 POST-TASK: MANDATORY DOCUMENTATION ALIGNMENT + PRE-COMMIT VERIFICATION
 
 **AFTER** completing any development task (story/sprint/bugfix/feature), **BEFORE** committing code, you **MUST**:
+
+### Phase 1: 本地 CI 预演（验证通过后才能提交）
+
+```bash
+# 1. Ruff lint — 代码风格
+ruff check skill_advisor/ tests/ || exit 1
+
+# 2. 全量测试
+python -m pytest tests/ -q --tb=short -o "addopts=" || exit 1
+
+# 3. CI 环境差异检查
+# 确保不依赖真实 ~/.hermes/skills/ 目录的测试优雅降级
+
+# 4. 版本检查
+python -c "from skill_advisor import __version__; print(f'Version: {__version__}')"
+```
+
+> ⚠️ **不要等 CI 告诉你失败了**。本地预演能提前发现 95% 的问题。
+> CI 实战教训：测试依赖本地环境→skipif 降级、ruff 配置版本兼容、mypy 用 || echo 非阻塞。
+
+### Phase 2: 文档对齐
 
 1. **📋 Load doc-alignment skill**:
     - Execute: `skill_view(name="doc-alignment")`
