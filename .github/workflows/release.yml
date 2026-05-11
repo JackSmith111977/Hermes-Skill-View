@@ -28,6 +28,20 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: 🔍 Debug - git describe
+        run: |
+          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
+          git describe --dirty --tags --long 2>&1 || true
+          git describe --dirty --long 2>&1 || true
+          git tag -l 'v*' --sort=-version:refname | head -5
+          echo "HEAD: $(git rev-parse HEAD)"
+
+      - name: 🏷️ Set version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Forcing version: $VERSION"
+
       - name: 🧪 Run tests before build
         run: |
           pip install -e ".[dev]"
