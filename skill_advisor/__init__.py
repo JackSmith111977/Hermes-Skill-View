@@ -15,7 +15,8 @@ except ImportError:
     except (ImportError, ModuleNotFoundError):
         # 层级 3: git describe（开发环境 fallback）
         try:
-            import subprocess, os
+            import os
+            import subprocess
             tag = subprocess.check_output(
                 ["git", "describe", "--tags", "--dirty=.dirty", "--always"],
                 cwd=os.path.dirname(os.path.abspath(__file__)),
@@ -28,9 +29,9 @@ except ImportError:
 
 __author__ = "Emma (SRA Team), Kei"
 
+from .adapters import get_adapter, list_adapters
 from .advisor import SkillAdvisor
 from .runtime.daemon import SRaDDaemon
-from .adapters import get_adapter, list_adapters
 
 __all__ = [
     "SkillAdvisor",

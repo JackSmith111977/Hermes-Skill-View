@@ -14,12 +14,9 @@ SRA Agent 适配器 — 让 SRA 能接入任何 AI Agent 系统
 
 import json
 import os
-import subprocess
 import socket
 import sys
-from typing import Optional, Dict, List, Any
-from pathlib import Path
-
+from typing import Dict, List
 
 # ── Socket 客户端 ───────────────────────────
 
@@ -30,7 +27,7 @@ def _sra_socket_request(request: dict, timeout: float = 5.0) -> dict:
     """通过 Unix Socket 向 SRA Daemon 发送请求"""
     if not os.path.exists(SOCKET_FILE):
         return {"error": "SRA Daemon 未运行", "suggestion": "请先运行 'sra start'"}
-    
+
     try:
         client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         client.settimeout(timeout)
@@ -83,7 +80,7 @@ class HermesAdapter(BaseAdapter):
     def format_suggestion(self, recommendations: List[Dict]) -> str:
         if not recommendations:
             return ""
-        
+
         lines = ["💡 SRA 技能推荐:"]
         for r in recommendations:
             icon = "✅" if r.get("confidence") == "high" else "💡"
@@ -92,11 +89,11 @@ class HermesAdapter(BaseAdapter):
             )
             if r.get("reasons"):
                 lines.append(f"     理由: {'; '.join(r['reasons'][:2])}")
-        
+
         top = recommendations[0]
         if top.get("confidence") == "high":
             lines.append(f"\n⚡ 建议自动加载: skill_view('{top['skill']}')")
-        
+
         return "\n".join(lines)
 
     def to_system_prompt_block(self, skills_count: int = None) -> str:
@@ -158,7 +155,7 @@ class HermesAdapter(BaseAdapter):
             if should_auto_load:
                 rag_lines.append(f"\n  ⚡ 强推荐自动加载: {top_skill}")
             else:
-                rag_lines.append(f"\n  💡 建议: 可参考上述 skill")
+                rag_lines.append("\n  💡 建议: 可参考上述 skill")
 
             rag_lines.append("── ──────────────────────────────────────────────")
 
@@ -188,13 +185,13 @@ class ClaudeCodeAdapter(BaseAdapter):
     def format_suggestion(self, recommendations: List[Dict]) -> str:
         if not recommendations:
             return ""
-        
+
         lines = ["[SRA Skill Recommendation]"]
         for r in recommendations[:2]:
             lines.append(f"- {r['skill']} (confidence: {r.get('confidence', 'medium')})")
             if r.get("description"):
                 lines.append(f"  {r['description'][:80]}")
-        
+
         return "\n".join(lines)
 
     def to_claude_tool_format(self, recommendations: List[Dict]) -> List[Dict]:
@@ -226,11 +223,11 @@ class CodexAdapter(BaseAdapter):
     def format_suggestion(self, recommendations: List[Dict]) -> str:
         if not recommendations:
             return ""
-        
+
         lines = ["# SRA recommended skills"]
         for r in recommendations:
             lines.append(f"# - {r['skill']}: {r.get('description', '')[:80]}")
-        
+
         return "\n".join(lines)
 
     def to_openai_tool_format(self, recommendations: List[Dict]) -> List[Dict]:
@@ -265,7 +262,7 @@ class GenericCLIAdapter(BaseAdapter):
     def format_suggestion(self, recommendations: List[Dict]) -> str:
         if not recommendations:
             return ""
-        
+
         lines = ["=== SRA Skill Recommendation ==="]
         for i, r in enumerate(recommendations[:3], 1):
             lines.append(f"{i}. {r['skill']}")
@@ -273,7 +270,7 @@ class GenericCLIAdapter(BaseAdapter):
             if r.get("description"):
                 lines.append(f"   {r['description'][:100]}")
         lines.append("=" * 35)
-        
+
         return "\n".join(lines)
 
 
@@ -303,13 +300,13 @@ def list_adapters() -> List[str]:
 
 if __name__ == "__main__":
     import sys
-    
+
     agent = sys.argv[1] if len(sys.argv) > 1 else "hermes"
     query = sys.argv[2] if len(sys.argv) > 2 else "帮我画个架构图"
-    
+
     adapter = get_adapter(agent)
     recs = adapter.recommend(query)
-    
+
     print(f"Agent: {agent}")
     print(f"Query: {query}")
     print()

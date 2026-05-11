@@ -4,11 +4,8 @@
 """
 
 import pytest
+
 from skill_advisor.advisor import SkillAdvisor
-from skill_advisor.matcher import SkillMatcher
-from skill_advisor.indexer import SkillIndexer
-from skill_advisor.memory import SceneMemory
-from skill_advisor.synonyms import SYNONYMS
 
 
 @pytest.fixture

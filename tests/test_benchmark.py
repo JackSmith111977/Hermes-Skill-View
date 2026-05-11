@@ -1,7 +1,7 @@
 """SRA 性能基准测试 — 使用全部 313 个真实技能"""
 
-import sys
 import os
+import sys
 import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -47,21 +47,21 @@ class TestBenchmark:
             "微信机器人",
             "股市行情",
         ]
-        
+
         times = []
         for q in queries:
             start = time.time()
             self.advisor.recommend(q)
             elapsed = (time.time() - start) * 1000
             times.append(elapsed)
-        
+
         avg = sum(times) / len(times)
         max_t = max(times)
         print(f"\n📊 推荐延迟测试 ({len(queries)} 个查询, {self.skill_count} skills):")
         print(f"  平均: {avg:.1f}ms")
         print(f"  最大: {max_t:.1f}ms")
         print(f"  最小: {min(times):.1f}ms")
-        
+
         assert avg < 200, f"平均延迟应 < 200ms，实际 {avg:.1f}ms"
         assert max_t < 500, f"最大延迟应 < 500ms，实际 {max_t:.1f}ms"
 

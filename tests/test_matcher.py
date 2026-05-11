@@ -1,14 +1,14 @@
 """SRA 核心匹配引擎测试 — 使用真实技能数据"""
 
-import sys
-import os
 import json
+import os
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from skill_advisor import SkillAdvisor
-from skill_advisor.synonyms import SYNONYMS
 from skill_advisor.matcher import SkillMatcher
+from skill_advisor.synonyms import SYNONYMS
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), "fixtures", "skills")
 YAML_FIXTURE = os.path.join(os.path.dirname(__file__), "fixtures", "skills_yaml", "_all_yamls.json")
@@ -46,7 +46,7 @@ class TestSynonyms:
         assert len(REVERSE_INDEX) > 0, "反向索引不应为空"
         english_values = [v for values in SYNONYMS.values() for v in values if all(c.isascii() for c in v)]
         found = sum(1 for v in english_values if v.lower() in REVERSE_INDEX)
-        assert found > len(english_values) * 0.5, f"超过一半的英文同义词值应能被反向查找"
+        assert found > len(english_values) * 0.5, "超过一半的英文同义词值应能被反向查找"
 
     def test_no_duplicate_synonyms(self):
         """同义词表不应有重复条目"""
@@ -87,11 +87,11 @@ class TestMatcher:
 
     def test_synonym_bridge_match(self):
         """同义词桥接：中文输入匹配英文 skill"""
-        skill = self._make_skill("architecture-diagram", 
+        skill = self._make_skill("architecture-diagram",
                                   ["architecture diagram", "architecture-diagram"],
                                   ["architecture", "diagrams", "svg"],
                                   "Generate dark-themed SVG diagrams of software systems")
-        score, _, _ = self.matcher.score({"画", "架构", "图", "架构图", "画架构图", 
+        score, _, _ = self.matcher.score({"画", "架构", "图", "架构图", "画架构图",
                                            "architecture", "architecture diagram",
                                            "diagram"}, skill, {})
         assert score >= 40, f"同义词桥接匹配应 ≥ 40，实际 {score}"
@@ -111,7 +111,7 @@ class TestMatcher:
 
     def test_category_match(self):
         """类别匹配"""
-        skill = self._make_skill("test-driven-development", 
+        skill = self._make_skill("test-driven-development",
                                   category="software-development",
                                   tags=["test", "testing", "tdd"])
         score, _, _ = self.matcher.score({"test", "testing", "tdd", "development"}, skill, {})
@@ -135,7 +135,7 @@ class TestMatcher:
 
     def test_no_match_for_unrelated(self):
         """不相关的输入应得低分"""
-        skill = self._make_skill("minecraft-modpack-server", 
+        skill = self._make_skill("minecraft-modpack-server",
                                   ["minecraft", "modpack", "server"])
         score, _, _ = self.matcher.score({"金融", "股票", "基金", "akshare"}, skill, {})
         assert score < 40, f"不相关输入应 < 40，实际 {score}"

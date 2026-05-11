@@ -1,23 +1,19 @@
 """dropin 模块测试 — systemd drop-in 生命周期管理"""
 
 import os
-import json
-import tempfile
-from unittest.mock import patch, MagicMock, call, mock_open
-
-import pytest
+from unittest.mock import MagicMock, mock_open, patch
 
 from skill_advisor.runtime.dropin import (
-    get_dropin_path,
-    get_dropin_dir,
-    get_service_path,
+    DROPIN_FILENAME,
+    GATEWAY_SERVICE_NAME,
+    SYSTEMD_USER_DIR,
+    check_dropin_health,
     cleanup_dropin,
     create_dropin,
-    check_dropin_health,
+    get_dropin_dir,
+    get_dropin_path,
+    get_service_path,
     print_health_report,
-    SYSTEMD_USER_DIR,
-    GATEWAY_SERVICE_NAME,
-    DROPIN_FILENAME,
 )
 
 

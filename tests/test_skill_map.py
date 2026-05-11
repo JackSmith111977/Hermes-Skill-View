@@ -1,14 +1,14 @@
 """SRA 文件类型→技能映射注册表测试"""
 
-import os
-import sys
 import json
-import tempfile
+import os
 import shutil
+import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from skill_advisor.skill_map import SkillMapRegistry, DEFAULT_FILE_SKILL_MAP
+from skill_advisor.skill_map import DEFAULT_FILE_SKILL_MAP, SkillMapRegistry
 
 
 class TestSkillMapRegistry:

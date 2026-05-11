@@ -1,21 +1,26 @@
 """SRA 运行时 CLI 命令 — 守护进程生命周期管理"""
 
-import os
-import sys
 import json
-import time
-import socket
-import signal
 import logging
+import os
+import signal
+import socket
 import subprocess
+import sys
 import textwrap
+import time
 
-from .lock import FileLock, check_port_in_use
-from .daemon import SRaDDaemon
 from .config import (
-    ensure_sra_home, load_config,
-    PID_FILE, LOCK_FILE, SOCKET_FILE, LOG_FILE, STATUS_FILE,
+    LOCK_FILE,
+    LOG_FILE,
+    PID_FILE,
+    SOCKET_FILE,
+    STATUS_FILE,
+    ensure_sra_home,
+    load_config,
 )
+from .daemon import SRaDDaemon
+from .lock import FileLock, check_port_in_use
 
 logger = logging.getLogger("sra.commands")
 
@@ -25,7 +30,7 @@ logger = logging.getLogger("sra.commands")
 def cmd_start(args=None) -> None:
     """启动守护进程"""
     ensure_sra_home()
-    
+
     # ── OS 级文件锁：原子性单例检测 ──
     lock = FileLock(LOCK_FILE, timeout=0)  # 非阻塞尝试
     if not lock.acquire():
@@ -37,7 +42,7 @@ def cmd_start(args=None) -> None:
             print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
         print("   使用 'sra stop' 停止，或 'sra restart' 重启")
         return
-    
+
     # 检查是否已有 PID 文件（兼容旧版本残留）
     if os.path.exists(PID_FILE):
         try:
@@ -190,7 +195,7 @@ def cmd_status(args=None) -> None:
             stats = data.get("stats", data)
 
             print(f"✅ SRA Daemon 运行中 (PID: {pid})")
-            print(f"📊 运行统计:")
+            print("📊 运行统计:")
             skills = stats.get("skills_count", 0)
             print(f"   技能数: {skills}")
             print(f"   请求次数: {stats.get('total_requests', 0)}")
@@ -223,7 +228,7 @@ def cmd_restart(args=None) -> None:
 def cmd_attach(args=None) -> None:
     """前台运行（调试）"""
     ensure_sra_home()
-    
+
     # 同样检查文件锁
     lock = FileLock(LOCK_FILE, timeout=0)
     if not lock.acquire():
@@ -234,17 +239,17 @@ def cmd_attach(args=None) -> None:
             print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
         print("   使用 'sra stop' 停止")
         return
-    
+
     config = load_config()
     daemon = SRaDDaemon(config)
-    
+
     # 端口活性探测
     http_port = config.get("http_port", 8536)
     if check_port_in_use(http_port):
         print(f"⚠️  端口 {http_port} 已被占用，请检查是否有其他 SRA 实例")
         lock.release()
         return
-    
+
     try:
         daemon.attach()
     finally:
@@ -320,12 +325,12 @@ def cmd_install_service(args=None) -> None:
         print(f"   SRA 路径: {sra_bin}")
         print()
         print("启动命令:")
-        print(f"  systemctl --user daemon-reload")
-        print(f"  systemctl --user enable --now srad")
+        print("  systemctl --user daemon-reload")
+        print("  systemctl --user enable --now srad")
         print()
         print("管理命令:")
-        print(f"  systemctl --user status srad")
-        print(f"  journalctl --user -u srad -f")
+        print("  systemctl --user status srad")
+        print("  journalctl --user -u srad -f")
     else:
         service_content = SYSTEMD_SERVICE_SYS % (user, sra_bin)
         service_path = "/etc/systemd/system/srad.service"
@@ -343,9 +348,9 @@ def cmd_install_service(args=None) -> None:
         print()
         print("安装命令:")
         print(f"  sudo cp {tmp_path} {service_path}")
-        print(f"  sudo systemctl daemon-reload")
-        print(f"  sudo systemctl enable --now srad")
+        print("  sudo systemctl daemon-reload")
+        print("  sudo systemctl enable --now srad")
         print()
         print("管理命令:")
-        print(f"  sudo systemctl status srad")
-        print(f"  sudo journalctl -u srad -f")
+        print("  sudo systemctl status srad")
+        print("  sudo journalctl -u srad -f")

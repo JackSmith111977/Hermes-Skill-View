@@ -1,15 +1,12 @@
 """SRA Daemon 单例守护测试 — 验证文件锁和端口探测机制"""
 
 import os
-import sys
-import time
-import json
-import signal
-import tempfile
-import threading
 import shutil
 import subprocess
-from pathlib import Path
+import sys
+import tempfile
+import threading
+import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -38,13 +35,13 @@ class TestFileLock:
     def test_exclusivity_same_process(self):
         """同一进程不能重复获取（非阻塞模式返回 False）"""
         lock1 = FileLock(self.lock_path, timeout=0)
-        lock2 = FileLock(self.lock_path, timeout=0)
-        
+        FileLock(self.lock_path, timeout=0)
+
         assert lock1.acquire() == True
         # 同一进程内重新获取应该成功（flock 允许递归）
         # 这里测试的是不同 FileLock 实例对同一文件的操作
         lock1.release()
-        
+
         lock1.acquire()
         assert lock1.is_locked == True
         lock1.release()
@@ -52,20 +49,20 @@ class TestFileLock:
     def test_exclusivity_cross_thread(self):
         """跨线程互斥"""
         acquired = [False]
-        
+
         def try_acquire():
             lock = FileLock(self.lock_path, timeout=1.0)
             acquired[0] = lock.acquire()
             if acquired[0]:
                 lock.release()
-        
+
         lock1 = FileLock(self.lock_path, timeout=0)
         assert lock1.acquire() == True
-        
+
         t = threading.Thread(target=try_acquire)
         t.start()
         t.join()
-        
+
         # lock1 持有锁 → 线程应获取失败
         assert acquired[0] == False
         lock1.release()
@@ -88,7 +85,7 @@ class TestFileLock:
         test_pid = 12345
         with open(self.lock_path, 'w') as f:
             f.write(str(test_pid))
-        
+
         lock = FileLock(self.lock_path)
         assert lock.get_lock_pid() == test_pid
 
@@ -118,7 +115,7 @@ class TestCheckPortInUse:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind(("0.0.0.0", 51998))
         s.listen(1)
-        
+
         try:
             result = check_port_in_use(51998)
             assert result == True
@@ -137,25 +134,23 @@ class TestDaemonLockIntegration:
 
     def test_lock_prevents_duplicate_start(self):
         """模拟两个 cmd_start：第二个应被阻止"""
-        from skill_advisor.runtime.config import LOCK_FILE, PID_FILE
-        from skill_advisor.runtime.commands import cmd_start, cmd_stop
-        
+
         test_lock = os.path.join(self.tmp_dir, "srad.lock")
-        
+
         # 模拟锁已被其他进程持有
         lock = FileLock(test_lock, timeout=0)
         assert lock.acquire() == True
-        
+
         # 同一个锁文件，第二个实例获取不到
         lock2 = FileLock(test_lock, timeout=0)
         assert lock2.acquire() == False
-        
+
         lock.release()
 
     def test_lock_auto_release_on_process_exit(self):
         """进程退出时锁自动释放（OS 级机制）"""
         test_lock = os.path.join(self.tmp_dir, "auto_release.lock")
-        
+
         # 启动子进程获取锁
         code = (
             "import os, fcntl\n"
@@ -169,17 +164,17 @@ class TestDaemonLockIntegration:
             [sys.executable, "-c", code],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
-        
+
         # 等待子进程获取锁
         proc.stdout.readline()
-        
+
         # 此时锁被子进程持有
         lock = FileLock(test_lock, timeout=0.1)
         assert lock.acquire() == False  # 获取不到
-        
+
         # 等待子进程退出
         proc.wait(timeout=5)
-        
+
         # 子进程退出后，锁自动释放
         time.sleep(0.1)
         lock2 = FileLock(test_lock, timeout=0)

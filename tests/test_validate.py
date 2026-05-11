@@ -2,11 +2,10 @@
 
 import os
 import sys
-import json
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from skill_advisor.runtime.endpoints.validate import handle_validate, MONITORED_TOOLS
+from skill_advisor.runtime.endpoints.validate import MONITORED_TOOLS, handle_validate
 from skill_advisor.runtime.validate_core import validate_tool_call
 
 

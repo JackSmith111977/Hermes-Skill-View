@@ -6,9 +6,9 @@ SRA 与 Hermes Gateway 之间的依赖关系通过 drop-in 文件声明，
 此模块确保 drop-in 生命周期的完整性。
 """
 
+import logging
 import os
 import subprocess
-import logging
 
 logger = logging.getLogger("sra.dropin")
 
@@ -199,7 +199,7 @@ def print_health_report(health: dict):
     print(f"  🏠 srad.service: {'存在' if health['service_exists'] else '不存在'}")
 
     if health["healthy"]:
-        print(f"  ✅ 依赖链健康")
+        print("  ✅ 依赖链健康")
     else:
         print(f"  ❌ 依赖链存在 {len(health['issues'])} 个问题:")
         for issue in health["issues"]:

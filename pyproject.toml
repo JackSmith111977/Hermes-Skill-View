@@ -51,10 +51,6 @@ include = ["skill_advisor", "skill_advisor.*"]
 version_file = "skill_advisor/_version.py"
 # 从 git tag 解析版本，tag 格式: v1.2.3 (v前缀可选)
 tag_regex = "^(?:[\\w-]+-)?v?(?P<version>[\\d\\.a-b]{3,}(?:rc\\d+)?)$"
-# Git archive 支持（用于 pip install 源码包）
-git_archive = true
-# 写出版本文件
-write_to = "skill_advisor/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -68,6 +64,13 @@ line-length = 100
 select = ["E", "F", "W", "I"]
 ignore = ["E501"]
 
+[tool.ruff.lint.per-file-ignores]
+# 测试文件：允许布尔比较（== True/False）用于清晰断言
+"tests/*.py" = ["E712", "E741"]
+# 适配器、__init__ 等允许特定宽松
+"skill_advisor/adapters/*.py" = ["E501", "W293"]
+"skill_advisor/__init__.py" = ["I001"]
+
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 ignore_missing_imports = true

@@ -3,10 +3,10 @@
 独立于 HTTP/Socket 层，可被 Hermes plugin 直接调用。
 """
 
+import logging
 import os
 import re
-import logging
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 from ..skill_map import SkillMapRegistry
 

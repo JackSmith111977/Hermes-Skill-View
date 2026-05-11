@@ -3,9 +3,9 @@
 每个测试都验证真实技能的识别能力。
 """
 
-import sys
-import os
 import json
+import os
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -27,14 +27,14 @@ def get_real_skill_test_queries():
         category = ydata.get('category', 'general')
         triggers = ydata.get('triggers', []) or []
         desc = ydata.get('description', '') or ''
-        
+
         test_queries = []
-        
+
         # 1. 中文 trigger 优先
         for t in triggers:
             if isinstance(t, str) and any('\u4e00' <= c <= '\u9fff' for c in t):
                 test_queries.append(t)
-        
+
         # 2. 英文 trigger（前 2 个）
         eng_count = 0
         for t in triggers:
@@ -42,17 +42,17 @@ def get_real_skill_test_queries():
                 if eng_count < 2:
                     test_queries.append(t)
                     eng_count += 1
-        
+
         # 3. name 语义化
         name_query = name.replace("-", " ").replace("_", " ")
         test_queries.append(name_query)
-        
+
         # 4. 从 description 提取关键词
         if desc:
             words = desc.replace("—", " ").replace("，", " ").replace("、", " ").replace(":", " ").split()
             keywords = [w for w in words if len(w) >= 2][:2]
             test_queries.extend(keywords)
-        
+
         tests.append({
             "name": name,
             "category": category,
@@ -60,7 +60,7 @@ def get_real_skill_test_queries():
             "triggers": triggers[:5],
             "test_queries": list(set(q for q in test_queries if q))[:5],
         })
-    
+
     return tests
 
 
@@ -80,13 +80,13 @@ class TestSkillCoverage:
         print(f"\n📊 总技能数: {result['total']}")
         print(f"✅ 能识别的: {result['covered']}")
         print(f"📈 覆盖率: {result['coverage_rate']}%")
-        
+
         not_covered = result.get("not_covered", [])
         if not_covered:
             print(f"\n❌ 未能识别的技能 ({len(not_covered)} 个):")
             for s in not_covered:
                 print(f"  - {s['name']} ({s['category']})")
-        
+
         assert result['total'] >= 300, f"总技能数应 ≥ 300，实际 {result['total']}"
         assert result['coverage_rate'] >= 40, \
             f"覆盖率应 ≥ 40%，实际 {result['coverage_rate']}%"
@@ -94,26 +94,26 @@ class TestSkillCoverage:
     def test_triggers_skills_high_coverage(self):
         """有 trigger 的 skill 覆盖率应 ≥ 85%"""
         result = self.advisor.analyze_coverage()
-        
+
         with_triggers = [s for s in result["details"] if s["has_triggers"]]
         covered_triggers = [s for s in with_triggers if s["covered"]]
-        
+
         rate = len(covered_triggers) / len(with_triggers) * 100 if with_triggers else 0
         print(f"\n📊 有 trigger 的技能: {len(with_triggers)}")
         print(f"✅ 其中能识别的: {len(covered_triggers)}")
         print(f"📈 有 trigger 技能覆盖率: {rate:.1f}%")
-        
+
         assert rate >= 80, f"有 trigger 的 skill 覆盖率应 ≥ 80%，实际 {rate:.1f}%"
-    
+
     def test_each_skill_individual(self):
         """逐个验证每个真实技能的识别能力"""
         all_tests = get_real_skill_test_queries()
-        
+
         failures = []
         for test in all_tests:
             skill_name = test["name"]
             queries = test["test_queries"]
-            
+
             max_score = 0
             for q in queries:
                 if not q:
@@ -122,31 +122,31 @@ class TestSkillCoverage:
                 for r in result["recommendations"]:
                     if r["skill"] == skill_name:
                         max_score = max(max_score, r["score"])
-            
+
             if max_score < 40 and test["has_triggers"]:
                 failures.append(f"  ❌ {skill_name} (最高分 {max_score}) — 查询: {queries[:2]}")
-        
+
         total = len(all_tests)
         failed = len(failures)
         passed = total - failed
-        
+
         # 只对有 trigger 且有查询内容的 skill 计算通过率
         valid_tests = [t for t in all_tests if t["has_triggers"]]
-        valid_passed = valid_tests = valid_tests  # placeholder
-        
+        valid_tests = valid_tests  # placeholder
+
         rate = passed / total * 100
         print(f"\n📊 逐 skill 识别测试 ({total} 个真实技能):")
         print(f"  ✅ 通过: {passed}")
         print(f"  ❌ 失败: {failed}")
         print(f"  📈 通过率: {rate:.1f}%")
-        
+
         if failures:
-            print(f"\n失败详情 (最多显示 20 个):")
+            print("\n失败详情 (最多显示 20 个):")
             for f in failures[:20]:
                 print(f)
             if len(failures) > 20:
                 print(f"  ... 还有 {len(failures) - 20} 个")
-        
+
         # 至少 40% 通过率
         assert rate >= 40, f"逐 skill 识别通过率应 ≥ 40%，实际 {rate:.1f}%"
 
@@ -192,15 +192,15 @@ class TestCoverageWithCommonQueries:
         passed = 0
         total = len(self.COMMON_QUERIES)
         details = []
-        
+
         for query, expected_category in self.COMMON_QUERIES:
             result = self.advisor.recommend(query)
             recs = result["recommendations"]
-            
+
             found = False
             top_score = 0
             top_skill = ""
-            
+
             if recs:
                 top_skill = recs[0]["skill"]
                 top_score = recs[0]["score"]
@@ -210,13 +210,13 @@ class TestCoverageWithCommonQueries:
                        expected_category.lower() in r.get("description", "").lower():
                         found = True
                         break
-            
+
             if found:
                 passed += 1
                 details.append(f"  ✅ {query:20s} → {top_skill:30s} ({top_score})")
             else:
                 details.append(f"  ❌ {query:20s} → {top_skill:30s} ({top_score}) [期望: {expected_category}]")
-        
+
         rate = passed / total * 100
         print(f"\n📊 常见用户查询测试 ({total} 个查询):")
         print(f"  ✅ 通过: {passed}")
@@ -225,5 +225,5 @@ class TestCoverageWithCommonQueries:
         print()
         for d in details:
             print(d)
-        
+
         assert rate >= 50, f"常见查询通过率应 ≥ 50%，实际 {rate:.1f}%"

@@ -1,16 +1,13 @@
 """SRaDDaemon 核心单元测试 — 生命周期 + 状态管理 + 请求处理"""
 
 import os
-import sys
-import json
-import tempfile
 import shutil
+import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from skill_advisor.runtime.daemon import SRaDDaemon
-from skill_advisor.runtime.commands import cmd_status
-from skill_advisor.runtime.config import PID_FILE, STATUS_FILE
 
 
 class TestSRaDDaemonInit:

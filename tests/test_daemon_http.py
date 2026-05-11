@@ -1,19 +1,16 @@
 """SRA HTTP 服务器测试 — 验证 ThreadingMixIn + serve_forever 的正确性"""
 
+import json
 import os
 import sys
-import json
-import time
-import socket
 import threading
-import urllib.request
+import time
 import urllib.error
+import urllib.request
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from skill_advisor import SkillAdvisor
 from skill_advisor.runtime.daemon import SRaDDaemon
-from skill_advisor.runtime.config import load_config
 
 
 class TestHTTPServerCore:
@@ -30,12 +27,11 @@ class TestHTTPServerCore:
         """验证 ThreadedHTTPServer 类可正确创建"""
         import http.server
         import socketserver
-        
+
         class TestServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
             allow_reuse_address = True
             daemon_threads = True
-        
-        import tempfile
+
         server = TestServer(("127.0.0.1", 0), http.server.BaseHTTPRequestHandler)
         assert server.server_address is not None
         server.server_close()
@@ -44,26 +40,25 @@ class TestHTTPServerCore:
         """验证 serve_forever() 在独立线程中可正常启动和停止"""
         import http.server
         import socketserver
-        
+
         class TestServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
             allow_reuse_address = True
             daemon_threads = True
-        
+
         class Handler(http.server.BaseHTTPRequestHandler):
             def do_GET(self):
                 self.send_response(200)
                 self.end_headers()
                 self.wfile.write(b"ok")
-        
-        import tempfile
+
         server = TestServer(("127.0.0.1", 0), Handler)
         port = server.server_address[1]
-        
+
         # 在线程中启动 serve_forever
         t = threading.Thread(target=server.serve_forever, daemon=True)
         t.start()
         time.sleep(0.1)
-        
+
         # 发送请求验证
         try:
             resp = urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=2)
@@ -84,7 +79,7 @@ class TestDaemonHTTPServer:
         cls.tmp_dir = tempfile.mkdtemp()
         cls.skills_dir = os.path.join(cls.tmp_dir, "skills")
         os.makedirs(cls.skills_dir, exist_ok=True)
-        
+
         # 使用随机端口
         cls.config = {
             "http_port": 0,  # 让 OS 分配
@@ -92,16 +87,16 @@ class TestDaemonHTTPServer:
             "skills_dir": cls.skills_dir,
             "data_dir": os.path.join(cls.tmp_dir, "data"),
         }
-        
+
         cls.daemon = SRaDDaemon(cls.config)
         cls.daemon.start()
-        
+
         # 获取实际分配的端口
         if cls.daemon._http_server:
             cls.port = cls.daemon._http_server.server_address[1]
         else:
             cls.port = 0
-        
+
         time.sleep(0.2)  # 等待就绪
 
     @classmethod
@@ -122,7 +117,7 @@ class TestDaemonHTTPServer:
             return json.loads(resp.read())
         except urllib.error.HTTPError as e:
             return {"status": e.code, "body": e.read().decode()}
-    
+
     def test_health_endpoint(self):
         """GET /health 应返回 200"""
         if not self.port:
@@ -130,7 +125,7 @@ class TestDaemonHTTPServer:
         result = self._request("/health")
         assert "status" in result
         assert result.get("status") == "ok"
-    
+
     def test_status_endpoint(self):
         """GET /status 应返回 SRA 状态"""
         if not self.port:
@@ -138,14 +133,14 @@ class TestDaemonHTTPServer:
         result = self._request("/status")
         assert result.get("sra_engine") == True
         assert "version" in result
-    
+
     def test_stats_endpoint(self):
         """GET /stats 应返回统计信息"""
         if not self.port:
             return
         result = self._request("/stats")
         assert "skills_count" in result or "status" in result
-    
+
     def test_recommend_endpoint_get(self):
         """GET /recommend?q=xxx 应返回推荐"""
         if not self.port:
@@ -159,7 +154,7 @@ class TestDaemonHTTPServer:
             return
         result = self._request("/recommend", method="POST", data={"message": "hello"})
         assert isinstance(result, dict)
-    
+
     def test_404_for_unknown_path(self):
         """未知路径应返回 404"""
         if not self.port:
@@ -174,7 +169,7 @@ class TestDaemonHTTPServer:
         """并发请求应都能正常响应"""
         if not self.port:
             return
-        
+
         results = []
         def make_request():
             try:
@@ -182,16 +177,16 @@ class TestDaemonHTTPServer:
                 results.append(resp)
             except Exception:
                 results.append(None)
-        
+
         threads = []
         for _ in range(5):
             t = threading.Thread(target=make_request)
             threads.append(t)
             t.start()
-        
+
         for t in threads:
             t.join()
-        
+
         assert len(results) == 5
         assert all(r is not None for r in results)
         assert all(r.get("status") == "ok" for r in results)

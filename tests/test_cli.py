@@ -2,17 +2,23 @@
 
 import os
 import sys
-import json
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from unittest.mock import patch, MagicMock
-from skill_advisor.cli import (
-    cmd_recommend, cmd_stats, cmd_coverage, cmd_compliance,
-    cmd_refresh, cmd_record, cmd_config, cmd_version,
-    print_help, COMMANDS,
-)
+from unittest.mock import patch
 
+from skill_advisor.cli import (
+    COMMANDS,
+    cmd_compliance,
+    cmd_config,
+    cmd_coverage,
+    cmd_recommend,
+    cmd_record,
+    cmd_refresh,
+    cmd_stats,
+    cmd_version,
+    print_help,
+)
 
 # ── 辅助函数 ──
 

@@ -1,10 +1,10 @@
 """SceneMemory 单元测试 — 技能轨迹追踪 + 遵循率统计"""
 
-import os
-import sys
 import json
-import tempfile
+import os
 import shutil
+import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 

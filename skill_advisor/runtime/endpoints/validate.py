@@ -4,9 +4,8 @@
 由 Hermes pre_tool_call hook 调用，返回非阻断性建议。
 """
 
-import os
 import logging
-from typing import Dict, List, Optional, Any, TypedDict
+from typing import Any, Dict, List, TypedDict
 
 from ..validate_core import validate_tool_call
 
@@ -43,7 +42,7 @@ def handle_validate(request: Dict[str, Any]) -> Dict[str, Any]:
     tool = request.get("tool", "")
     args = request.get("args", {})
     loaded_skills = request.get("loaded_skills", [])
-    task_context = request.get("task_context", "")
+    request.get("task_context", "")
 
     # 力度等级感知：如果 pre_tool_call 未激活（basic 级别），直接放行
     force_level = request.get("_force_level", "medium")

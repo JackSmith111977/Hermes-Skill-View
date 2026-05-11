@@ -3,14 +3,14 @@
 验证 ForceLevelManager 的 4 级注入覆盖度控制。
 """
 
-import os
 import json
+
 import pytest
+
 from skill_advisor.runtime.force import (
-    ForceLevelManager,
-    FORCE_LEVELS,
     DEFAULT_LEVEL,
-    INJECTION_POINT_LABELS,
+    FORCE_LEVELS,
+    ForceLevelManager,
 )
 
 

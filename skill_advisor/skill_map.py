@@ -5,9 +5,9 @@
 write_file/patch 等工具调用前自动推导需要的技能。
 """
 
-import os
 import json
 import logging
+import os
 from typing import Dict, List, Optional
 
 logger = logging.getLogger("sra.skill_map")
