@@ -202,9 +202,9 @@
   <h1>🔮 SRA — Skill Runtime Advisor</h1>
   <div class="subtitle">让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力</div>
   <div>
-    <span class="badge badge-blue">v1.2.1</span>
+    <span class="badge badge-blue">v1.3.0</span>
     <span class="badge badge-green">EPIC-003 Sprint 2 ✅</span>
-    <span class="badge badge-orange">174 tests</span>
+    <span class="badge badge-orange">290 tests</span>
   </div>
 </div>
 
@@ -219,7 +219,7 @@
   </div>
   <div class="card">
     <div class="label">版本</div>
-    <div class="value">1.2.1</div>
+    <div class="value">1.3.0</div>
     <div class="sub">MIT License</div>
   </div>
   <div class="card">
@@ -290,6 +290,8 @@
   <tr><td>SkillMap</td><td><code>skill_map.py</code></td><td>文件扩展名→技能映射注册表</td><td><code>get_required_skills()</code></td></tr>
   <tr><td>CLI</td><td><code>cli.py</code></td><td>命令行接口 + 降级策略</td><td><code>cmd_*()</code> + <code>_socket_request()</code></td></tr>
   <tr><td>Lock</td><td><code>runtime/lock.py</code></td><td>OS 级文件锁（fcntl.flock 单例保障）</td><td><code>acquire_lock()</code></td></tr>
+  <tr><td style="color:var(--cyan);">ForceLevelManager</td><td><code>runtime/force.py</code></td><td style="color:var(--cyan);">力度等级引擎 🆕 v1.3.0</td><td><code>get_level()</code>, <code>set_level()</code>, <code>is_injection_point_active()</code></td></tr>
+  <tr><td style="color:var(--cyan);">ContractBuilder</td><td style="color:var(--cyan);"><code>advisor.py</code></td><td style="color:var(--cyan);">契约机制 🆕 v1.3.0</td><td style="color:var(--cyan);"><code>build_contract()</code></td></tr>
 </table>
 </section>
 
@@ -331,7 +333,8 @@
   <strong>🆕 新增端点说明 (Sprint 2):</strong><br>
   <code>POST /record {action: "viewed"|"used"|"skipped"}</code> — 技能轨迹追踪<br>
   <code>GET /stats/compliance</code> — 查看历史遵循率、按技能维度排行<br>
-  <code>POST /recheck {conversation_summary, loaded_skills[]}</code> — 长任务上下文漂移检测
+  <code>POST /recheck {conversation_summary, loaded_skills[]}</code> — 长任务上下文漂移检测<br>
+  <code style="color:var(--cyan);">POST /force {level?}</code><span style="color:var(--cyan);"> — 运行时力度管理 🆕 v1.3.0</span>
 </div>
 </section>
 
@@ -364,6 +367,7 @@
 <table>
   <tr><th>命令</th><th>说明</th></tr>
   <tr><td><code>sra config [show|set|reset]</code></td><td>配置管理</td></tr>
+  <tr><td style="color:var(--cyan);"><code>sra force [set &lt;level&gt;|list]</code></td><td style="color:var(--cyan);">运行时力度管理 🆕</td></tr>
   <tr><td><code>sra install &lt;agent&gt;</code></td><td>安装到 Agent</td></tr>
   <tr><td><code>sra upgrade [-V &lt;version&gt;]</code></td><td>升级 SRA</td></tr>
   <tr><td><code>sra uninstall [--all]</code></td><td>卸载 SRA</td></tr>
@@ -399,7 +403,7 @@
 <pre>
 sra/
 ├── skill_advisor/              # 核心源码
-│   ├── __init__.py             # 版本号 (v1.2.1)
+│   ├── __init__.py             # 版本号 (v1.3.0)
 │   ├── advisor.py              # SkillAdvisor 推荐引擎
 │   ├── cli.py                  # CLI 命令 + 降级策略 (702行)
 │   ├── indexer.py              # SkillIndexer 索引构建
@@ -415,7 +419,7 @@ sra/
 │   │   └── endpoints/
 │   │       └── validate.py     # POST /validate 端点
 │   └── adapters/__init__.py    # Agent 适配器
-├── tests/                      # 174 个测试
+├── tests/                      # 290 个测试
 │   ├── test_memory.py          # 27 tests (Sprint 2 🆕)
 │   ├── test_daemon.py          # 22 tests (Sprint 2 🆕)
 │   ├── test_cli.py             # 22 tests (Sprint 2 🆕)
@@ -522,20 +526,15 @@ sra/
   </tr>
 </table>
 
+<h3>✅ v1.3.0 已完成（新增 2 Story）</h3>
+<div style="padding:8px 12px;background:#3fb95022;border-radius:6px;margin-bottom:16px;border:1px solid #3fb95044;">
+  <strong>SRA-003-05 契约机制</strong> + <strong>SRA-003-06 力度体系</strong> 已于 v1.3.0 完成<br>
+  详见 <a href="docs/EPIC-003-v2-enforcement-layer.md">EPIC-003</a>
+</div>
+
 <h3>待完成的 Story</h3>
 <table>
   <tr><th>ID</th><th>Story</th><th>Pri</th><th>估时</th><th>说明</th></tr>
-  <tr>
-    <td><code>SRA-003-05</code></td><td>SRA 契约机制</td>
-    <td><span style="color:var(--orange);">🟡 P1</span></td><td>2d</td>
-    <td>任务开始时生成技能契约 <code>{task_type, required_skills[]}</code></td>
-  </tr>
-  <tr>
-    <td><code>SRA-003-06</code></td><td>运行时力度体系</td>
-    <td><span style="color:var(--orange);">🟡 P1</span></td><td>3d</td>
-    <td>basic/medium/advanced/omni 四级注入覆盖度</td>
-  </tr>
-  <tr>
     <td><code>SRA-003-15</code></td><td>质量增强</td>
     <td><span style="color:var(--orange);">🟡 P1</span></td><td>3d</td>
     <td>配置 Schema 校验、日志轮转、魔法数字命名化</td>
@@ -571,7 +570,7 @@ sra/
   <tr><td>完成故事</td><td>3 个 (全部 P1)</td></tr>
   <tr><td>新端点</td><td>POST /record (扩展), GET /stats/compliance, POST /recheck</td></tr>
   <tr><td>新测试文件</td><td>test_memory.py (27), test_daemon.py (22), test_cli.py (22)</td></tr>
-  <tr><td>测试</td><td>103 → 174 (+71)</td></tr>
+  <tr><td>测试</td><td>174 → 290 (+116)</td></tr>
   <tr><td>Bug 修复</td><td>validate 导入路径 (..endpoints → .endpoints)</td></tr>
   <tr><td>新增 CLS 命令</td><td>sra compliance</td></tr>
 </table>
@@ -580,6 +579,7 @@ sra/
   <h3>Git 提交历史（最近 10 条）</h3>
   <pre>
 17ca595 feat(tests): 测试覆盖增强 (SRA-003-14) — +71 tests, 174 total
+                <br>cc21847 feat(v1.3.0): 契约机制 + 力度体系 — +65 tests, 290 total
 06bd5c4 feat(drift): 长任务上下文漂移保护 (SRA-003-04)
 a889e98 feat(trace): 技能使用轨迹记录 (SRA-003-03)
 c846a56 docs: Sprint 2 计划 + ROADMAP 更新
@@ -599,7 +599,7 @@ dbfc02f feat(singleton): OS 级文件锁单例保护
 <div class="grid-4">
   <div class="card">
     <div class="label">总测试数</div>
-    <div class="value" style="color:var(--green);">174</div>
+    <div class="value" style="color:var(--green);">290</div>
     <div class="sub">Sprint 1: 103 → Sprint 2: +71</div>
   </div>
   <div class="card">
@@ -610,7 +610,7 @@ dbfc02f feat(singleton): OS 级文件锁单例保护
   <div class="card">
     <div class="label">测试通过率</div>
     <div class="value" style="color:var(--green);">100%</div>
-    <div class="sub">174/174 全部通过</div>
+    <div class="sub">290/290 全部通过</div>
   </div>
   <div class="card">
     <div class="label">运行时间</div>
@@ -708,7 +708,7 @@ dbfc02f feat(singleton): OS 级文件锁单例保护
 
 <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
 <div style="text-align:center;padding:30px;color:var(--text2);font-size:0.85em;border-top:1px solid var(--border);margin-top:40px;">
-  <p>🔮 <strong>SRA — Skill Runtime Advisor</strong> v1.2.1</p>
+  <p>🔮 <strong>SRA — Skill Runtime Advisor</strong> v1.3.0</p>
   <p>生成日期: 2026-05-10 | 分支: feat/v2.0-enforcement-layer</p>
   <p style="margin-top:8px;">本文档在每个 Sprint 完成后更新，作为项目全貌的单一参考源</p>
   <p style="margin-top:4px;">开发流程中请与 <code>docs/API-REFERENCE.md</code> + <code>docs/ARCHITECTURE.md</code> 对齐</p>
