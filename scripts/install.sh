@@ -354,7 +354,9 @@ SERVICEEOF
                     cat > "$SYSTEMD_USER_DIR/hermes-gateway.service.d/sra-dep.conf" << CONFIGEOF
 [Unit]
 # Auto-configured by SRA install.sh
-Requires=srad.service
+# Wants= 是软依赖：SRA 存在时按序启动，不存在时 Gateway 不受影响
+# 不要改为 Requires= 否则 Gateway 在 srad.service 不存在时启动失败
+Wants=srad.service
 After=srad.service
 CONFIGEOF
                     ok "🔗 Hermes Gateway 依赖已配置"
