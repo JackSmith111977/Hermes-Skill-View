@@ -8,7 +8,9 @@ import shutil
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from skill_advisor.runtime.daemon import SRaDDaemon, cmd_status, PID_FILE, STATUS_FILE
+from skill_advisor.runtime.daemon import SRaDDaemon
+from skill_advisor.runtime.commands import cmd_status
+from skill_advisor.runtime.config import PID_FILE, STATUS_FILE
 
 
 class TestSRaDDaemonInit:

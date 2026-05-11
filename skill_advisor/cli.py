@@ -31,10 +31,11 @@ import subprocess
 import shutil
 from typing import List, Optional
 
-from .runtime.daemon import (
+from .runtime.commands import (
     cmd_start, cmd_stop, cmd_status, cmd_restart, cmd_attach,
-    cmd_install_service, load_config, save_config, PID_FILE,
+    cmd_install_service,
 )
+from .runtime.config import load_config, save_config, PID_FILE
 from .runtime.dropin import cleanup_dropin, check_dropin_health, print_health_report
 
 SOCKET_FILE = os.path.expanduser("~/.sra/srad.sock")
@@ -286,7 +287,7 @@ def cmd_config(args: List[str]):
         print(f"✅ 配置已更新: {key} = {config[key]}")
     
     elif args[0] == "reset":
-        from .runtime.daemon import DEFAULT_CONFIG
+        from .runtime.config import DEFAULT_CONFIG
         for k in list(config.keys()):
             if k in DEFAULT_CONFIG:
                 config[k] = DEFAULT_CONFIG[k]

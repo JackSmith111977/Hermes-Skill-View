@@ -137,7 +137,8 @@ class TestDaemonLockIntegration:
 
     def test_lock_prevents_duplicate_start(self):
         """模拟两个 cmd_start：第二个应被阻止"""
-        from skill_advisor.runtime.daemon import LOCK_FILE, PID_FILE, cmd_start, cmd_stop
+        from skill_advisor.runtime.config import LOCK_FILE, PID_FILE
+        from skill_advisor.runtime.commands import cmd_start, cmd_stop
         
         test_lock = os.path.join(self.tmp_dir, "srad.lock")
         

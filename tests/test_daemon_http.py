@@ -12,7 +12,8 @@ import urllib.error
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from skill_advisor import SkillAdvisor
-from skill_advisor.runtime.daemon import SRaDDaemon, load_config
+from skill_advisor.runtime.daemon import SRaDDaemon
+from skill_advisor.runtime.config import load_config
 
 
 class TestHTTPServerCore:
