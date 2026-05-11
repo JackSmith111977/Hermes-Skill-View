@@ -35,6 +35,7 @@ def handle_validate(request: Dict[str, Any]) -> Dict[str, Any]:
 
     Args:
         request: 包含 tool, args, loaded_skills, task_context 的字典
+                 _force_level 和 _monitored_tools 由 daemon 自动注入
 
     Returns:
         ValidateResponse 格式的响应
@@ -44,6 +45,19 @@ def handle_validate(request: Dict[str, Any]) -> Dict[str, Any]:
     loaded_skills = request.get("loaded_skills", [])
     task_context = request.get("task_context", "")
 
+    # 力度等级感知：如果 pre_tool_call 未激活（basic 级别），直接放行
+    force_level = request.get("_force_level", "medium")
+    monitored_tools = request.get("_monitored_tools", MONITORED_TOOLS)
+
+    if force_level == "basic":
+        # basic 级别：不拦截任何工具调用
+        return {
+            "compliant": True,
+            "missing": [],
+            "severity": "info",
+            "message": "",
+        }
+
     if not tool:
         return {
             "compliant": True,
@@ -52,14 +66,21 @@ def handle_validate(request: Dict[str, Any]) -> Dict[str, Any]:
             "message": "",
         }
 
-    # 只监控白名单中的工具
-    if tool not in MONITORED_TOOLS:
+    # 根据力度等级决定监控哪些工具
+    if monitored_tools == "__all__":
+        # advanced/omni: 监控全部工具
+        pass  # 不过滤，全部继续
+    elif tool not in monitored_tools and isinstance(monitored_tools, (set, list)):
+        # medium: 只监控关键工具
         return {
             "compliant": True,
             "missing": [],
             "severity": "info",
             "message": "",
         }
+    # monitored_tools 为空（理论上不会到这里，但防御性编码）
+    if isinstance(monitored_tools, (set, list)) and not monitored_tools:
+        return _compliant()
 
     try:
         result = validate_tool_call(tool, args, loaded_skills)
@@ -72,3 +93,13 @@ def handle_validate(request: Dict[str, Any]) -> Dict[str, Any]:
             "severity": "info",
             "message": "",
         }
+
+
+def _compliant() -> Dict[str, Any]:
+    """返回合规响应"""
+    return {
+        "compliant": True,
+        "missing": [],
+        "severity": "info",
+        "message": "",
+    }

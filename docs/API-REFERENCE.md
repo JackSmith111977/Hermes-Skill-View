@@ -1,6 +1,6 @@
 # SRA API 参考文档
 
-> **版本:** v1.2.1 | **更新:** 2026-05-10 | **协议:** HTTP REST + Unix Socket
+> **版本:** v1.3.0 | **更新:** 2026-05-11 | **协议:** HTTP REST + Unix Socket
 >
 > **文档对齐状态:** 已同步 Sprint 2 (SRA-003-03, SRA-003-04, SRA-003-14, SRA-003-17)
 
@@ -21,7 +21,7 @@ GET /health
 ```json
 {
   "status": "ok",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "uptime_seconds": 3600,
   "skills_count": 313,
   "total_requests": 42,
@@ -82,7 +82,14 @@ Content-Type: application/json
   "timing_ms": 15.3,
   "provider_latency_ms": 15.3,
   "sra_available": true,
-  "sra_version": "1.2.1"
+  "sra_version": "1.3.0",
+  "contract": {
+    "task_type": "software-development, documentation",
+    "required_skills": ["architecture-diagram"],
+    "optional_skills": ["excalidraw"],
+    "confidence": "high",
+    "summary": "任务类型「software-development, documentation」— 必须加载: architecture-diagram; 建议参考: excalidraw"
+  }
 }
 ```
 
@@ -193,7 +200,7 @@ GET /stats
 **响应:**
 ```json
 {
-  "version": "1.2.1",
+  "version": "1.3.0",
   "status": "running",
   "uptime_seconds": 3600,
   "skills_count": 313,
@@ -216,7 +223,7 @@ GET /status
 {
   "status": "ok",
   "sra_engine": true,
-  "version": "1.2.1",
+  "version": "1.3.0",
   "stats": {
     "skills_scanned": 313
   },
@@ -359,6 +366,30 @@ Content-Type: application/json
 
 ---
 
+### 1.10 运行时力度管理 🆕
+
+```
+POST /force
+Content-Type: application/json
+```
+
+不传 `level` 参数查询当前等级；传 `level` 设置等级。
+
+**参数:**
+| 字段 | 类型 | 必需 | 说明 |
+|:---|:---|:---:|:---|
+| `level` | string | ❌ | `basic`/`medium`/`advanced`/`omni` |
+
+**响应包含 `current_level` 对象:**
+| 字段 | 类型 | 说明 |
+|:---|:---|:---|
+| `level` | string | 当前等级名称 |
+| `label` | string | 等级标签 |
+| `tier` | int | 层级 (1-4) |
+| `active_points` | string[] | 激活的注入点 |
+
+---
+
 ## 2. Unix Socket API
 
 **Socket 路径:** `~/.sra/srad.sock`
@@ -387,6 +418,7 @@ Content-Type: application/json
 | `validate` | `{tool, args, loaded_skills?}` | 工具调用校验 🆕 | Sprint 1 |
 | `recheck` | `{conversation_summary, loaded_skills?}` | 漂移重检 🆕 | Sprint 2 |
 | `ping` | `{}` | 心跳检测 | v1.x |
+| `force` | `{level?}` | 查看/设置运行时力度等级 🆕 | v1.3.0 |
 | `stop` | `{}` | 远程停止守护进程 | v1.x |
 
 ### 2.3 示例
@@ -434,8 +466,9 @@ print(json.loads(response))
 
 | 命令 | 说明 | 示例 |
 |:---|:---|:---:|
-| `sra record <skill> <input>` | 记录使用 | `sra record pdf-layout "生成PDF"` |
-| `sra config [show\|set\|reset]` | 配置管理 | `sra config set http_port 9000` |
+|| `sra record <skill> <input>` | 记录使用 | `sra record pdf-layout "生成PDF"` |
+|| `sra force [set <level>|list]` | 运行时力度管理 🆕 | `sra force set advanced` |
+|| `sra config [show|set|reset]` | 配置管理 | `sra config set http_port 9000` |
 | `sra install <agent>` | 安装到 Agent | `sra install hermes` |
 | `sra upgrade [-V <version>]` | 升级 SRA | `sra upgrade -V 1.2.0` |
 | `sra uninstall [--all]` | 卸载 SRA | `sra uninstall --all` |

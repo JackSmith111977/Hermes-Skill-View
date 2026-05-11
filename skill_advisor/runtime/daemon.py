@@ -35,6 +35,7 @@ from .. import __version__
 
 from .lock import FileLock, check_port_in_use
 from .config import ensure_sra_home, load_config, STATUS_FILE
+from .force import ForceLevelManager, FORCE_LEVELS, DEFAULT_LEVEL
 
 logger = logging.getLogger("srad")
 
@@ -61,6 +62,7 @@ class SRaDDaemon:
             "uptime_seconds": 0,
         }
         self._lock = threading.Lock()
+        self.force_manager = ForceLevelManager()  # 🆕 力度管理器
 
     # ── 生命周期 ──────────────────────────────
 
@@ -205,10 +207,12 @@ class SRaDDaemon:
                     self._send_json({"status": "ok", **stats})
                 elif self.path == "/status":
                     stats = self.daemon.get_stats()
+                    force_summary = self.daemon.force_manager.get_summary()
                     self._send_json({
                         "status": "ok",
                         "sra_engine": True,
                         "version": __version__,
+                        "force_level": force_summary,  # 🆕
                         "stats": {
                             "skills_scanned": stats.get("skills_count", 0),
                         },
@@ -259,6 +263,7 @@ class SRaDDaemon:
 
                     result = self.daemon.advisor.recommend(query)
                     recs = result.get("recommendations", [])
+                    contract = result.get("contract", {})
                     timing_ms = result.get("processing_ms", 0)
 
                     # ── 构建 RAG 上下文（Proxy 兼容格式）────────────────
@@ -288,6 +293,17 @@ class SRaDDaemon:
 
                         rag_lines.append("── ──────────────────────────────────────────────")
 
+                    # 🆕 契约信息
+                    if contract and contract.get("confidence") != "low":
+                        rag_lines.append("")
+                        rag_lines.append("── [SRA 技能契约] ──────────────────────────────")
+                        rag_lines.append(f"  📋 {contract.get('summary', '')}")
+                        if contract.get("required_skills"):
+                            rag_lines.append(f"  🔴 必须加载: {', '.join(contract['required_skills'])}")
+                        if contract.get("optional_skills"):
+                            rag_lines.append(f"  🟡 建议参考: {', '.join(contract['optional_skills'])}")
+                        rag_lines.append("── ──────────────────────────────────────────────")
+
                     rag_context = "\n".join(rag_lines)
 
                     self._send_json({
@@ -302,6 +318,7 @@ class SRaDDaemon:
                             }
                             for r in recs[:5]
                         ],
+                        "contract": contract if contract.get("confidence") != "low" else {},
                         "top_skill": top_skill,
                         "should_auto_load": should_auto_load,
                         "timing_ms": timing_ms,
@@ -337,8 +354,36 @@ class SRaDDaemon:
                     self._send_json({"status": "ok", "count": count})
                 elif self.path == "/validate":
                     from .endpoints.validate import handle_validate
+                    # 注入力度等级信息
+                    force = self.daemon.force_manager
+                    data["_force_level"] = force.get_level()
+                    data["_monitored_tools"] = force.get_monitored_tools()
                     result = handle_validate(data)
                     self._send_json(result)
+                elif self.path == "/force":
+                    level = data.get("level", "").lower()
+                    if not level:
+                        self._send_json({
+                            "status": "ok",
+                            "current_level": self.daemon.force_manager.get_summary(),
+                            "available_levels": list(FORCE_LEVELS.keys()),
+                        })
+                        return
+                    if level not in FORCE_LEVELS:
+                        self._send_json({
+                            "error": f"无效的力度等级: {level}",
+                            "available": list(FORCE_LEVELS.keys()),
+                        }, 400)
+                        return
+                    success = self.daemon.force_manager.set_level(level)
+                    if success:
+                        self._send_json({
+                            "status": "ok",
+                            "message": f"力度等级已切换为 {level}",
+                            "current_level": self.daemon.force_manager.get_summary(),
+                        })
+                    else:
+                        self._send_json({"error": "设置力度等级失败"}, 500)
                 elif self.path == "/recheck":
                     summary = data.get("conversation_summary", "")
                     if not summary:
@@ -514,7 +559,33 @@ class SRaDDaemon:
 
         elif action == "validate":
             from .endpoints.validate import handle_validate
+            # 注入力度等级信息
+            force = self.force_manager
+            params["_force_level"] = force.get_level()
+            params["_monitored_tools"] = force.get_monitored_tools()
             return {"status": "ok", "result": handle_validate(params)}
+
+        elif action == "force":
+            level = params.get("level", "")
+            if not level:
+                return {
+                    "status": "ok",
+                    "current_level": self.force_manager.get_summary(),
+                    "available_levels": list(FORCE_LEVELS.keys()),
+                }
+            if level not in FORCE_LEVELS:
+                return {
+                    "error": f"无效的力度等级: {level}",
+                    "available": list(FORCE_LEVELS.keys()),
+                }
+            success = self.force_manager.set_level(level)
+            if success:
+                return {
+                    "status": "ok",
+                    "message": f"力度等级已切换为 {level}",
+                    "current_level": self.force_manager.get_summary(),
+                }
+            return {"error": "设置力度等级失败"}
 
         elif action == "recheck":
             summary = params.get("conversation_summary", "")
@@ -549,6 +620,7 @@ class SRaDDaemon:
                 "total_recommendations": self._stats["total_recommendations"],
                 "errors": self._stats["errors"],
                 "last_refresh": self._last_refresh,
+                "force_level": self.force_manager.get_summary(),  # 🆕
                 "config": {
                     k: v for k, v in self.config.items()
                     if k in ("http_port", "auto_refresh_interval", "enable_http", "enable_unix_socket")

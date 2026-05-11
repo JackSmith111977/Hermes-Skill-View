@@ -18,7 +18,7 @@ MAJOR.MINOR.PATCH
   └──────────────── 不兼容的 API 变更
 ```
 
-**当前版本**: `1.2.1`（`__init__.py` 为唯一真实来源）
+**当前版本**: `1.3.0`（`__init__.py` 为唯一真实来源）
 
 ### 1.2 版本声明位置
 
@@ -32,7 +32,7 @@ MAJOR.MINOR.PATCH
 ### 1.3 版本分支策略
 
 ```
-main          ─── v1.1.0 ─── v1.2.0 ─── v1.2.1 ─── v2.0.0 ──▶
+main          ─── v1.1.0 ─── v1.2.0 ─── v1.2.1 ─── v1.3.0 ──▶
                    │            │           │           │
 feat/             feat/       feat/       fix/        feat/
 v1.1-enhance    v1.2-quality  hotfix-xx   v2.0-enforcement

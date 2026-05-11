@@ -60,6 +60,54 @@ class SkillAdvisor:
         self._index_loaded = True
         return count
 
+    def build_contract(self, query: str, scored: List[Dict]) -> Dict:
+        """为推荐结果构建技能契约
+
+        Args:
+            query: 用户原始输入
+            scored: 已评分排序的技能列表（带 .score 字段）
+
+        Returns:
+            {
+                "task_type": str,              # 推测的任务类型
+                "required_skills": [str],       # 强推荐（score >= 80）
+                "optional_skills": [str],       # 可选推荐（40 <= score < 80）
+                "confidence": str,              # high / medium / low
+                "summary": str,                 # 自然语言描述
+            }
+        """
+        required = [s["skill"] for s in scored if s.get("score", 0) >= self.THRESHOLD_STRONG]
+        optional = [s["skill"] for s in scored if self.THRESHOLD_WEAK <= s.get("score", 0) < self.THRESHOLD_STRONG]
+
+        # 推测任务类型：取最高分技能的 category
+        categories = {s.get("category", "") for s in scored if s.get("category")}
+        task_type = next(iter(categories)) if len(categories) == 1 else (", ".join(categories) if categories else "general")
+
+        # 置信度
+        max_score = max((s.get("score", 0) for s in scored), default=0)
+        if max_score >= 80:
+            confidence = "high"
+        elif max_score >= 60:
+            confidence = "medium"
+        else:
+            confidence = "low"
+
+        # 自然语言总结
+        parts = []
+        if required:
+            parts.append(f"必须加载: {', '.join(required)}")
+        if optional:
+            parts.append(f"建议参考: {', '.join(optional)}")
+        summary = f"任务类型「{task_type}」— " + ("; ".join(parts) if parts else "无特定技能推荐")
+
+        return {
+            "task_type": task_type,
+            "required_skills": required,
+            "optional_skills": optional,
+            "confidence": confidence,
+            "summary": summary,
+        }
+
     def recommend(self, query: str, top_k: int = 3) -> Dict:
         """
         推荐匹配技能
@@ -73,7 +121,14 @@ class SkillAdvisor:
                 "recommendations": [...],
                 "processing_ms": float,
                 "skills_scanned": int,
-                "query": str
+                "query": str,
+                "contract": {            # 🆕 契约机制
+                    "task_type": str,
+                    "required_skills": [str],
+                    "optional_skills": [str],
+                    "confidence": str,
+                    "summary": str,
+                }
             }
         """
         self._ensure_index()
@@ -113,6 +168,9 @@ class SkillAdvisor:
         
         # 更新推荐计数
         self.memory.increment_recommendations()
+
+        # 🆕 构建契约
+        contract = self.build_contract(query, scored)
         
         elapsed = round((time.time() - start) * 1000, 1)
         
@@ -121,6 +179,7 @@ class SkillAdvisor:
             "processing_ms": elapsed,
             "skills_scanned": len(skills),
             "query": query,
+            "contract": contract,       # 🆕
         }
 
     def recheck(self, conversation_summary: str, loaded_skills: List[str] = None,

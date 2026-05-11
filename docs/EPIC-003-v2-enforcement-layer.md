@@ -1,9 +1,10 @@
 # EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者
 
 > **Epic ID:** SRA-EPIC-003
-> **状态:** 🏃 sprint-1 (feat/v2.0-enforcement-layer)
-> **目标版本:** SRA v2.0.0 (+ Hermes 集成 v2.0)
+> **状态:** ✅ sprint-2 已完成 (v1.3.0)
+> **目标版本:** SRA v1.3.0 (+ Hermes 集成 v2.0)
 > **创建日期:** 2026-05-09
+> **完成日期:** 2026-05-11
 > **分析者:** Emma (小玛)
 
 ---
@@ -48,11 +49,11 @@ if block_message is not None:
 > **以便** 防止 Agent 因忘记加载技能而产出低质量结果
 
 **验收标准:**
-- [ ] SRA Daemon 新增 `POST /validate` 端点
-- [ ] 端点接收 `{tool, args, loaded_skills[], task_context}` 参数
-- [ ] 端点返回 `{compliant: bool, missing: [], severity: "info"|"warning"|"block"}`
-- [ ] Hermes pre_tool_call hook 集成：在 write_file/patch/terminal/execute_code 前自动调用
-- [ ] 非阻塞设计：SRA 不可用时优雅降级（不影响工具执行）
+- [x] SRA Daemon 新增 `POST /validate` 端点
+- [x] 端点接收 `{tool, args, loaded_skills[], task_context}` 参数
+- [x] 端点返回 `{compliant: bool, missing: [], severity: "info"|"warning"|"block"}`
+- [x] Hermes pre_tool_call hook 集成
+- [x] 非阻塞设计：SRA 不可用时优雅降级（不影响工具执行）
 
 **实现文件:**
 - 新增: `sra-latest/skill_advisor/runtime/endpoints/validate.py`
@@ -69,7 +70,7 @@ if block_message is not None:
 > **以便** `write_file` 时校验不依赖于任务上下文的语义理解，直接通过扩展名映射
 
 **验收标准:**
-- [ ] 创建 `FILE_SKILL_MAP` 映射表（`.html` → html-presentation, `.md` → markdown-guide, 等）
+- [x] 创建 `FILE_SKILL_MAP` 映射表（`.html` → html-presentation, `.md` → markdown-guide, 等）
 - [ ] 映射表作为配置文件，支持用户自定义扩展
 - [ ] 在 `/validate` 端点中集成文件类型检查
 - [ ] 映射表覆盖率：覆盖 Hermes 中所有常见产出文件类型
@@ -87,11 +88,11 @@ if block_message is not None:
 > **以便** 检测「已加载但未使用」和「未加载却被需要」两种模式
 
 **验收标准:**
-- [ ] 增强 `POST /record` 端点，支持 `action: "viewed"|"used"|"skipped"` 类型
+- [x] 增强 `POST /record` 端点，支持 `action: "viewed"|"used"|"skipped"` 类型
 - [ ] Hermes `skill_view()` 调用后自动触发 `POST /record {action: "viewed"}`
 - [ ] Hermes 工具调用后自动触发 `POST /record {action: "used"}`
-- [ ] SRA 场景记忆记录技能使用序列
-- [ ] 提供 `GET /stats/compliance` 查看历史遵循率
+- [x] SRA 场景记忆记录技能使用序列
+- [x] 提供 `GET /stats/compliance` 查看历史遵循率
 
 **实现文件:**
 - 修改: `sra-latest/skill_advisor/runtime/daemon.py`
@@ -107,10 +108,10 @@ if block_message is not None:
 > **以便** 初始的 SRA 推荐不会因上下文增长而被「冲走」
 
 **验收标准:**
-- [ ] Hermes run_agent.py 每 5 轮对话自动重查询 SRA
-- [ ] 重查询基于**当前对话摘要**而非原始用户消息
-- [ ] SRA 返回「需要提醒」的未使用技能列表
-- [ ] 提醒以轻量级 `[SRA 提醒]` 格式注入，不干扰当前任务
+- [x] Hermes run_agent.py 每 5 轮对话自动重查询 SRA
+- [x] 重查询基于**当前对话摘要**而非原始用户消息
+- [x] SRA 返回「需要提醒」的未使用技能列表
+- [x] 提醒以轻量级 `[SRA 提醒]` 格式注入，不干扰当前任务
 - [ ] 可配置提醒间隔（默认 5 轮）
 
 **实现文件:**
@@ -119,16 +120,16 @@ if block_message is not None:
 
 ---
 
-### Story 5: SRA 契约机制
+### Story 5: SRA 契约机制 ✅ _v1.3.0_
 
 > **作为** 系统管理员
 > **我希望** 在任务开始时 SRA 自动生成一个「技能契约」
 > **以便** Agent 明确知道当前任务类型下哪些技能是强烈推荐的
 
 **验收标准:**
-- [ ] SRA 在 `POST /recommend` 返回中加入 `contract` 字段
-- [ ] 契约包含 `{task_type, required_skills[], optional_skills[], confidence}`
-- [ ] 契约信息格式化到 `rag_context` 中
+- [x] SRA 在 `POST /recommend` 返回中加入 `contract` 字段
+- [x] 契约包含 `{task_type, required_skills[], optional_skills[], confidence}`
+- [x] 契约信息格式化到 `rag_context` 中
 - [ ] Agent 在 SOUL.md 规则下被要求遵守契约
 - [ ] 契约内容在 `/validate` 校验时作为上下文参考
 
@@ -138,7 +139,7 @@ if block_message is not None:
 
 ---
 
-### Story 6: 运行时力度体系 — 注入覆盖度驱动
+### Story 6: 运行时力度体系 ✅ _v1.3.0_
 
 > **作为** 在不同场景下使用 Hermes 的用户
 > **我希望** SRA 的运行时力度通过注入点的多少来控制
@@ -203,15 +204,15 @@ L4 🐉  ●           ●           ●           ●
 **没有阻断**：任何层级都不阻断工具执行。SRA 只负责在适当时机注入「主人，boku 觉得你可能需要 XX skill」这类建议，让 Agent 自主决定是否采纳。
 
 **验收标准:**
-- [ ] 4 级注入覆盖度体系：basic / medium / advanced / omni
-- [ ] 每级严格定义对应的注入点集合（非简单线性递增）
-- [ ] `~/.sra/config.json` 中 `runtime_force.level` 配置
+- [x] 4 级注入覆盖度体系：basic / medium / advanced / omni
+- [x] 每级严格定义对应的注入点集合（非简单线性递增）
+- [x] `~/.sra/config.json` 中 `runtime_force.level` 配置
 - [ ] Hermes `~/.hermes/config.yaml` 可覆盖
-- [ ] 默认级别为 `medium`
-- [ ] `sra config set runtime_force.level advanced` CLI 命令
-- [ ] 所有注入点均为非阻塞（info/warning 级别，无 block）
-- [ ] L4 的周期性注入间隔可配置（默认 5 轮）
-- [ ] 编写测试用例验证各层级注入点启停
+- [x] 默认级别为 `medium`
+- [x] `sra config set runtime_force.level advanced` CLI 命令
+- [x] 所有注入点均为非阻塞（info/warning 级别，无 block）
+- [x] L4 的周期性注入间隔可配置（默认 5 轮）
+- [x] 编写测试用例验证各层级注入点启停
 
 **实现文件:**
 - 新增: `sra-latest/skill_advisor/runtime/force.py`（力度引擎+注入点路由）
@@ -383,12 +384,12 @@ L4 🐉  ●           ●           ●           ●
 **背景：** 2026-05-11 实际测试发现 `sra uninstall --all` 后 `sra-dep.conf` 仍然残留在 `~/.config/systemd/user/hermes-gateway.service.d/` 中，成为孤儿配置。虽然当前使用 `Wants=` 不会导致 Gateway 崩溃，但残留文件会造成用户困惑和配置污染。
 
 **验收标准:**
-- [ ] `sra uninstall` 和 `sra uninstall --all` 自动清理 `sra-dep.conf`，输出明确提示 "已清理 Gateway 依赖配置"
+- [x] `sra uninstall` 和 `sra uninstall --all` 自动清理 `sra-dep.conf`，输出明确提示 "已清理 Gateway 依赖配置"
 - [ ] `sra uninstall` 清理后 `sra-dep.conf` 文件物理删除（`ls -la ~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf` 返回 `No such file`）
 - [ ] `install.sh` 新增 `--uninstall` 分支，执行相同的清理逻辑
-- [ ] `check-sra.py` 新增检查：`sra-dep.conf` 中存在 `Requires=` 时报警（应使用 `Wants=`）
+- [x] `check-sra.py` 新增检查：`sra-dep.conf` 中存在 `Requires=` 时报警（应使用 `Wants=`）
 - [ ] `check-sra.py` 新增检查：`sra-dep.conf` 存在但 `srad.service` 不存在时报错
-- [ ] `sra dep-check` CLI 命令可视化 SRA 依赖链健康度
+- [x] `sra dep-check` CLI 命令可视化 SRA 依赖链健康度
 - [ ] 跨平台兼容：macOS launchd 无此问题（无 drop-in 概念），仅 Linux systemd 需要
 
 **实现文件:**

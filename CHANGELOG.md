@@ -7,7 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.3.0] — 2026-05-11
+
+### 🚀 Added
+
+- **SRA 契约机制 (SRA-003-05)**: `POST /recommend` 响应新增 `contract` 字段
+  - 包含 `{task_type, required_skills[], optional_skills[], confidence, summary}`
+  - 契约信息格式化到 `rag_context` 中，Agent 可明确看到哪些 skill 是必须/建议的
+  - `advisors.py` 新增 `build_contract()` 方法
+  - 17 个契约单元测试（边界值、置信度、多 category、空输入）
+- **运行时力度体系 (SRA-003-06)**: 通过注入覆盖度控制 SRA 介入深度
+  - 4 级注入覆盖度：🐣 basic / 🦅 medium / 🦖 advanced / 🐉 omni
+  - 力度不是阻断强度，而是注入点数量（从不阻断工具执行）
+  - `ForceLevelManager` — 力度管理引擎，配置持久化到 `~/.sra/config.json`
+  - HTTP `POST /force` 端点 + Socket `action: force` — 运行时动态切换等级
+  - CLI `sra force` 命令 — 查看状态和切换等级
+  - CLI `sra config set runtime_force.level advanced` 支持
+  - validate 端点感知力度等级：basic 不拦截，medium 只拦截关键工具，advanced/omni 拦截全部
+  - 默认等级: `medium`
+  - 48 个力度体系单元测试（16 个注入点参数化 + 工具监控 + 周期性配置）
+
+### 🛠️ Changed
+
+- **版本升级**: `v1.2.1` → `v1.3.0`
+- **`POST /validate`**: 注入 `_force_level` 和 `_monitored_tools` 参数，使校验端点感知力度等级
+- **`GET /status`**: 响应包含 `force_level` 字段
+- **`cmd_config`**: 支持点号分隔的嵌套 key（如 `runtime_force.level`）
+- **测试覆盖**: 290 测试（+65 新增），全部通过
+
+## [1.2.1] — 2026-05-11
 
 ### 🚀 Sprint 2 — v2.0 Enforcement Layer (EPIC-003) [Started 2026-05-10]
 

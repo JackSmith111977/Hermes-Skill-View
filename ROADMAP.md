@@ -1,7 +1,7 @@
 # SRA 开发路线图 (Roadmap)
 
 > Skill Runtime Advisor — 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力。
-> 版本: v1.2.1 | 更新: 2026-05-11
+> 版本: v1.3.0 | 更新: 2026-05-11
 
 ---
 
@@ -30,10 +30,21 @@
 
 ---
 
+## ✅ v1.3.0 已完成
+
+| 状态 | 故事 | Epic | 优先级 | 估时 |
+|:----:|:-----|:----:|:------:|:----:|
+| ✅ completed | **SRA 契约机制 (SRA-003-05)** | EPIC-003 | 🟡 P1 | 2天 |
+| ✅ completed | **运行时力度体系 (SRA-003-06)** | EPIC-003 | 🟡 P1 | 3天 |
+| ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | EPIC-003 | 🟡 P1 | 0.5天 |
+| ✅ completed | **质量修复 Sprint (SRA-003-18)** | EPIC-003 | 🔴 P0 | 3h |
+| ✅ completed | **质量修复 Sprint 2 (SRA-003-19)** | EPIC-003 | 🟡 P1 | 4h |
+| ✅ completed | **质量修复 Sprint 3 (SRA-003-20)** | EPIC-003 | 🟡 P1 | 3h |
+
 ## 🚀 v2.0 — SRA Enforcement Layer（当前 Epic）
 
 > **核心主题**: 从「技能推荐者」升级为「运行时守护者」
-
+> **目标版本**: SRA v2.0.0 | 估时: ~15 个工作日
 ### EPIC-003 详细规划 → [`docs/EPIC-003-v2-enforcement-layer.md`](docs/EPIC-003-v2-enforcement-layer.md)
 
 | 优先级 | 故事 | 描述 |
@@ -75,20 +86,21 @@
 
 ---
 
-## 📋 当前 Sprint 状态 — Sprint 2 [Started 2026-05-10]
+## 📋 Sprint 2 [Completed 2026-05-11] — v1.3.0
 **分支**: `feat/v2.0-enforcement-layer`
-**计划**: `.hermes/plans/2026-05-10_sprint2-plan.md`
 
-| 状态 | 任务 | Epic | 优先级 | 估时 |
-|:----:|:-----|:----:|:------:|:----:|
-| ✅ completed | **Tool 层 SRA 校验 (SRA-003-01)** | EPIC-003 | 🔴 P0 | 3天 |
-| ✅ completed | **文件类型技能映射 (SRA-003-02)** | EPIC-003 | 🔴 P0 | 2天 |
-| ✅ completed | 技能使用轨迹记录 (SRA-003-03) | EPIC-003 | 🟡 P1 | 1天 |
-| ✅ completed | 长任务上下文保护 (SRA-003-04) | EPIC-003 | 🟡 P1 | 2天 |
-| ✅ completed | 测试覆盖增强 (SRA-003-14) | EPIC-003 | 🟡 P1 | 2天 |
-|| 📋 pending | SRA 契约机制 (SRA-003-05) | EPIC-003 | 🟡 P1 | 2天 |
-|| 📋 pending | **运行时力度体系 (SRA-003-06)** | EPIC-003 | 🟡 P1 | 3天 |
-| | ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | EPIC-003 | 🟡 P1 | 0.5天 |
-||| ✅ completed | **质量修复 Sprint (SRA-003-18)** | EPIC-003 | 🔴 P0 | 3h |
-||| ✅ completed | **质量修复 Sprint 2 (SRA-003-19)** | EPIC-003 | 🟡 P1 | 4h |
-||| ✅ completed | **质量修复 Sprint 3 (SRA-003-20)** | EPIC-003 | 🟡 P1 | 3h |
+Sprint 2 所有 11 个 Story 全部完成，版本迭代 v1.2.1 → v1.3.0。
+
+| 状态 | 任务 | Epic | 优先级 |
+|:----:|:-----|:----:|:------:|
+| ✅ | Tool 层 SRA 校验 (SRA-003-01) | EPIC-003 | 🔴 P0 |
+| ✅ | 文件类型技能映射 (SRA-003-02) | EPIC-003 | 🔴 P0 |
+| ✅ | 技能使用轨迹记录 (SRA-003-03) | EPIC-003 | 🟡 P1 |
+| ✅ | 长任务上下文保护 (SRA-003-04) | EPIC-003 | 🟡 P1 |
+| ✅ | 测试覆盖增强 (SRA-003-14) | EPIC-003 | 🟡 P1 |
+| ✅ | **SRA 契约机制 (SRA-003-05)** | EPIC-003 | 🟡 P1 |
+| ✅ | **运行时力度体系 (SRA-003-06)** | EPIC-003 | 🟡 P1 |
+| ✅ | Drop-in 生命周期管理 (SRA-003-17) | EPIC-003 | 🟡 P1 |
+| ✅ | 质量修复 Sprint 1 (SRA-003-18) | EPIC-003 | 🔴 P0 |
+| ✅ | 质量修复 Sprint 2 (SRA-003-19) | EPIC-003 | 🟡 P1 |
+| ✅ | 质量修复 Sprint 3 (SRA-003-20) | EPIC-003 | 🟡 P1 |

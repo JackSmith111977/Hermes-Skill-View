@@ -356,7 +356,7 @@ python3 scripts/check-sra.py
 预期输出：
 ```
 python: ok (3.11.5)
-sra cli: ok (sra v1.2.1)
+sra cli: ok (sra v1.3.0)
 sra daemon: ok (port 8536, 313+ skills indexed)
 skills dir: ok (~/.hermes/skills, 313+ skills)
 sra config: ok (~/.sra/config.json)

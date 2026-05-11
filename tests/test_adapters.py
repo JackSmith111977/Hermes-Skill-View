@@ -38,7 +38,7 @@ SAMPLE_RECS = [
 
 SAMPLE_STATS_RESPONSE = {
     "stats": {
-        "version": "1.2.1",
+        "version": "1.3.0",
         "status": "running",
         "skills_count": 313,
         "total_requests": 42,

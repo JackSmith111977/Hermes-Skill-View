@@ -270,21 +270,33 @@ def cmd_config(args: List[str]):
         if len(args) < 3:
             print("🚨 用法: sra config set <key> <value>")
             return
-        key = args[1]
+        raw_key = args[1]
         value = args[2]
         
         # 类型推断
         if value.lower() in ("true", "false"):
-            config[key] = value.lower() == "true"
+            typed_value = value.lower() == "true"
         elif value.isdigit():
-            config[key] = int(value)
+            typed_value = int(value)
         elif value.replace(".", "").isdigit():
-            config[key] = float(value)
+            typed_value = float(value)
         else:
-            config[key] = value
+            typed_value = value
+        
+        # 支持点号分隔的嵌套 key（如 runtime_force.level）
+        if "." in raw_key:
+            parts = raw_key.split(".", 1)
+            outer_key = parts[0]
+            inner_key = parts[1]
+            if outer_key not in config or not isinstance(config[outer_key], dict):
+                config[outer_key] = {}
+            config[outer_key][inner_key] = typed_value
+            print(f"✅ 配置已更新: {raw_key} = {typed_value}")
+        else:
+            config[raw_key] = typed_value
+            print(f"✅ 配置已更新: {raw_key} = {config[raw_key]}")
         
         save_config(config)
-        print(f"✅ 配置已更新: {key} = {config[key]}")
     
     elif args[0] == "reset":
         from .runtime.config import DEFAULT_CONFIG
@@ -297,6 +309,74 @@ def cmd_config(args: List[str]):
     else:
         print(f"🚨 未知配置命令: {args[0]}")
         print("  可用: show, set <key> <value>, reset")
+
+
+def cmd_force(args: List[str]):
+    """运行时力度管理"""
+    from .runtime.force import ForceLevelManager, FORCE_LEVELS
+    fm = ForceLevelManager()
+
+    if not args:
+        # 显示当前力度状态
+        summary = fm.get_summary()
+        print("=" * 50)
+        print("🦾 SRA 运行时力度状态")
+        print("=" * 50)
+        print(f"  当前等级: {summary['label']}")
+        print(f"  说明: {summary['description']}")
+        print()
+        print(f"  激活注入点:")
+        for pt in summary["active_points"]:
+            from .runtime.force import INJECTION_POINT_LABELS
+            label = INJECTION_POINT_LABELS.get(pt, pt)
+            print(f"    ✅ {label} ({pt})")
+        print()
+        print(f"  监控工具: ", end="")
+        mt = summary["monitored_tools"]
+        if mt == "__all__":
+            print("全部工具")
+        else:
+            print(", ".join(mt) if mt else "无")
+        if summary["periodic"]:
+            print(f"  周期性注入: 每 {summary['periodic_interval']} 轮")
+        print()
+        print(f"  可用等级:")
+        for lvl in fm.list_levels():
+            mark = "◀ 当前" if lvl["is_current"] else ""
+            pts = ", ".join(lvl["active_injection_points"])
+            print(f"    {lvl['label']:>12} — {lvl['description']} [{pts}] {mark}")
+        print()
+        print("切换: sra force set <level>")
+
+    elif args[0] == "set":
+        if len(args) < 2:
+            print("🚨 用法: sra force set <level>")
+            print(f"  可选: {', '.join(FORCE_LEVELS.keys())}")
+            return
+        level = args[1].lower()
+        if fm.set_level(level):
+            print(f"✅ 力度等级已切换为: {fm.get_level()}")
+        else:
+            print(f"🚨 无效的力度等级: {level}")
+            print(f"  可选: {', '.join(FORCE_LEVELS.keys())}")
+
+    elif args[0] == "list":
+        print("=" * 50)
+        print("📋 SRA 力度等级一览")
+        print("=" * 50)
+        for lvl in fm.list_levels():
+            mark = "◀ 当前" if lvl["is_current"] else ""
+            pts = ", ".join(lvl["active_injection_points"])
+            print(f"  {lvl['label']:>12}")
+            print(f"    说明: {lvl['description']}")
+            print(f"    注入点: {pts}")
+            if mark:
+                print(f"    状态: {mark}")
+            print()
+
+    else:
+        print(f"🚨 未知 force 命令: {args[0]}")
+        print("  可用: (无参数 — 查看状态), set <level>, list")
 
 
 def cmd_adapters(args: List[str]):
@@ -697,6 +777,7 @@ COMMANDS = {
     "refresh": cmd_refresh,
     "record": cmd_record,
     "config": cmd_config,
+    "force": cmd_force,
     "adapters": cmd_adapters,
     "install": cmd_install,
     "upgrade": cmd_upgrade,
