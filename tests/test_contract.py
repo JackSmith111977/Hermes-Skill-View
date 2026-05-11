@@ -132,9 +132,13 @@ class TestRecommendWithContract:
             assert req in rec_names, f"契约中的必需技能 {req} 应在 recommendations 中"
 
     def test_contract_not_empty_for_relevant_query(self, advisor):
-        """验证有意义查询的契约不会全空"""
+        """验证有意义查询的契约不会全空（仅在有技能数据时验证）"""
         result = advisor.recommend("帮助我写一个 Python 脚本处理数据")
         contract = result["contract"]
+        # 检查是否有技能被索引（CI 环境可能没有 Hermes 技能目录）
+        has_skills = bool(advisor.indexer.get_skills()) if hasattr(advisor, 'indexer') else True
+        if not has_skills:
+            pytest.skip("跳过：环境中没有技能数据")
         # 至少 required 或 optional 有一个非空
         has_something = bool(contract["required_skills"]) or bool(contract["optional_skills"])
         # 或 confidence 不为 low
