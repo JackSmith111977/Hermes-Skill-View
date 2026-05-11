@@ -2,20 +2,55 @@
 四维匹配引擎 — 词法 + 语义 + 场景 + 类别
 """
 
+import logging
 from typing import Dict, List, Set, Tuple
 
+logger = logging.getLogger("sra.matcher")
 
-class SkillMatcher:
-    """四维技能匹配引擎"""
 
-    # 匹配权重
+class MatchWeight:
+    """命名分值常量 — 所有魔法数字语义化"""
+
+    # ── 词法匹配分值 ──
+    SYNONYM_EXACT = 25        # 同义词精确匹配（name/trigger/tags）
+    SYNONYM_BROAD = 12        # 同义词宽泛匹配（description/match_text）
+    NAME_EXACT = 30           # 名称精确匹配
+    NAME_PARTIAL = 20         # 名称部分匹配（3+字符）
+    TRIGGER_MATCH = 25        # trigger 匹配
+    TAG_MATCH = 15            # tag 匹配
+    DESC_MATCH = 8            # 描述匹配（2+字符）
+    MATCH_TEXT_MATCH = 3      # match_text 匹配
+
+    # ── 语义匹配分值 ──
+    SEMANTIC_DESC = 10        # 描述语义匹配
+    SEMANTIC_BODY_KW = 5      # body_keywords 语义匹配
+
+    # ── 场景匹配分值 ──
+    SCENE_PATTERN_HIT = 3     # 场景模式命中（× hit_count）
+    SCENE_USE_FREQ = 2        # 使用频率（× total_uses）
+
+    # ── 类别匹配分值 ──
+    CATEGORY_MATCH = 20       # 类别匹配
+    TAG_CATEGORY_MATCH = 15   # tag 类别匹配
+
+    # ── 权重配置 ──
     WEIGHT_LEXICAL = 0.40
     WEIGHT_SEMANTIC = 0.25
     WEIGHT_SCENE = 0.20
     WEIGHT_CATEGORY = 0.15
 
-    # 短查询自动提升因子（1-2个词 → 减轻权重稀释）
+    # ── 修饰因子 ──
     SHORT_QUERY_BOOST = 1.6
+
+    # ── 上限 ──
+    MAX_SYNONYM_SCENE = 30    # 场景模式最高加分
+    MAX_USE_FREQ_SCORE = 20   # 使用频率最高加分
+    MAX_SCORE = 100           # 单维度最高分
+    MAX_REASONS = 5           # 返回原因数上限
+
+
+class SkillMatcher:
+    """四维技能匹配引擎"""
 
     def __init__(self, synonyms: Dict[str, List[str]]):
         self.synonyms = synonyms
@@ -32,24 +67,22 @@ class SkillMatcher:
         Returns:
             (total_score, details_dict, reasons_list)
         """
-        lex_score, lex_reasons = self._match_lexical(input_words, skill)
-        sem_score = self._match_semantic(input_words, skill)
-        sce_score = self._match_scene(input_words, skill["name"], stats)
-        cat_score = self._match_category(input_words, skill)
+        lex_score, lex_reasons = self._score_lexical(input_words, skill)
+        sem_score = self._score_semantic(input_words, skill)
+        sce_score = self._score_scene(input_words, skill["name"], stats)
+        cat_score = self._score_category(input_words, skill)
 
         total = (
-            lex_score * self.WEIGHT_LEXICAL +
-            sem_score * self.WEIGHT_SEMANTIC +
-            sce_score * self.WEIGHT_SCENE +
-            cat_score * self.WEIGHT_CATEGORY
+            lex_score * MatchWeight.WEIGHT_LEXICAL +
+            sem_score * MatchWeight.WEIGHT_SEMANTIC +
+            sce_score * MatchWeight.WEIGHT_SCENE +
+            cat_score * MatchWeight.WEIGHT_CATEGORY
         )
 
         # ═══ 短查询自动提升 ═══
-        # 1-2个词的查询容易被权重稀释（如 "生图" trigger匹配25→加权后仅10分）
-        # 此时保留更多原始分，避免低于40分阈值
         raw_word_count = len([w for w in input_words if len(w) >= 2])
         if raw_word_count <= 2 and lex_score >= 20:
-            total = total * self.SHORT_QUERY_BOOST
+            total = total * MatchWeight.SHORT_QUERY_BOOST
 
         details = {
             "lexical": round(lex_score, 1),
@@ -58,20 +91,142 @@ class SkillMatcher:
             "category": round(cat_score, 1),
         }
 
-        return total, details, lex_reasons[:5]
+        logger.debug(
+            "score | skill=%s lexical=%.1f semantic=%.1f scene=%.1f category=%.1f total=%.1f",
+            skill.get("name", "?"), lex_score, sem_score, sce_score, cat_score, total,
+        )
 
-    def _match_lexical(self, input_words: Set[str], skill: Dict) -> Tuple[float, List[str]]:
-        """词法匹配：triggers + name + description + tags + 同义词反向匹配"""
+        return total, details, lex_reasons[:MatchWeight.MAX_REASONS]
+
+    # ── 词法匹配：拆分为 3 个子函数 ────────────────────────
+
+    def _score_lexical(self, input_words: Set[str], skill: Dict) -> Tuple[float, List[str]]:
+        """词法匹配统一入口：聚合 3 个子匹配"""
         score = 0
-        reasons = []
+        reasons: List[str] = []
 
+        s1, r1 = self._score_name(input_words, skill)
+        s2, r2 = self._score_triggers(input_words, skill)
+        s3, r3 = self._score_description(input_words, skill)
+
+        score += s1 + s2 + s3
+        reasons = list(set(r1 + r2 + r3))
+
+        # 同义词反向匹配
+        syn_score, syn_reasons = self._score_synonyms(input_words, skill)
+        score += syn_score
+        reasons.extend(r for r in syn_reasons if r not in reasons)
+
+        logger.debug(
+            "  _score_lexical | skill=%s name=%.1f triggers=%.1f desc=%.1f syn=%.1f total=%.1f",
+            skill.get("name", "?"), s1, s2, s3, syn_score, min(score, MatchWeight.MAX_SCORE),
+        )
+
+        return min(score, MatchWeight.MAX_SCORE), reasons
+
+    def _score_name(self, input_words: Set[str], skill: Dict) -> Tuple[float, List[str]]:
+        """子匹配 1：名称匹配"""
+        score = 0
+        reasons: List[str] = []
+        skill_name = skill["name"].lower()
+        word_list = self._build_word_list(input_words)
+
+        for w in word_list:
+            if len(w) < 2:
+                continue
+
+            if w == skill_name or skill_name in w:
+                score += MatchWeight.NAME_EXACT
+                if "name匹配" not in reasons:
+                    reasons.append(f"name匹配'{w}'")
+
+            if len(w) >= 3 and w in skill_name:
+                score += MatchWeight.NAME_PARTIAL
+                if f"name部分'{w}'" not in reasons:
+                    reasons.append(f"name部分'{w}'")
+
+        return score, reasons
+
+    def _score_triggers(self, input_words: Set[str], skill: Dict) -> Tuple[float, List[str]]:
+        """子匹配 2：triggers + tags 匹配"""
+        score = 0
+        reasons: List[str] = []
+        triggers = [t.lower() for t in skill.get("triggers", [])]
+        tags = [t.lower() for t in skill.get("tags", [])]
+        word_list = self._build_word_list(input_words)
+
+        for w in word_list:
+            if len(w) < 2:
+                continue
+
+            if w in triggers:
+                score += MatchWeight.TRIGGER_MATCH
+                if f"trigger'{w}'" not in reasons:
+                    reasons.append(f"trigger'{w}'")
+
+            if w in tags:
+                score += MatchWeight.TAG_MATCH
+                if f"tag'{w}'" not in reasons:
+                    reasons.append(f"tag'{w}'")
+
+        return score, reasons
+
+    def _score_description(self, input_words: Set[str], skill: Dict) -> Tuple[float, List[str]]:
+        """子匹配 3：description + match_text 匹配"""
+        score = 0
+        reasons: List[str] = []
+        desc = skill.get("full_description", "").lower()
+        match_text = skill.get("match_text", "").lower()
+        word_list = self._build_word_list(input_words)
+
+        for w in word_list:
+            if len(w) < 2:
+                continue
+
+            if len(w) >= 2 and w in desc:
+                score += MatchWeight.DESC_MATCH
+                if f"描述'{w}'" not in reasons:
+                    reasons.append(f"描述'{w}'")
+
+            if len(w) >= 2 and w in match_text:
+                score += MatchWeight.MATCH_TEXT_MATCH
+
+        return score, reasons
+
+    def _score_synonyms(self, input_words: Set[str], skill: Dict) -> Tuple[float, List[str]]:
+        """同义词反向匹配"""
+        score = 0
+        reasons: List[str] = []
         skill_name = skill["name"].lower()
         triggers = [t.lower() for t in skill.get("triggers", [])]
         tags = [t.lower() for t in skill.get("tags", [])]
-        match_text = skill.get("match_text", "").lower()
         desc = skill.get("full_description", "").lower()
+        match_text = skill.get("match_text", "").lower()
 
-        # 构建词列表 + 中文组合词拆解
+        for word in input_words:
+            if word not in self.synonyms:
+                continue
+            for syn in self.synonyms[word]:
+                syn_lower = syn.lower()
+                if len(syn_lower) < 2:
+                    continue
+                # 精确匹配：在 name/trigger/tags 中
+                if syn_lower in skill_name or syn_lower in str(triggers) or syn_lower in str(tags):
+                    score += MatchWeight.SYNONYM_EXACT
+                    reason = f"同义词'{word}'→'{syn_lower}'"
+                    if reason not in reasons:
+                        reasons.append(reason)
+                # 宽泛匹配：只在 description/match_text 中
+                elif syn_lower in desc or syn_lower in match_text:
+                    score += MatchWeight.SYNONYM_BROAD
+                    reason = f"同义词(描述)'{word}'→'{syn_lower}'"
+                    if reason not in reasons:
+                        reasons.append(reason)
+
+        return score, reasons
+
+    def _build_word_list(self, input_words: Set[str]) -> List[str]:
+        """构建词列表 + 中文组合词拆解"""
         word_list = list(input_words)
         extra_words = set()
         multi_word_syns = set()
@@ -90,64 +245,13 @@ class SkillMatcher:
                     if len(part) >= 2:
                         multi_word_syns.add(part.lower())
 
-        word_list.extend(list(extra_words))
-        word_list.extend(list(multi_word_syns))
+        word_list.extend(extra_words)
+        word_list.extend(multi_word_syns)
+        return word_list
 
-        # 同义词反向匹配（改进：区分精确匹配和宽泛匹配）
-        for word in list(input_words):
-            if word in self.synonyms:
-                for syn in self.synonyms[word]:
-                    syn_lower = syn.lower()
-                    if len(syn_lower) < 2:
-                        continue
-                    # 精确匹配：在 name/trigger/tags 中
-                    if syn_lower in skill_name or syn_lower in str(triggers) or syn_lower in str(tags):
-                        score += 25
-                        if f"同义词'{word}'→'{syn_lower}'" not in str(reasons):
-                            reasons.append(f"同义词'{word}'→'{syn_lower}'")
-                    # 宽泛匹配：只在 description/match_text 中（风险更低）
-                    elif syn_lower in desc or syn_lower in match_text:
-                        score += 12
-                        if f"同义词'{word}'→'{syn_lower}'" not in str(reasons):
-                            reasons.append(f"同义词(描述)'{word}'→'{syn_lower}'")
+    # ── 语义匹配 ──────────────────────────────────────
 
-        # 逐词遍历
-        for word in word_list:
-            w = word.lower()
-            if len(w) < 2:
-                continue
-
-            if w == skill_name or skill_name in w:
-                score += 30
-                if "name匹配" not in str(reasons):
-                    reasons.append(f"name匹配'{w}'")
-
-            if len(w) >= 3 and w in skill_name:
-                score += 20
-                if f"name部分'{w}'" not in reasons:
-                    reasons.append(f"name部分'{w}'")
-
-            if w in triggers:
-                score += 25
-                if f"trigger'{w}'" not in reasons:
-                    reasons.append(f"trigger'{w}'")
-
-            if w in tags:
-                score += 15
-                if f"tag'{w}'" not in reasons:
-                    reasons.append(f"tag'{w}'")
-
-            if len(w) >= 2 and w in desc:
-                score += 8
-                if f"描述'{w}'" not in reasons:
-                    reasons.append(f"描述'{w}'")
-
-            if len(w) >= 2 and w in match_text:
-                score += 3
-
-        return min(score, 100), reasons
-
-    def _match_semantic(self, input_words: Set[str], skill: Dict) -> float:
+    def _score_semantic(self, input_words: Set[str], skill: Dict) -> float:
         """语义匹配：基于 description + body_keywords"""
         desc = skill.get("full_description", "").lower()
         body_kws = set(skill.get("body_keywords", []))
@@ -161,20 +265,20 @@ class SkillMatcher:
                 continue
 
             if w in desc:
-                score += 10
+                score += MatchWeight.SEMANTIC_DESC
                 overlap += 1
             if w in body_kws:
-                score += 5
+                score += MatchWeight.SEMANTIC_BODY_KW
                 overlap += 1
 
         total = len(input_words)
         if total > 0:
             ratio = overlap / total
-            score = min(int(score * (0.5 + ratio * 0.5)), 100)
+            score = min(int(score * (0.5 + ratio * 0.5)), MatchWeight.MAX_SCORE)
 
         return score
 
-    def _match_scene(self, input_words: Set[str], skill_name: str, stats: Dict) -> float:
+    def _score_scene(self, input_words: Set[str], skill_name: str, stats: Dict) -> float:
         """场景匹配：基于历史使用模式"""
         scene_patterns = stats.get("scene_patterns", [])
 
@@ -186,16 +290,17 @@ class SkillMatcher:
                     continue
                 if word.lower() in pat or pat in word.lower():
                     if skill_name in pattern.get("recommended_skills", []):
-                        score += min(pattern.get("hit_count", 1) * 3, 30)
+                        score += min(pattern.get("hit_count", 1) * MatchWeight.SCENE_PATTERN_HIT,
+                                     MatchWeight.MAX_SYNONYM_SCENE)
 
         # 使用频率加分
         skill_stats = stats.get("skills", {}).get(skill_name, {})
         total_uses = skill_stats.get("total_uses", 0)
-        score += min(total_uses * 2, 20)
+        score += min(total_uses * MatchWeight.SCENE_USE_FREQ, MatchWeight.MAX_USE_FREQ_SCORE)
 
-        return min(score, 100)
+        return min(score, MatchWeight.MAX_SCORE)
 
-    def _match_category(self, input_words: Set[str], skill: Dict) -> float:
+    def _score_category(self, input_words: Set[str], skill: Dict) -> float:
         """类别匹配：基于 category + tags"""
         score = 0
         category = skill.get("category", "").lower()
@@ -206,9 +311,9 @@ class SkillMatcher:
             if len(w) < 2:
                 continue
             if w in category:
-                score += 20
+                score += MatchWeight.CATEGORY_MATCH
             for tag in tags:
                 if w in tag or tag in w:
-                    score += 15
+                    score += MatchWeight.TAG_CATEGORY_MATCH
 
-        return min(score, 100)
+        return min(score, MatchWeight.MAX_SCORE)

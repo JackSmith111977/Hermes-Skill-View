@@ -7,10 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.4.0] — 2026-05-11
+## [1.4.0] — 2026-05-12
 
 ### 🚀 Added
 
+- **SRA-003-15: 质量增强** — 配置验证 + 日志统一 + 魔法数字
+  - **配置 Schema 系统**: 新增 `~/.sra/config.schema.json` 定义配置 JSON Schema (draft-07)，启动时自动校验配置合法性
+  - **`sra config validate` CLI**: 新增子命令，展示所有违规字段
+  - **环境变量覆盖**: 支持 `SRA_HTTP_PORT`, `SRA_LOG_LEVEL` 等环境变量覆盖配置文件（优先级: 环境变量 > 配置文件 > 默认值）
+  - **日志轮转**: daemon 日志改用 `RotatingFileHandler`（max 10MB × 5 份），日志格式统一为 `[时间] [级别] [模块] 消息`
+  - **DEBUG 日志**: indexer 的 build()/load_or_build()、matcher 的 score()/词法匹配 添加 DEBUG 级别跟踪
+  - **MatchWeight 命名常量**: matcher.py 全部 14 个硬编码分值提取为 `MatchWeight` 命名空间常量（`IntEnum`）
+  - **`_match_lexical` 函数拆分**: 拆分为 `_score_name` / `_score_triggers` / `_score_description` / `_score_synonyms` 四个子函数
+  - **`cli.py` 日志统一**: 添加 `logger`，错误/诊断消息使用 dual-channel（logging + print）
+  - **reasons 去重优化**: 改用 `set` 替代 `str(reasons)` 字符串匹配去重
+  - **新增 16 个配置测试**: `tests/test_config.py`（Schema 校验 9 项 + 环境变量 5 项 + CLI validate 2 项）
 - **CI 发布流程重构**: 绕过 setuptools-scm 的 tag 发现机制，改为 CI 中从 GITHUB_REF_NAME 显式提取版本号
   - 新增 `scripts/set_version.py` — 构建时替换 `pyproject.toml` 中的动态版本为静态版本
   - `release.yml` 新增 Set version from tag 步骤 — 写 `_version.py` + 设置环境变量

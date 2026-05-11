@@ -23,6 +23,7 @@ SRA CLI — 完整的命令行工具
 """
 
 import json
+import logging
 import os
 import shutil
 import socket
@@ -40,6 +41,8 @@ from .runtime.commands import (
 )
 from .runtime.config import PID_FILE, load_config, save_config
 from .runtime.dropin import check_dropin_health, cleanup_dropin, print_health_report
+
+logger = logging.getLogger("sra.cli")
 
 SOCKET_FILE = os.path.expanduser("~/.sra/srad.sock")
 
@@ -76,6 +79,7 @@ def cmd_recommend(args: List[str]):
 
     if "error" in result and "未运行" in result.get("error", ""):
         # 降级：直接本地查询
+        logger.warning("SRA Daemon 未运行，使用本地模式")
         print("⚠️  SRA Daemon 未运行，使用本地模式")
         from .advisor import SkillAdvisor
         advisor = SkillAdvisor()
@@ -114,6 +118,7 @@ def cmd_stats(args: List[str]):
 
     if "error" in result and "未运行" in result.get("error", ""):
         # 本地模式
+        logger.warning("SRA Daemon 未运行，使用本地模式")
         print("⚠️  SRA Daemon 未运行，使用本地模式")
         from .advisor import SkillAdvisor
         advisor = SkillAdvisor()
@@ -144,6 +149,7 @@ def cmd_coverage(args: List[str]):
     result = _socket_request({"action": "coverage"})
 
     if "error" in result and "未运行" in result.get("error", ""):
+        logger.warning("SRA Daemon 未运行，使用本地模式")
         print("⚠️  SRA Daemon 未运行，使用本地模式")
         from .advisor import SkillAdvisor
         advisor = SkillAdvisor()
@@ -170,6 +176,7 @@ def cmd_compliance(args: List[str]):
     result = _socket_request({"action": "stats/compliance"})
 
     if "error" in result and "未运行" in result.get("error", ""):
+        logger.warning("SRA Daemon 未运行，使用本地模式")
         print("⚠️  SRA Daemon 未运行，使用本地模式")
         from .advisor import SkillAdvisor
         advisor = SkillAdvisor()
@@ -211,6 +218,7 @@ def cmd_refresh(args: List[str]):
 
     if "error" in result:
         if "未运行" in result.get("error", ""):
+            logger.warning("SRA Daemon 未运行，使用本地模式")
             print("⚠️  SRA Daemon 未运行，使用本地模式")
             from .advisor import SkillAdvisor
             advisor = SkillAdvisor()
@@ -248,6 +256,7 @@ def cmd_record(args: List[str]):
 
     if "error" in result:
         if "未运行" in result.get("error", ""):
+            logger.warning("SRA Daemon 未运行，使用本地模式")
             print("⚠️  SRA Daemon 未运行，使用本地模式")
             from .advisor import SkillAdvisor
             advisor = SkillAdvisor()
@@ -309,9 +318,27 @@ def cmd_config(args: List[str]):
         save_config(config)
         print("✅ 配置已重置为默认值")
 
+    elif args[0] == "validate":
+        import json
+        import os
+
+        from .runtime.config import CONFIG_SCHEMA, validate_config
+        if not os.path.exists(CONFIG_SCHEMA):
+            print("❌ Schema 文件不存在，无法校验")
+            return
+        schema = json.load(open(CONFIG_SCHEMA))
+        errors = validate_config(config, schema)
+        if not errors:
+            print("✅ 配置合法，所有字段通过 Schema 校验")
+        else:
+            print(f"⚠️  配置校验发现 {len(errors)} 个问题:\n")
+            for err in errors:
+                print(f"  ❌ {err}")
+            print("\n💡 使用 'sra config set <key> <value>' 修复，或删除未知字段")
+
     else:
         print(f"🚨 未知配置命令: {args[0]}")
-        print("  可用: show, set <key> <value>, reset")
+        print("  可用: show, set <key> <value>, reset, validate")
 
 
 def cmd_force(args: List[str]):
