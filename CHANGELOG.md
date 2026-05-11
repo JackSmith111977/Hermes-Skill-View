@@ -49,13 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ✅ completed | 文件类型技能映射 (SRA-003-02) | 🔴 P0 | 2天 |
 | ✅ completed | 技能使用轨迹记录 (SRA-003-03) | 🟡 P1 | 1天 |
 | ✅ completed | 长任务上下文保护 (SRA-003-04) | 🟡 P1 | 2天 |
-| 📋 pending | SRA 契约机制 (SRA-003-05) | 🟡 P1 | 2天 |
-| 📋 pending | **运行时力度体系 (SRA-003-06)** | 🟡 P1 | 3天 |
+| ✅ completed | SRA 契约机制 (SRA-003-05) | 🟡 P1 | 2天 |
+| ✅ completed | **运行时力度体系 (SRA-003-06)** | 🟡 P1 | 3天 |
 | ✅ completed | **Daemon 单例守护 (SRA-003-12)** | 🔴 P0 | 0.5天 |
 | ✅ completed | **HTTP 架构 + 异常处理 (SRA-003-13)** | 🔴 P0 | 1天 |
 | ✅ completed | **测试覆盖增强 (SRA-003-14)** | 🟡 P1 | 2天 |
 | ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | 🟡 P1 | 0.5天 |
-| 📋 pending | **质量修复 Sprint (SRA-003-18)** | 🔴 P0 | 3h |
+| ✅ completed | **质量修复 Sprint (SRA-003-18)** | 🔴 P0 | 3h |
 
 #### 🔧 Sprint 2 修复
 

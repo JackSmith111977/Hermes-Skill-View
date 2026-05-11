@@ -312,6 +312,7 @@ pre_process:
 | `sra adapters` | 列出支持的 Agent 类型 |
 | `sra install <agent>` | 安装到指定 Agent |
 | `sra version` | 显示版本 |
+| `sra force [show\|basic\|medium\|advanced\|omni]` | 查看/切换运行时力度等级 |
 | `sra upgrade` | 升级 SRA 到最新版本 |
 | `sra uninstall` | 卸载 SRA（清理文件 + systemd 服务 + drop-in） |
 | `sra dep-check` | 检查 systemd 依赖链健康度 |
