@@ -91,3 +91,4 @@
 | | ✅ completed | **Drop-in 生命周期管理 (SRA-003-17)** | EPIC-003 | 🟡 P1 | 0.5天 |
 ||| ✅ completed | **质量修复 Sprint (SRA-003-18)** | EPIC-003 | 🔴 P0 | 3h |
 ||| ✅ completed | **质量修复 Sprint 2 (SRA-003-19)** | EPIC-003 | 🟡 P1 | 4h |
+||| ✅ completed | **质量修复 Sprint 3 (SRA-003-20)** | EPIC-003 | 🟡 P1 | 3h |
