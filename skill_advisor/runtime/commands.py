@@ -7,6 +7,8 @@ import time
 import socket
 import signal
 import logging
+import subprocess
+import textwrap
 
 from .lock import FileLock, check_port_in_use
 from .daemon import SRaDDaemon
@@ -49,55 +51,64 @@ def cmd_start(args=None) -> None:
         except (ProcessLookupError, ValueError):
             os.unlink(PID_FILE)
 
-    # 启动守护进程
-    pid = os.fork()
-    # ⚠️ os.fork() + 线程不兼容风险: fork 后只有调用线程存活，
-    # 其他线程中的锁状态未定义。已在子进程起始处调用
-    # logging.basicConfig(force=True) 重新初始化日志系统。
-    # 长期建议: 改用 multiprocessing.set_start_method('spawn')
-    if pid > 0:
-        # 父进程 — 写入 PID 到锁文件和 PID 文件
-        config = load_config()
-        http_port = config.get("http_port", 8536)
-        
-        # 将 PID 写入锁文件（供 get_lock_pid 查询）
-        try:
-            with open(LOCK_FILE, 'w') as f:
-                f.write(str(pid))
-        except OSError:
-            pass
-        
-        with open(PID_FILE, 'w') as f:
-            f.write(str(pid))
-        
-        print(f"✅ SRA Daemon 已启动 (PID: {pid})")
-        print(f"   Unix Socket: {SOCKET_FILE}")
-        print(f"   HTTP API: http://localhost:{http_port}")
-        print(f"   日志: {LOG_FILE}")
-        # 父进程退出，锁由子进程继承
-    else:
-        # 子进程
-        os.setsid()
-        # 重定向标准 I/O
+    # 启动守护进程（使用 subprocess 替代 os.fork() — 避免 fork+线程不兼容）
+    config = load_config()
+    http_port = config.get("http_port", 8536)
+
+    # 构建内嵌启动脚本作为子进程入口
+    subprocess_code = textwrap.dedent(f"""\
+        import sys, os, time, json, logging
+        sys.path.insert(0, {os.path.dirname(os.path.dirname(__file__))!r})
+        from skill_advisor.runtime.config import ensure_sra_home, load_config, LOG_FILE
+        from skill_advisor.runtime.daemon import SRaDDaemon
+
+        ensure_sra_home()
         sys.stdin.close()
+
+        # 重定向标准 I/O 到日志文件
         sys.stdout = open(LOG_FILE, 'a')
         sys.stderr = open(LOG_FILE, 'a')
 
         # 初始化日志
+        cfg = load_config()
         logging.basicConfig(
-            level=getattr(logging, load_config().get("log_level", "INFO")),
+            level=getattr(logging, cfg.get("log_level", "INFO")),
             format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            handlers=[
-                logging.StreamHandler(sys.stdout),
-            ],
+            handlers=[logging.StreamHandler(sys.stdout)],
         )
 
         daemon = SRaDDaemon()
         daemon.start()
-
-        # 保持运行
         while daemon.running:
             time.sleep(1)
+    """)
+
+    proc = subprocess.Popen(
+        [sys.executable, "-c", subprocess_code],
+        stdin=subprocess.DEVNULL,
+        stdout=open(LOG_FILE, 'a'),
+        stderr=open(LOG_FILE, 'a'),
+        start_new_session=True,  # 等效于 os.setsid()
+    )
+
+    pid = proc.pid
+    # 释放文件锁（子进程已独立运行，无需继承锁）
+    lock.release()
+
+    # 将 PID 写入锁文件（供 get_lock_pid 查询）
+    try:
+        with open(LOCK_FILE, 'w') as f:
+            f.write(str(pid))
+    except OSError:
+        pass
+
+    with open(PID_FILE, 'w') as f:
+        f.write(str(pid))
+
+    print(f"✅ SRA Daemon 已启动 (PID: {pid})")
+    print(f"   Unix Socket: {SOCKET_FILE}")
+    print(f"   HTTP API: http://localhost:{http_port}")
+    print(f"   日志: {LOG_FILE}")
 
 
 def cmd_stop(args=None) -> None:
