@@ -288,7 +288,7 @@ L4 🐉  ●           ●           ●           ●
 - [x] 创建 `~/.config/systemd/user/srad.service` — 用户级 systemd 服务单元
 - [x] 服务使用 `Type=simple` + `sra attach` 前台运行模式
 - [x] 服务设置 `Restart=on-failure`，崩溃后自动重启
-- [x] 在 `hermes-gateway.service` 中添加 `Requires=srad.service` + `After=srad.service`
+- [x] 在 `hermes-gateway.service` 中添加 `Wants=srad.service` + `After=srad.service`（用 `Wants=` 而非 `Requires=` — 软依赖，SRA 不存在时不阻塞 Gateway 启动）
 - [x] `systemctl --user enable srad` 后用户登录自动启动
 - [x] SRA 在 Gateway 之前就绪，首次消息即有技能推荐
 - [x] 支持独立 `start/stop/restart/status` 管理
@@ -296,7 +296,7 @@ L4 🐉  ●           ●           ●           ●
 **实现文件:**
 - 新增: `~/.config/systemd/user/srad.service`
 - 新增: `~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf`
-- 修改: `/tmp/sra-latest/docs/ROADMAP.md`（添加 Sprint 条目）
+- 修改: `docs/ROADMAP.md`（添加 Sprint 条目）
 
 ---
 
@@ -371,6 +371,27 @@ L4 🐉  ●           ●           ●           ●
 - 新增: `sra-latest/skill_advisor/runtime/lock.py`（文件锁 + 端口探测工具函数）
 - 新增: `tests/test_singleton.py`
 - 修改: `sra-latest/skill_advisor/cli.py`（`--help` 补充单例说明）
+
+---
+
+### Story 17: Drop-in 依赖生命周期管理 — 防止孤儿配置 (SRA-003-17)
+
+> **作为** SRA 系统管理员
+> **我希望** 在 SRA 卸载/迁移时自动清理 `hermes-gateway.service.d/sra-dep.conf`
+> **以便** 避免 Gateway 因孤儿依赖配置而启动失败
+
+**验收标准:**
+- [ ] `sra uninstall` / `sra remove` 命令清理 `sra-dep.conf` drop-in 文件
+- [ ] `install.sh --uninstall` 卸载流程也同步清理
+- [ ] `check-sra.py` 新增检查：`sra-dep.conf` 中存在 `Requires=` 时报警（应使用 `Wants=`）
+- [ ] `check-sra.py` 新增检查：`sra-dep.conf` 存在但 `srad.service` 不存在时报错
+- [ ] `sra dep-check` CLI 命令可视化 SRA 依赖链健康度
+
+**实现文件:**
+- 修改: `scripts/install.sh`（新增 `--uninstall` 分支清理 drop-in）
+- 修改: `scripts/check-sra.py`（新增 drop-in 健康检查项）
+- 修改: `skill_advisor/cli.py`（新增 `sra dep-check` 命令）
+- 修改: `README.md`（文档同步）
 
 ---
 

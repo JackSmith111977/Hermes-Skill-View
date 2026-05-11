@@ -649,8 +649,8 @@ def cmd_uninstall(args: List[str]):
     print("✅ " + "=" * 40)
     print()
     print("💡 如果将来需要重新安装:")
-    print("   git clone https://github.com/JackSmith111977/Hermes-Skill-View.git /tmp/sra-latest")
-    print(f"   {sys.executable} -m pip install -e /tmp/sra-latest")
+    print("   pip install sra-agent")
+    print("   或参考: https://github.com/JackSmith111977/Hermes-Skill-View#readme")
 
 
 # ── 主入口 ──────────────────────────────────

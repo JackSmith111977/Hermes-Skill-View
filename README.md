@@ -115,22 +115,51 @@ Hermes Agent 的技能库（`~/.hermes/skills/`）越来越大（60+），但 Ag
 
 ## ⚡ 安装
 
+> ⚠️ **中国大陆用户**：raw.githubusercontent.com 和 github.com 可能无法直接访问。如果遇到超时，请使用代理或参考下方的代理设置说明。
+
 ### 方式一：pip 安装（推荐）
 
 ```bash
+# 建议在虚拟环境中安装（避免污染系统 Python）
+python3 -m venv sra-env
+source sra-env/bin/activate
 pip install sra-agent
-sra version    # 验证安装
+
+# 如不使用虚拟环境，请用 --user 模式
+pip install --user sra-agent
+
+# 验证安装
+sra version
 ```
+
+> 💡 如果 `sra` 命令找不到，请确保安装路径在 PATH 中：
+> ```bash
+> export PATH=$PATH:$HOME/.local/bin
+> echo 'export PATH=$PATH:$HOME/.local/bin' >> ~/.bashrc
+> ```
+
+---
 
 ### 方式二：一键脚本（自动配置 + 自启）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash
+# 普通安装
+curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh | bash
+
+# 带开机自启（自动检测系统，无需手动指定类型）
+curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh | bash -s -- --systemd
 ```
 
-带开机自启（自动检测系统，无需手动指定类型）：
+**中国大陆用户**：raw.githubusercontent.com 可能被屏蔽，建议：
 ```bash
-curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/main/scripts/install.sh | bash -s -- --systemd
+# 方案 A：使用代理
+export https_proxy=http://127.0.0.1:7890
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/master/scripts/install.sh)"
+
+# 方案 B：先克隆项目再运行脚本
+git clone --depth 1 https://github.com/JackSmith111977/Hermes-Skill-View.git
+cd Hermes-Skill-View
+bash scripts/install.sh
 ```
 
 支持的系统一览：
@@ -139,23 +168,67 @@ curl -fsSL https://raw.githubusercontent.com/JackSmith111977/Hermes-Skill-View/m
 |:---|:---|:---:|:---|
 | Linux | systemd | ✅ | `/etc/systemd/system/srad.service` 系统级服务 |
 | Linux | systemd | ❌ | `~/.config/systemd/user/srad.service` 用户级服务 |
-| Linux + Hermes | systemd | ❌ | 同上 + 自动配置 Gateway 依赖 |
+| Linux + Hermes | systemd | ❌ | 同上 + 自动配置 Gateway 依赖（`Wants=` 软依赖） |
 | macOS | launchd | — | `~/Library/LaunchAgents/com.sra.daemon.plist` |
 | WSL | 无 | — | `~/.sra/sra-entry.sh` + Windows 任务计划引导 |
 | Docker | 无 | — | `~/.sra/sra-entry.sh` + docker restart 引导 |
 
+> 💡 `--proxy` 标志：安装时同时启用 Proxy 模式（消息前置推理中间件）：
+> ```bash
+> bash scripts/install.sh --systemd --proxy
+> ```
+
+---
+
 ### 方式三：源码安装
 
 ```bash
-git clone https://github.com/JackSmith111977/Hermes-Skill-View.git
+git clone --depth 1 https://github.com/JackSmith111977/Hermes-Skill-View.git
 cd Hermes-Skill-View
-pip install -e .
+python3 -m venv venv
+source venv/bin/activate
+pip install --no-build-isolation -e .
 ```
+
+> ⚠️ 需要 `setuptools>=61.0`，`--no-build-isolation` 可跳过系统 setuptools 版本限制。
+
+---
 
 ### 方式四：Proxy 模式（消息前置推理）
 
+Proxy 模式是一键安装脚本（方式二）的一个标志，而非独立安装方式：
+
 ```bash
-bash scripts/install.sh --proxy
+# 在 install.sh 的基础上加 --proxy
+bash scripts/install.sh --systemd --proxy
+
+# 或从源码运行
+cd Hermes-Skill-View
+python3 venv/bin/sra attach --proxy
+```
+
+Proxy 模式会在 `POST /recommend` 端点中提供带完整 RAG 上下文的 JSON 响应，供 Agent 在消息处理前调用。
+
+---
+
+### 卸载 SRA
+
+```bash
+# 1. 停止并禁用 systemd 服务
+systemctl --user stop srad 2>/dev/null || sudo systemctl stop srad 2>/dev/null
+systemctl --user disable srad 2>/dev/null || sudo systemctl disable srad 2>/dev/null
+
+# 2. 卸载 Python 包
+pip uninstall sra-agent -y
+
+# 3. 清理配置和数据
+rm -rf ~/.sra ~/.config/systemd/user/srad.service
+rm -f ~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf
+systemctl --user daemon-reload
+
+# 4. 如使用系统级服务
+sudo rm -f /etc/systemd/system/srad.service
+sudo systemctl daemon-reload
 ```
 
 ---
