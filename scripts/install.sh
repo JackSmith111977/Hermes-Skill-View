@@ -95,6 +95,7 @@ INSTALL_SYSTEMD=false
 SKIP_PIP=false
 PROXY_MODE=false     # v1.1.0: Proxy 模式（消息前置推理中间件）
 PROXY_PORT=8536      # Proxy 默认端口
+INSTALL_UNINSTALL=false
 
 # ── 参数解析 ──────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -106,6 +107,7 @@ while [[ $# -gt 0 ]]; do
         --skip-pip) SKIP_PIP=true; shift ;;
         --proxy)    PROXY_MODE=true; shift ;;
         --proxy-port=*) PROXY_PORT="${1#*=}"; shift ;;
+        --uninstall) INSTALL_UNINSTALL=true; shift ;;
         --help)
             echo "SRA — Skill Runtime Advisor 一键安装脚本 v1.1.0"
             echo
@@ -125,6 +127,58 @@ while [[ $# -gt 0 ]]; do
         *) error "未知参数: $1"; exit 1 ;;
     esac
 done
+
+# ── 卸载分支（--uninstall）────────────────
+if [[ "$INSTALL_UNINSTALL" == "true" ]]; then
+    echo ""
+    echo "=============================================="
+    echo "  🗑️  SRA 一键卸载"
+    echo "=============================================="
+    echo ""
+
+    # 清理 sra-dep.conf drop-in 文件
+    DROPIN_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/hermes-gateway.service.d/sra-dep.conf"
+    if [[ -f "$DROPIN_FILE" ]]; then
+        info "删除 Gateway 依赖配置: $DROPIN_FILE"
+        rm -f "$DROPIN_FILE"
+        # 如果目录为空则清理
+        DROPIN_DIR="$(dirname "$DROPIN_FILE")"
+        if [[ -d "$DROPIN_DIR" ]] && [[ -z "$(ls -A "$DROPIN_DIR" 2>/dev/null)" ]]; then
+            rmdir "$DROPIN_DIR" 2>/dev/null || true
+        fi
+        systemctl --user daemon-reload 2>/dev/null || true
+        ok "✅ Gateway 依赖配置已清理"
+    else
+        info "Gateway 依赖配置不存在，跳过"
+    fi
+
+    # 清理 srad.service
+    SRAD_SERVICE="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/srad.service"
+    if [[ -f "$SRAD_SERVICE" ]]; then
+        info "删除 srad.service..."
+        systemctl --user stop srad 2>/dev/null || true
+        systemctl --user disable srad 2>/dev/null || true
+        rm -f "$SRAD_SERVICE"
+        systemctl --user daemon-reload 2>/dev/null || true
+        ok "✅ srad.service 已清理"
+    else
+        info "srad.service 不存在，跳过"
+    fi
+
+    # 清理 ~/.sra/
+    if [[ -d "$HOME/.sra" ]]; then
+        info "删除 ~/.sra/ 配置目录..."
+        rm -rf "$HOME/.sra"
+        ok "✅ 配置目录已清理"
+    fi
+
+    # 提示卸载 pip 包
+    echo ""
+    info "建议运行: pip uninstall sra-agent -y"
+    echo ""
+    ok "✅ SRA 卸载完成！"
+    exit 0
+fi
 
 # ── 步骤 1: 检查环境 ──────────────────────
 echo "=============================================="

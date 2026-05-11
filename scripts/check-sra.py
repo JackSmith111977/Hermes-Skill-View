@@ -155,6 +155,42 @@ def check_autostart():
         return True  # 非致命
 
 
+def check_dropin():
+    """检查 Gateway 依赖 drop-in 配置健康度"""
+    dropin_path = os.path.expanduser(
+        "~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf"
+    )
+    srad_path = os.path.expanduser("~/.config/systemd/user/srad.service")
+
+    if not os.path.exists(dropin_path):
+        # 没有 drop-in 是正常的（未安装或已在 macOS 上）
+        print("dropin check: ok (无 Gateway 依赖配置)")
+        return True
+
+    # 读取内容检查 Requires= 残留
+    try:
+        with open(dropin_path) as f:
+            content = f.read()
+    except OSError as e:
+        print(f"dropin check: fail (无法读取: {e})")
+        return False
+
+    issues = []
+
+    if "Requires=srad.service" in content:
+        issues.append("使用了 Requires= (硬依赖)，建议改为 Wants= (软依赖)")
+    if not os.path.exists(srad_path):
+        issues.append(f"sra-dep.conf 存在但 srad.service 不存在（孤儿配置）")
+
+    if issues:
+        for issue in issues:
+            print(f"dropin check: warn ({issue})")
+        return True  # 非致命
+    else:
+        print("dropin check: ok (依赖链健康)")
+        return True
+
+
 def main():
     # 解析参数
     port = 8536
@@ -181,6 +217,7 @@ def main():
         "skills_dir": check_skills_dir(skills_dir),
         "sra_config": check_config(),
         "autostart": check_autostart(),
+        "dropin": check_dropin(),
     }
 
     print()

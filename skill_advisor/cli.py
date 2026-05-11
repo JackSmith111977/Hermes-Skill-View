@@ -35,6 +35,7 @@ from .runtime.daemon import (
     cmd_start, cmd_stop, cmd_status, cmd_restart, cmd_attach,
     cmd_install_service, load_config, save_config, PID_FILE,
 )
+from .runtime.dropin import cleanup_dropin, check_dropin_health, print_health_report
 
 SOCKET_FILE = os.path.expanduser("~/.sra/srad.sock")
 
@@ -633,15 +634,21 @@ def cmd_uninstall(args: List[str]):
     sra_home = os.path.expanduser("~/.sra")
     if os.path.exists(sra_home):
         if remove_all or force:
-            print(f"🗑️  删除 {sra_home}/ ...")
+            print(f"  🗑️  删除 {sra_home}/ ...")
             shutil.rmtree(sra_home, ignore_errors=True)
             print("   ✅ 配置和数据已清除")
         else:
-            print(f"📁 配置目录 {sra_home}/ 已保留")
+            print(f"  📁 配置目录 {sra_home}/ 已保留")
             print("   如需删除请添加 --all 参数，或手动:")
             print(f"   rm -rf {sra_home}")
     else:
-        print("📁 配置目录不存在，跳过")
+        print("  📁 配置目录不存在，跳过")
+
+    print()
+
+    # 5. 清理 Gateway 依赖配置（sra-dep.conf）
+    print("🔄 清理 Gateway 依赖配置...")
+    cleanup_dropin()
 
     print()
     print("✅ " + "=" * 40)
@@ -651,6 +658,26 @@ def cmd_uninstall(args: List[str]):
     print("💡 如果将来需要重新安装:")
     print("   pip install sra-agent")
     print("   或参考: https://github.com/JackSmith111977/Hermes-Skill-View#readme")
+
+
+def cmd_dep_check(args: List[str]):
+    """检查 SRA 与 Hermes Gateway 的依赖链健康度"""
+    print("=" * 50)
+    print("🔗 SRA 依赖链检查")
+    print("=" * 50)
+    print()
+
+    print(f"📁 systemd 用户目录: {os.path.expanduser('~/.config/systemd/user/')}")
+    print()
+
+    health = check_dropin_health()
+    print_health_report(health)
+
+    print()
+    if health["healthy"]:
+        print("✅ 依赖链检查通过")
+    else:
+        print("⚠️  依赖链存在风险，请根据上方提示修复")
 
 
 # ── 主入口 ──────────────────────────────────
@@ -673,6 +700,7 @@ COMMANDS = {
     "install": cmd_install,
     "upgrade": cmd_upgrade,
     "uninstall": cmd_uninstall,
+    "dep-check": cmd_dep_check,
     "version": cmd_version,
     "help": lambda a: print_help(),
 }
@@ -709,6 +737,7 @@ def print_help():
     print("管理维护:")
     print("  upgrade [--version <tag>]  升级 SRA 到最新版本")
     print("  uninstall [-a|--all]        卸载 SRA（--all 清除配置）")
+    print("  dep-check                   检查 Gateway 依赖链健康度")
     print()
     print("其他:")
     print("  version               版本信息")

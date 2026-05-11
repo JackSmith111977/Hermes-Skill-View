@@ -380,18 +380,23 @@ L4 🐉  ●           ●           ●           ●
 > **我希望** 在 SRA 卸载/迁移时自动清理 `hermes-gateway.service.d/sra-dep.conf`
 > **以便** 避免 Gateway 因孤儿依赖配置而启动失败
 
+**背景：** 2026-05-11 实际测试发现 `sra uninstall --all` 后 `sra-dep.conf` 仍然残留在 `~/.config/systemd/user/hermes-gateway.service.d/` 中，成为孤儿配置。虽然当前使用 `Wants=` 不会导致 Gateway 崩溃，但残留文件会造成用户困惑和配置污染。
+
 **验收标准:**
-- [ ] `sra uninstall` / `sra remove` 命令清理 `sra-dep.conf` drop-in 文件
-- [ ] `install.sh --uninstall` 卸载流程也同步清理
+- [ ] `sra uninstall` 和 `sra uninstall --all` 自动清理 `sra-dep.conf`，输出明确提示 "已清理 Gateway 依赖配置"
+- [ ] `sra uninstall` 清理后 `sra-dep.conf` 文件物理删除（`ls -la ~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf` 返回 `No such file`）
+- [ ] `install.sh` 新增 `--uninstall` 分支，执行相同的清理逻辑
 - [ ] `check-sra.py` 新增检查：`sra-dep.conf` 中存在 `Requires=` 时报警（应使用 `Wants=`）
 - [ ] `check-sra.py` 新增检查：`sra-dep.conf` 存在但 `srad.service` 不存在时报错
 - [ ] `sra dep-check` CLI 命令可视化 SRA 依赖链健康度
+- [ ] 跨平台兼容：macOS launchd 无此问题（无 drop-in 概念），仅 Linux systemd 需要
 
 **实现文件:**
-- 修改: `scripts/install.sh`（新增 `--uninstall` 分支清理 drop-in）
-- 修改: `scripts/check-sra.py`（新增 drop-in 健康检查项）
-- 修改: `skill_advisor/cli.py`（新增 `sra dep-check` 命令）
-- 修改: `README.md`（文档同步）
+- 修改: `skill_advisor/cli.py` — `cmd_uninstall()` 函数末尾添加 `_cleanup_gateway_dropin()` 调用
+- 修改: `scripts/install.sh` — 新增 `--uninstall` 分支清理 drop-in
+- 修改: `scripts/check-sra.py` — 新增 drop-in 健康检查项（`check_dropin`）
+- 新增: `skill_advisor/runtime/dropin.py` — Gateway 依赖 drop-in 管理工具函数
+- 修改: `README.md` — 文档同步
 
 ---
 
