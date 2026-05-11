@@ -1,27 +1,22 @@
 """SRA-003-05 契约机制测试
 
 验证 SkillAdvisor.build_contract() 和 recommend() 返回的 contract 字段。
+
+测试数据来源: tests/fixtures/skills/（317 个从真实 Hermes 技能提取的 SKILL.md）
 """
 
 import pytest
+
+# 使用 conftest.py 中定义的 FIXTURES_DIR
+from conftest import FIXTURES_DIR
+
 from skill_advisor.advisor import SkillAdvisor
-from skill_advisor.matcher import SkillMatcher
-from skill_advisor.indexer import SkillIndexer
-from skill_advisor.memory import SceneMemory
-from skill_advisor.synonyms import SYNONYMS
 
 
 @pytest.fixture
 def advisor(tmp_path):
-    """创建一个使用临时数据目录的 SkillAdvisor 实例"""
-    data_dir = tmp_path / "sra_data"
-    data_dir.mkdir()
-    # 使用 Hermes 真实技能目录
-    import os
-    hermes_skills = os.path.expanduser("~/.hermes/skills")
-    if os.path.isdir(hermes_skills):
-        return SkillAdvisor(skills_dir=hermes_skills, data_dir=str(data_dir))
-    return SkillAdvisor(data_dir=str(data_dir))
+    """从 fixture 数据创建 SkillAdvisor（CI 独立）"""
+    return SkillAdvisor(skills_dir=FIXTURES_DIR, data_dir=str(tmp_path))
 
 
 class TestBuildContract:
@@ -135,12 +130,11 @@ class TestRecommendWithContract:
             assert req in rec_names, f"契约中的必需技能 {req} 应在 recommendations 中"
 
     def test_contract_not_empty_for_relevant_query(self, advisor):
-        """验证有意义查询的契约不会全空"""
+        """验证有意义查询的契约不会全空（基于 317 个真实技能 fixture）"""
         result = advisor.recommend("帮助我写一个 Python 脚本处理数据")
         contract = result["contract"]
-        # 至少 required 或 optional 有一个非空
+        # fixture 数据保证技能已索引，不应 skip
         has_something = bool(contract["required_skills"]) or bool(contract["optional_skills"])
-        # 或 confidence 不为 low
         confidence_ok = contract["confidence"] != "low"
         assert has_something or confidence_ok, (
             f"契约不应全空: {contract}"

@@ -3,7 +3,7 @@ SRA CLI — 完整的命令行工具
 
 子命令:
   sra start        启动守护进程
-  sra stop         停止守护进程  
+  sra stop         停止守护进程
   sra status       查看状态
   sra restart      重启
   sra attach       前台运行（调试）
@@ -22,21 +22,24 @@ SRA CLI — 完整的命令行工具
   sra help         帮助
 """
 
-import sys
-import os
 import json
-import socket
-import time
-import subprocess
+import os
 import shutil
-from typing import List, Optional
+import socket
+import subprocess
+import sys
+import time
+from typing import List
 
 from .runtime.commands import (
-    cmd_start, cmd_stop, cmd_status, cmd_restart, cmd_attach,
-    cmd_install_service,
+    cmd_attach,
+    cmd_restart,
+    cmd_start,
+    cmd_status,
+    cmd_stop,
 )
-from .runtime.config import load_config, save_config, PID_FILE
-from .runtime.dropin import cleanup_dropin, check_dropin_health, print_health_report
+from .runtime.config import PID_FILE, load_config, save_config
+from .runtime.dropin import check_dropin_health, cleanup_dropin, print_health_report
 
 SOCKET_FILE = os.path.expanduser("~/.sra/srad.sock")
 
@@ -62,32 +65,32 @@ def cmd_recommend(args: List[str]):
     if not args:
         print("🚨 用法: sra recommend <查询内容>")
         return
-    
+
     query = " ".join(args)
-    
+
     # 优先通过 Socket 查询运行中的守护进程
     result = _socket_request({
         "action": "recommend",
         "params": {"query": query, "top_k": 3},
     })
-    
+
     if "error" in result and "未运行" in result.get("error", ""):
         # 降级：直接本地查询
         print("⚠️  SRA Daemon 未运行，使用本地模式")
         from .advisor import SkillAdvisor
         advisor = SkillAdvisor()
         result = {"result": advisor.recommend(query)}
-    
+
     recs = result.get("result", result).get("recommendations", [])
-    
+
     print(f"🔍 查询: '{query}'")
-    
+
     if result.get("result"):
         r = result["result"]
         print(f"⚡ {r.get('processing_ms', 0)}ms | 📊 {r.get('skills_scanned', 0)} skills")
-    
+
     print()
-    
+
     if recs:
         print("🎯 推荐技能:")
         for r in recs:
@@ -98,7 +101,7 @@ def cmd_recommend(args: List[str]):
             if r.get("reasons"):
                 print(f"     💬 {'; '.join(r['reasons'][:3])}")
             if r.get("confidence") == "high":
-                print(f"     ⚡ 建议自动加载")
+                print("     ⚡ 建议自动加载")
             print()
     else:
         print("📭 未找到匹配技能")
@@ -108,7 +111,7 @@ def cmd_stats(args: List[str]):
     """查看统计"""
     # 通过守护进程查询
     result = _socket_request({"action": "stats"})
-    
+
     if "error" in result and "未运行" in result.get("error", ""):
         # 本地模式
         print("⚠️  SRA Daemon 未运行，使用本地模式")
@@ -139,7 +142,7 @@ def cmd_stats(args: List[str]):
 def cmd_coverage(args: List[str]):
     """分析技能覆盖率"""
     result = _socket_request({"action": "coverage"})
-    
+
     if "error" in result and "未运行" in result.get("error", ""):
         print("⚠️  SRA Daemon 未运行，使用本地模式")
         from .advisor import SkillAdvisor
@@ -147,14 +150,14 @@ def cmd_coverage(args: List[str]):
         cr = advisor.analyze_coverage()
     else:
         cr = result.get("result", {})
-    
+
     print("=" * 60)
     print("📊 SRA 技能识别覆盖率")
     print("=" * 60)
     print(f"  总技能数: {cr.get('total', 0)}")
     print(f"  能识别的: {cr.get('covered', 0)}")
     print(f"  覆盖率: {cr.get('coverage_rate', 0)}%")
-    
+
     not_covered = cr.get("not_covered", [])
     if not_covered:
         print(f"\n❌ 未能识别的技能 ({len(not_covered)} 个):")
@@ -205,7 +208,7 @@ def cmd_compliance(args: List[str]):
 def cmd_refresh(args: List[str]):
     """刷新技能索引"""
     result = _socket_request({"action": "refresh"})
-    
+
     if "error" in result:
         if "未运行" in result.get("error", ""):
             print("⚠️  SRA Daemon 未运行，使用本地模式")
@@ -224,16 +227,16 @@ def cmd_record(args: List[str]):
     if len(args) < 2:
         print("🚨 用法: sra record <skill_name> <用户输入> [--accepted true/false]")
         return
-    
+
     skill_name = args[0]
     user_input = args[1]
     accepted = True
-    
+
     if "--accepted" in args:
         idx = args.index("--accepted")
         if idx + 1 < len(args):
             accepted = args[idx + 1].lower() == "true"
-    
+
     result = _socket_request({
         "action": "record",
         "params": {
@@ -242,7 +245,7 @@ def cmd_record(args: List[str]):
             "accepted": accepted,
         },
     })
-    
+
     if "error" in result:
         if "未运行" in result.get("error", ""):
             print("⚠️  SRA Daemon 未运行，使用本地模式")
@@ -251,28 +254,28 @@ def cmd_record(args: List[str]):
             advisor.record_usage(skill_name, user_input, accepted)
         else:
             print(f"❌ 记录失败: {result.get('error')}")
-    
+
     print(f"✅ 已记录: {skill_name} ← '{user_input[:50]}'")
 
 
 def cmd_config(args: List[str]):
     """配置管理"""
     config = load_config()
-    
+
     if not args or args[0] == "show":
         print("=" * 50)
         print("⚙️  SRA 配置")
         print("=" * 50)
         for k, v in config.items():
             print(f"  {k}: {v}")
-    
+
     elif args[0] == "set":
         if len(args) < 3:
             print("🚨 用法: sra config set <key> <value>")
             return
         raw_key = args[1]
         value = args[2]
-        
+
         # 类型推断
         if value.lower() in ("true", "false"):
             typed_value = value.lower() == "true"
@@ -282,7 +285,7 @@ def cmd_config(args: List[str]):
             typed_value = float(value)
         else:
             typed_value = value
-        
+
         # 支持点号分隔的嵌套 key（如 runtime_force.level）
         if "." in raw_key:
             parts = raw_key.split(".", 1)
@@ -295,9 +298,9 @@ def cmd_config(args: List[str]):
         else:
             config[raw_key] = typed_value
             print(f"✅ 配置已更新: {raw_key} = {config[raw_key]}")
-        
+
         save_config(config)
-    
+
     elif args[0] == "reset":
         from .runtime.config import DEFAULT_CONFIG
         for k in list(config.keys()):
@@ -305,7 +308,7 @@ def cmd_config(args: List[str]):
                 config[k] = DEFAULT_CONFIG[k]
         save_config(config)
         print("✅ 配置已重置为默认值")
-    
+
     else:
         print(f"🚨 未知配置命令: {args[0]}")
         print("  可用: show, set <key> <value>, reset")
@@ -313,7 +316,7 @@ def cmd_config(args: List[str]):
 
 def cmd_force(args: List[str]):
     """运行时力度管理"""
-    from .runtime.force import ForceLevelManager, FORCE_LEVELS
+    from .runtime.force import FORCE_LEVELS, ForceLevelManager
     fm = ForceLevelManager()
 
     if not args:
@@ -325,13 +328,13 @@ def cmd_force(args: List[str]):
         print(f"  当前等级: {summary['label']}")
         print(f"  说明: {summary['description']}")
         print()
-        print(f"  激活注入点:")
+        print("  激活注入点:")
         for pt in summary["active_points"]:
             from .runtime.force import INJECTION_POINT_LABELS
             label = INJECTION_POINT_LABELS.get(pt, pt)
             print(f"    ✅ {label} ({pt})")
         print()
-        print(f"  监控工具: ", end="")
+        print("  监控工具: ", end="")
         mt = summary["monitored_tools"]
         if mt == "__all__":
             print("全部工具")
@@ -340,7 +343,7 @@ def cmd_force(args: List[str]):
         if summary["periodic"]:
             print(f"  周期性注入: 每 {summary['periodic_interval']} 轮")
         print()
-        print(f"  可用等级:")
+        print("  可用等级:")
         for lvl in fm.list_levels():
             mark = "◀ 当前" if lvl["is_current"] else ""
             pts = ", ".join(lvl["active_injection_points"])
@@ -382,7 +385,7 @@ def cmd_force(args: List[str]):
 def cmd_adapters(args: List[str]):
     """列出 Agent 适配器"""
     from .adapters import list_adapters
-    
+
     print("=" * 50)
     print("🔌 SRA Agent 适配器")
     print("=" * 50)
@@ -396,9 +399,9 @@ def cmd_adapters(args: List[str]):
 def cmd_install(args: List[str]):
     """安装到 Agent"""
     agent_type = args[0] if args else "hermes"
-    
+
     from .adapters import get_adapter
-    
+
     if agent_type == "hermes":
         print("📝 安装 SRA 到 Hermes Agent")
         print()
@@ -418,7 +421,7 @@ def cmd_install(args: List[str]):
         print("  adapter = get_adapter('hermes')")
         print("  recs = adapter.recommend('帮我画个架构图')")
         print("  print(adapter.format_suggestion(recs))")
-    
+
     elif agent_type in ("claude", "codex", "opencode"):
         print(f"📝 安装 SRA 到 {agent_type}")
         print()
@@ -431,7 +434,7 @@ def cmd_install(args: List[str]):
         print()
         print("步骤 3: 运行时查询:")
         print(f"  sra --agent {agent_type} --query '<用户输入>'")
-    
+
     else:
         print(f"❌ 未知 Agent 类型: {agent_type}")
         print("可用类型: hermes, claude, codex, opencode, generic")
@@ -597,7 +600,7 @@ def cmd_upgrade(args: List[str]):
     )
 
     if result.returncode != 0:
-        print(f"   ⚠️  --no-build-isolation 失败，尝试标准安装...")
+        print("   ⚠️  --no-build-isolation 失败，尝试标准安装...")
         result = subprocess.run(
             pip_cmd + ["install", "-e", sra_src],
             capture_output=True, text=True
@@ -620,7 +623,7 @@ def cmd_upgrade(args: List[str]):
 
     print()
     print("✅ " + "=" * 40)
-    print(f"✅ SRA 升级完成！")
+    print("✅ SRA 升级完成！")
     print(f"   版本: {new_version}")
     print(f"   源码: {sra_src}")
     print("✅ " + "=" * 40)
@@ -840,10 +843,10 @@ def main():
     if len(sys.argv) < 2:
         print_help()
         return
-    
+
     command = sys.argv[1]
     args = sys.argv[2:]
-    
+
     if command in COMMANDS:
         COMMANDS[command](args)
     else:

@@ -16,26 +16,18 @@ SRA Runtime Daemon — 稳定的后台技能推荐守护进程
   srad attach        前台运行（调试用）
 """
 
-import os
-import sys
 import json
-import time
+import logging
+import os
 import socket
 import threading
-import logging
-import signal
-import atexit
-from pathlib import Path
+import time
 from datetime import datetime
-from typing import Optional, Dict, Any
 
-from ..advisor import SkillAdvisor
-from ..indexer import SkillIndexer
 from .. import __version__
-
-from .lock import FileLock, check_port_in_use
-from .config import ensure_sra_home, load_config, STATUS_FILE
-from .force import ForceLevelManager, FORCE_LEVELS, DEFAULT_LEVEL
+from ..advisor import SkillAdvisor
+from .config import STATUS_FILE, ensure_sra_home, load_config
+from .force import FORCE_LEVELS, ForceLevelManager
 
 logger = logging.getLogger("srad")
 
@@ -289,7 +281,7 @@ class SRaDDaemon:
                         if should_auto_load:
                             rag_lines.append(f"\n  ⚡ 强推荐自动加载: {top_skill}")
                         else:
-                            rag_lines.append(f"\n  💡 建议: 可参考上述 skill")
+                            rag_lines.append("\n  💡 建议: 可参考上述 skill")
 
                         rag_lines.append("── ──────────────────────────────────────────────")
 
@@ -420,23 +412,23 @@ class SRaDDaemon:
                 http_thread.join(timeout=1.0)
             except KeyboardInterrupt:
                 break
-        
+
         server.shutdown()
         logger.info("HTTP 服务器已关闭")
 
     def _auto_refresh_loop(self) -> None:
         """自动刷新循环 — 双模式：定时刷新 + 文件变更检测"""
         interval = self.config.get("auto_refresh_interval", 3600)
-        
+
         # 文件变更检测：每 30 秒检查技能目录的校验和
         watch_enabled = self.config.get("watch_skills_dir", True)
         watch_interval = 30  # 每 30 秒检测一次
-        
+
         # 初始化文件校验和
         last_checksum = self._compute_skills_checksum()
-        
+
         last_timer_refresh = time.time()
-        
+
         while self.running:
             # 模式1: 定时刷新（优先级高）
             if time.time() - last_timer_refresh >= interval:
@@ -450,7 +442,7 @@ class SRaDDaemon:
                     last_checksum = self._compute_skills_checksum()
                 except Exception as e:
                     logger.error(f"索引刷新失败: {e}")
-            
+
             # 模式2: 文件变更检测（仅当 watch_skills_dir 启用时）
             if watch_enabled and time.time() - self._last_refresh >= watch_interval:
                 current_checksum = self._compute_skills_checksum()
@@ -463,22 +455,22 @@ class SRaDDaemon:
                         last_checksum = current_checksum
                     except Exception as e:
                         logger.error(f"变更刷新失败: {e}")
-            
+
             time.sleep(5)  # 每 5 秒检查一次循环条件
 
     def _compute_skills_checksum(self) -> str:
         """计算技能目录的校验和（文件数量 + 所有 SKILL.md 的 mtime + 大小）
-        
+
         用于快速检测技能目录是否有新增/删除/修改。
         零额外依赖，纯 Python 实现。
         """
-        import hashlib
         import glob
-        
+        import hashlib
+
         skills_dir = self.config.get("skills_dir", "")
         if not skills_dir or not os.path.exists(skills_dir):
             return ""
-        
+
         try:
             files = sorted(glob.glob(os.path.join(skills_dir, '**/SKILL.md'), recursive=True))
             # 计算稳健的校验和：文件名 + mtime + 文件大小

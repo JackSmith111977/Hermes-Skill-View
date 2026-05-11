@@ -1,21 +1,19 @@
 """适配器模块测试 — 多 Agent 格式化和工厂函数"""
 
-import json
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import pytest
 
 from skill_advisor.adapters import (
-    get_adapter,
-    list_adapters,
+    ADAPTER_REGISTRY,
     BaseAdapter,
-    HermesAdapter,
     ClaudeCodeAdapter,
     CodexAdapter,
     GenericCLIAdapter,
-    ADAPTER_REGISTRY,
+    HermesAdapter,
+    get_adapter,
+    list_adapters,
 )
-
 
 # ── 测试数据 ──────────────────────────────────
 

@@ -9,10 +9,10 @@ SRA 文件锁工具模块 — 基于 fcntl.flock 的 OS 级原子锁
 - 兼容 POSIX 系统（Linux/macOS）
 """
 
-import os
 import fcntl
-import time
 import logging
+import os
+import time
 from typing import Optional
 
 logger = logging.getLogger("sra.lock")

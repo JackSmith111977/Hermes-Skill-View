@@ -1,19 +1,26 @@
 """SRA 运行时 CLI 命令 — 守护进程生命周期管理"""
 
-import os
-import sys
 import json
-import time
-import socket
-import signal
 import logging
+import os
+import signal
+import socket
+import subprocess
+import sys
+import textwrap
+import time
 
-from .lock import FileLock, check_port_in_use
-from .daemon import SRaDDaemon
 from .config import (
-    ensure_sra_home, load_config,
-    PID_FILE, LOCK_FILE, SOCKET_FILE, LOG_FILE, STATUS_FILE,
+    LOCK_FILE,
+    LOG_FILE,
+    PID_FILE,
+    SOCKET_FILE,
+    STATUS_FILE,
+    ensure_sra_home,
+    load_config,
 )
+from .daemon import SRaDDaemon
+from .lock import FileLock, check_port_in_use
 
 logger = logging.getLogger("sra.commands")
 
@@ -23,7 +30,7 @@ logger = logging.getLogger("sra.commands")
 def cmd_start(args=None) -> None:
     """启动守护进程"""
     ensure_sra_home()
-    
+
     # ── OS 级文件锁：原子性单例检测 ──
     lock = FileLock(LOCK_FILE, timeout=0)  # 非阻塞尝试
     if not lock.acquire():
@@ -35,7 +42,7 @@ def cmd_start(args=None) -> None:
             print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
         print("   使用 'sra stop' 停止，或 'sra restart' 重启")
         return
-    
+
     # 检查是否已有 PID 文件（兼容旧版本残留）
     if os.path.exists(PID_FILE):
         try:
@@ -49,55 +56,64 @@ def cmd_start(args=None) -> None:
         except (ProcessLookupError, ValueError):
             os.unlink(PID_FILE)
 
-    # 启动守护进程
-    pid = os.fork()
-    # ⚠️ os.fork() + 线程不兼容风险: fork 后只有调用线程存活，
-    # 其他线程中的锁状态未定义。已在子进程起始处调用
-    # logging.basicConfig(force=True) 重新初始化日志系统。
-    # 长期建议: 改用 multiprocessing.set_start_method('spawn')
-    if pid > 0:
-        # 父进程 — 写入 PID 到锁文件和 PID 文件
-        config = load_config()
-        http_port = config.get("http_port", 8536)
-        
-        # 将 PID 写入锁文件（供 get_lock_pid 查询）
-        try:
-            with open(LOCK_FILE, 'w') as f:
-                f.write(str(pid))
-        except OSError:
-            pass
-        
-        with open(PID_FILE, 'w') as f:
-            f.write(str(pid))
-        
-        print(f"✅ SRA Daemon 已启动 (PID: {pid})")
-        print(f"   Unix Socket: {SOCKET_FILE}")
-        print(f"   HTTP API: http://localhost:{http_port}")
-        print(f"   日志: {LOG_FILE}")
-        # 父进程退出，锁由子进程继承
-    else:
-        # 子进程
-        os.setsid()
-        # 重定向标准 I/O
+    # 启动守护进程（使用 subprocess 替代 os.fork() — 避免 fork+线程不兼容）
+    config = load_config()
+    http_port = config.get("http_port", 8536)
+
+    # 构建内嵌启动脚本作为子进程入口
+    subprocess_code = textwrap.dedent(f"""\
+        import sys, os, time, json, logging
+        sys.path.insert(0, {os.path.dirname(os.path.dirname(__file__))!r})
+        from skill_advisor.runtime.config import ensure_sra_home, load_config, LOG_FILE
+        from skill_advisor.runtime.daemon import SRaDDaemon
+
+        ensure_sra_home()
         sys.stdin.close()
+
+        # 重定向标准 I/O 到日志文件
         sys.stdout = open(LOG_FILE, 'a')
         sys.stderr = open(LOG_FILE, 'a')
 
         # 初始化日志
+        cfg = load_config()
         logging.basicConfig(
-            level=getattr(logging, load_config().get("log_level", "INFO")),
+            level=getattr(logging, cfg.get("log_level", "INFO")),
             format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            handlers=[
-                logging.StreamHandler(sys.stdout),
-            ],
+            handlers=[logging.StreamHandler(sys.stdout)],
         )
 
         daemon = SRaDDaemon()
         daemon.start()
-
-        # 保持运行
         while daemon.running:
             time.sleep(1)
+    """)
+
+    proc = subprocess.Popen(
+        [sys.executable, "-c", subprocess_code],
+        stdin=subprocess.DEVNULL,
+        stdout=open(LOG_FILE, 'a'),
+        stderr=open(LOG_FILE, 'a'),
+        start_new_session=True,  # 等效于 os.setsid()
+    )
+
+    pid = proc.pid
+    # 释放文件锁（子进程已独立运行，无需继承锁）
+    lock.release()
+
+    # 将 PID 写入锁文件（供 get_lock_pid 查询）
+    try:
+        with open(LOCK_FILE, 'w') as f:
+            f.write(str(pid))
+    except OSError:
+        pass
+
+    with open(PID_FILE, 'w') as f:
+        f.write(str(pid))
+
+    print(f"✅ SRA Daemon 已启动 (PID: {pid})")
+    print(f"   Unix Socket: {SOCKET_FILE}")
+    print(f"   HTTP API: http://localhost:{http_port}")
+    print(f"   日志: {LOG_FILE}")
 
 
 def cmd_stop(args=None) -> None:
@@ -179,7 +195,7 @@ def cmd_status(args=None) -> None:
             stats = data.get("stats", data)
 
             print(f"✅ SRA Daemon 运行中 (PID: {pid})")
-            print(f"📊 运行统计:")
+            print("📊 运行统计:")
             skills = stats.get("skills_count", 0)
             print(f"   技能数: {skills}")
             print(f"   请求次数: {stats.get('total_requests', 0)}")
@@ -212,7 +228,7 @@ def cmd_restart(args=None) -> None:
 def cmd_attach(args=None) -> None:
     """前台运行（调试）"""
     ensure_sra_home()
-    
+
     # 同样检查文件锁
     lock = FileLock(LOCK_FILE, timeout=0)
     if not lock.acquire():
@@ -223,17 +239,17 @@ def cmd_attach(args=None) -> None:
             print("⚠️  SRA Daemon 已在运行 (无法获取锁)")
         print("   使用 'sra stop' 停止")
         return
-    
+
     config = load_config()
     daemon = SRaDDaemon(config)
-    
+
     # 端口活性探测
     http_port = config.get("http_port", 8536)
     if check_port_in_use(http_port):
         print(f"⚠️  端口 {http_port} 已被占用，请检查是否有其他 SRA 实例")
         lock.release()
         return
-    
+
     try:
         daemon.attach()
     finally:
@@ -309,12 +325,12 @@ def cmd_install_service(args=None) -> None:
         print(f"   SRA 路径: {sra_bin}")
         print()
         print("启动命令:")
-        print(f"  systemctl --user daemon-reload")
-        print(f"  systemctl --user enable --now srad")
+        print("  systemctl --user daemon-reload")
+        print("  systemctl --user enable --now srad")
         print()
         print("管理命令:")
-        print(f"  systemctl --user status srad")
-        print(f"  journalctl --user -u srad -f")
+        print("  systemctl --user status srad")
+        print("  journalctl --user -u srad -f")
     else:
         service_content = SYSTEMD_SERVICE_SYS % (user, sra_bin)
         service_path = "/etc/systemd/system/srad.service"
@@ -332,9 +348,9 @@ def cmd_install_service(args=None) -> None:
         print()
         print("安装命令:")
         print(f"  sudo cp {tmp_path} {service_path}")
-        print(f"  sudo systemctl daemon-reload")
-        print(f"  sudo systemctl enable --now srad")
+        print("  sudo systemctl daemon-reload")
+        print("  sudo systemctl enable --now srad")
         print()
         print("管理命令:")
-        print(f"  sudo systemctl status srad")
-        print(f"  sudo journalctl -u srad -f")
+        print("  sudo systemctl status srad")
+        print("  sudo journalctl -u srad -f")

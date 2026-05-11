@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "sra-agent"
-version = "1.3.0"
+dynamic = ["version"]
 description = "Skill Runtime Advisor — 让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力。带守护进程、多 Agent 适配器、完整 CLI、消息前置推理中间件。"
 readme = "README.md"
 authors = [
@@ -42,11 +42,35 @@ dev = [
 
 [project.scripts]
 sra = "skill_advisor.cli:main"
-srad = "skill_advisor.runtime.daemon:cmd_start"
+srad = "skill_advisor.runtime.commands:cmd_start"
 
 [tool.setuptools.packages.find]
 include = ["skill_advisor", "skill_advisor.*"]
 
+[tool.setuptools_scm]
+version_file = "skill_advisor/_version.py"
+# 从 git tag 解析版本，tag 格式: v1.2.3 (v前缀可选)
+tag_regex = "^(?:[\\w-]+-)?v?(?P<version>[\\d\\.a-b]{3,}(?:rc\\d+)?)$"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# 测试文件：允许布尔比较（== True/False）用于清晰断言
+"tests/*.py" = ["E712", "E741"]
+# 适配器、__init__ 等允许特定宽松
+"skill_advisor/adapters/*.py" = ["E501", "W293"]
+"skill_advisor/__init__.py" = ["I001"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true

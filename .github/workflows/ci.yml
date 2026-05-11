@@ -1,75 +1,78 @@
-# SRA Agent CI — 自动测试流水线
-#
-# 每次 push 或 PR 到 master 时自动运行：
-#   • pytest 测试套件（38 个用例）
-#   • 构建验证（sdist + wheel）
-#
-# 配置参考: https://docs.github.com/en/actions/automating-builds-and-tests
-
+# SRA CI — 自动化测试 + Lint + 类型检查
+# 每个 push/PR 自动运行
 name: CI
 
 on:
   push:
-    branches: [master, "prepare-release-*"]
+    branches: [master, main, feat/v2.0-enforcement-layer]
   pull_request:
-    branches: [master]
+    branches: [master, main]
 
-# 最小权限原则
 permissions:
   contents: read
 
 jobs:
   test:
-    name: "pytest (${{ matrix.python-version }})"
+    name: 🧪 pytest (${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-      fail-fast: false
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 需要完整历史用于 setuptools-scm 版本推导
 
-      - name: 设置 Python ${{ matrix.python-version }}
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-          cache-dependency-path: pyproject.toml
 
-      - name: 安装依赖
+      - name: 📦 Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install -e ".[dev]"
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
 
-      - name: 运行测试
-        run: pytest tests/ -v --tb=short -q
+      - name: ✅ Verify test fixture integrity
+        run: python3 tests/check_fixtures.py 2>&1 || { echo "❌ Fixture 检查失败"; exit 1; }
 
-      - name: 测试摘要
+      - name: 🔍 Verify version (setuptools-scm)
         run: |
-          echo "✅ Python ${{ matrix.python-version }} 测试完成"
-          pytest tests/ --tb=no -q --no-header 2>/dev/null || true
+          python -c "from skill_advisor import __version__; print(f'Version: {__version__}')"
 
-  build:
-    name: "构建验证 (sdist + wheel)"
+      - name: 🧪 Run tests
+        run: |
+          python -m pytest tests/ -q --tb=short -o "addopts="
+
+  lint:
+    name: 🧹 Ruff lint
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [test]
-
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-
-      - name: 设置 Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Run ruff
+        run: ruff check skill_advisor/ tests/
 
-      - name: 安装构建工具
-        run: pip install build twine
-
-      - name: 构建 sdist + wheel
-        run: python3 -m build
-
-      - name: 验证构建产物
-        run: python3 -m twine check dist/*
+  typecheck:
+    name: 🔤 Mypy type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true  # ⚠️ 逐步引入，当前不 block
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: |
+          pip install -e ".[dev]" mypy
+      - name: Run mypy
+        run: |
+          mypy skill_advisor/ || echo "⚠️ mypy 发现类型问题（非阻塞，逐步修复中）"

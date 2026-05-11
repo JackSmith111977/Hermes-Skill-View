@@ -4,7 +4,6 @@
 
 SYNONYMS = {
     # === 画图/可视化 ===
-    "画图": ["draw", "diagram", "chart", "graph", "可视化", "图表", "绘图", "制图"],
     "架构图": ["architecture diagram", "架构图", "系统架构图", "架构设计图"],
     "架构": ["architecture", "framework", "system", "结构", "体系", "架构图"],
     "手绘": ["excalidraw", "hand-drawn", "手绘风格", "草图", "whiteboard"],
@@ -49,7 +48,6 @@ SYNONYMS = {
     # === 工具/操作 ===
     "文件": ["file", "organize", "manage", "整理", "管理", "分类", "文件操作"],
     "代理": ["proxy", "mihomo", "clash", "sing-box", "代理配置", "梯子", "翻墙"],
-    "定时": ["schedule", "cron", "timer", "定时任务", "计划", "周期性", "cronjob", "调度"],
     "翻译": ["translate", "convert", "转换", "翻译", "translation", "i18n"],
     "邮件": ["email", "mail", "message", "消息", "himalaya", "发邮件"],
     "微信": ["wechat", "weixin", "微信", "公众号", "wx", "企业微信"],
@@ -63,7 +61,6 @@ SYNONYMS = {
 
     # === 多媒体 ===
     "ppt": ["powerpoint", "presentation", "幻灯片", "演示", "pptx", "python-pptx"],
-    "视频": ["video", "animation", "manim", "动画", "视频", "movie"],
     "音乐": ["music", "song", "suno", "作曲", "歌词", "生成音乐", "audio"],
     "图片": ["image", "picture", "photo", "照片", "图片生成", "生成图", "illustration"],
     "gif": ["gif", "动图", "表情包", "tenor"],
@@ -101,10 +98,7 @@ SYNONYMS = {
     "提醒": ["remind", "notification", "smart-broadcast", "通知", "推送", "广播", "定时提醒"],
     "总结": ["summary", "总结", "日报", "周报", "月报", "报告", "report", "review"],
     "定时": ["schedule", "cron", "cronjob", "timer", "定时任务", "定时", "周期性"],
-    "飞书": ["feishu", "lark", "飞书", "开放平台"],
     "视频": ["video", "animation", "manim", "manim-video", "动画", "视频", "movie", "youtube-content"],
-    "微信": ["wechat", "weixin", "微信", "公众号", "wx", "企业微信"],
-    "文档": ["document", "doc", "pdf", "word", "docx", "报告", "文档生成", "documentation"],
     "画图": ["draw", "diagram", "chart", "graph", "可视化", "图表", "绘图", "制图", "excalidraw", "mermaid", "architecture diagram"],
     "查资料": ["搜索", "联网", "查资料", "web search", "search", "fetch", "查询", "web"],
     "爬网页": ["crawl", "scrape", "爬取", "爬虫", "抓取", "web-access", "sra-crawl", "网页抓取", "采集"],

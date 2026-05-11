@@ -2,15 +2,16 @@
 技能索引构建模块 — 扫描技能目录，构建完整索引
 """
 
+import glob
+import json
+import logging
 import os
 import re
-import json
-import glob
-import yaml
-import logging
 import threading
-from datetime import datetime, timedelta
-from typing import List, Dict, Set, Optional
+from datetime import datetime
+from typing import Dict, List, Set
+
+import yaml
 
 from .synonyms import SYNONYMS
 
@@ -19,24 +20,24 @@ logger = logging.getLogger("sra.indexer")
 
 class SkillIndexer:
     """技能索引构建器"""
-    
+
     def __init__(self, skills_dir: str, data_dir: str):
         self.skills_dir = skills_dir
         self.index_file = os.path.join(data_dir, "skill_full_index.json")
         self._skills: List[Dict] = []
         self._lock = threading.RLock()
-        
+
         # 缓存
         self._synonyms = SYNONYMS
 
     def extract_keywords(self, text: str, min_len: int = 2) -> Set[str]:
         """提取中英文关键词"""
         words = set()
-        
+
         # 英文单词
         eng = re.findall(r'[a-zA-Z][a-zA-Z0-9_-]{1,}', text.lower())
         words.update(eng)
-        
+
         # 中文词组（2-4 字）—— 改进：减少噪声词
         chinese = re.findall(r'[\u4e00-\u9fff]+', text)
         for ch in chinese:
@@ -51,7 +52,7 @@ class SkillIndexer:
                     # 只保留从词首或到词尾的 n-gram
                     if i == 0 or i + j == len(ch):
                         words.add(sub.lower())
-        
+
         return words
 
     def expand_with_synonyms(self, words: Set[str]) -> Set[str]:
@@ -87,7 +88,7 @@ class SkillIndexer:
             triggers = raw
         elif isinstance(raw, str):
             triggers = [raw]
-        
+
         # 也从 metadata.hermes.tags 中提取
         meta = frontmatter.get("metadata", {})
         if isinstance(meta, dict):
@@ -96,7 +97,7 @@ class SkillIndexer:
                 tags = hermes.get("tags", [])
                 if isinstance(tags, list):
                     triggers.extend(tags)
-        
+
         return [str(t).lower() for t in triggers if t]
 
     def build(self) -> int:
@@ -104,45 +105,45 @@ class SkillIndexer:
         if not os.path.exists(self.skills_dir):
             logger.warning("技能目录不存在: %s", self.skills_dir)
             return 0
-        
+
         sk_files = glob.glob(os.path.join(self.skills_dir, '**/SKILL.md'), recursive=True)
-        
+
         index = []
         for f in sk_files:
             try:
                 with open(f, 'r', encoding='utf-8') as fh:
                     content = fh.read()
-                
+
                 frontmatter = self._parse_frontmatter(content)
                 body = content
-                
+
                 if content.startswith('---'):
                     parts = content.split('---', 2)
                     if len(parts) >= 3:
                         body = parts[2]
-                
+
                 name = frontmatter.get('name', os.path.basename(os.path.dirname(f)))
                 description = frontmatter.get('description', '')
                 triggers = self._extract_triggers(frontmatter)
                 version = frontmatter.get('version', '0.0.0')
-                
+
                 rel_path = os.path.relpath(f, self.skills_dir)
                 parts_path = rel_path.split(os.sep)
                 category = parts_path[0] if len(parts_path) >= 2 else "general"
-                
+
                 # tags
                 meta = frontmatter.get("metadata", {})
                 hermes_meta = meta.get("hermes", {}) if isinstance(meta, dict) else {}
                 tags = hermes_meta.get("tags", []) if isinstance(hermes_meta, dict) else []
                 related = hermes_meta.get("related_skills", []) if isinstance(hermes_meta, dict) else []
-                
+
                 # 正文关键词
                 body_text = body[:800].lower()
                 body_keywords = list(self.extract_keywords(body_text))
-                
+
                 # 构建匹配文本
                 match_text = f"{name} {description} {' '.join(triggers)} {' '.join(tags)}".lower()
-                
+
                 index.append({
                     "name": name,
                     "description": description[:500],
@@ -158,10 +159,10 @@ class SkillIndexer:
                 })
             except Exception as e:
                 logger.warning("跳过 %s: %s", f, e)
-        
+
         with self._lock:
             self._skills = index
-        
+
         # 持久化
         os.makedirs(os.path.dirname(self.index_file), exist_ok=True)
         with open(self.index_file, 'w') as f:
@@ -170,7 +171,7 @@ class SkillIndexer:
                 "count": len(index),
                 "skills": index,
             }, f, indent=2, ensure_ascii=False)
-        
+
         return len(index)
 
     def load_or_build(self) -> List[Dict]:
@@ -178,7 +179,7 @@ class SkillIndexer:
         with self._lock:
             if self._skills:
                 return list(self._skills)
-            
+
             if os.path.exists(self.index_file):
                 try:
                     with open(self.index_file) as f:

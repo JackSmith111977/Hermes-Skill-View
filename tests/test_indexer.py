@@ -2,15 +2,14 @@
 SRA 索引构建测试
 """
 
-import sys
 import os
-import tempfile
 import shutil
+import sys
+import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from skill_advisor.indexer import SkillIndexer
-from skill_advisor.synonyms import SYNONYMS
 
 
 class TestIndexer:
@@ -29,11 +28,11 @@ class TestIndexer:
         """创建测试 skill"""
         skill_dir = os.path.join(self.temp_dir, name)
         os.makedirs(skill_dir, exist_ok=True)
-        
+
         trigger_yaml = ""
         if triggers:
             trigger_yaml = "triggers:\n" + "\n".join(f"  - {t}" for t in triggers)
-        
+
         content = f"""---
 name: {name}
 description: "{desc}"
@@ -58,7 +57,7 @@ version: 1.0.0
         self._create_skill("test-skill", ["test", "skill"])
         count = self.indexer.build()
         assert count == 1, f"应索引 1 个 skill，实际 {count}"
-        
+
         skills = self.indexer.get_skills()
         assert skills[0]["name"] == "test-skill"
         assert "test" in skills[0]["triggers"]
@@ -73,7 +72,7 @@ version: 1.0.0
         ]
         for name, triggers in skills_data:
             self._create_skill(name, triggers)
-        
+
         count = self.indexer.build()
         assert count == 3, f"应索引 3 个 skill，实际 {count}"
 

@@ -6,10 +6,8 @@ SRA - Skill Runtime Advisor
 """
 
 import os
-import json
 import time
-from typing import List, Dict, Optional
-from pathlib import Path
+from typing import Dict, List
 
 from .indexer import SkillIndexer
 from .matcher import SkillMatcher
@@ -27,7 +25,7 @@ class SkillAdvisor:
     def __init__(self, skills_dir: str = None, data_dir: str = None):
         """
         初始化 SRA 引擎
-        
+
         Args:
             skills_dir: 技能目录路径。默认为 ~/.hermes/skills
             data_dir: 数据持久化目录。默认为 ~/.sra/data
@@ -36,15 +34,15 @@ class SkillAdvisor:
         self.data_dir = data_dir or os.path.expanduser(
             os.environ.get("SRA_DATA_DIR", "~/.sra/data")
         )
-        
+
         # 确保数据目录存在
         os.makedirs(self.data_dir, exist_ok=True)
-        
+
         # 初始化子模块
         self.indexer = SkillIndexer(self.skills_dir, self.data_dir)
         self.matcher = SkillMatcher(SYNONYMS)
         self.memory = SceneMemory(self.data_dir)
-        
+
         # 懒加载索引
         self._index_loaded = False
 
@@ -111,11 +109,11 @@ class SkillAdvisor:
     def recommend(self, query: str, top_k: int = 3) -> Dict:
         """
         推荐匹配技能
-        
+
         Args:
             query: 用户输入
             top_k: 返回 top-k 结果
-            
+
         Returns:
             {
                 "recommendations": [...],
@@ -133,24 +131,24 @@ class SkillAdvisor:
         """
         self._ensure_index()
         start = time.time()
-        
+
         skills = self.indexer.get_skills()
         stats = self.memory.load()
-        
+
         # 提取输入关键词
         input_words = self.indexer.extract_keywords(query)
         input_expanded = self.indexer.expand_with_synonyms(input_words)
-        
+
         if not input_expanded:
             return {"recommendations": [], "processing_ms": 0, "skills_scanned": 0, "query": query}
-        
+
         # 对所有 skill 评分
         scored = []
         for skill in skills:
             total, details, reasons = self.matcher.score(
                 input_expanded, skill, stats
             )
-            
+
             if total >= self.THRESHOLD_WEAK:
                 scored.append({
                     "skill": skill["name"],
@@ -161,19 +159,19 @@ class SkillAdvisor:
                     "reasons": reasons[:3],
                     "details": details,
                 })
-        
+
         # 排序取 top-k
         scored.sort(key=lambda x: x["score"], reverse=True)
         top = scored[:top_k]
-        
+
         # 更新推荐计数
         self.memory.increment_recommendations()
 
         # 🆕 构建契约
         contract = self.build_contract(query, scored)
-        
+
         elapsed = round((time.time() - start) * 1000, 1)
-        
+
         return {
             "recommendations": top,
             "processing_ms": elapsed,
@@ -213,7 +211,7 @@ class SkillAdvisor:
         # 2. 对比已加载技能
         loaded = loaded_skills or []
         loaded_lower = [s.lower() for s in loaded]
-        rec_names_lower = [r["skill"].lower() for r in recs]
+        [r["skill"].lower() for r in recs]
 
         missing = [r for r in recs if r["skill"].lower() not in loaded_lower]
 
@@ -263,7 +261,7 @@ class SkillAdvisor:
         self._ensure_index()
         stats = self.memory.load()
         skills = self.indexer.get_skills()
-        
+
         return {
             "total_skills": len(skills),
             "total_recommendations": stats.get("total_recommendations", 0),
@@ -280,21 +278,21 @@ class SkillAdvisor:
         self._ensure_index()
         skills = self.indexer.get_skills()
         stats = self.memory.load()
-        
+
         results = []
         covered = 0
         for skill in skills:
             # 用 skill 自己的 triggers 作为测试查询
             triggers = skill.get("triggers", [])
             name = skill.get("name", "")
-            
+
             # 构造测试查询
             test_queries = []
             if triggers:
                 test_queries.extend(triggers[:3])
             # 用 name 作为后备查询
             test_queries.append(name.replace("-", " "))
-            
+
             # 测试所有查询
             max_score = 0
             for q in test_queries:
@@ -305,11 +303,11 @@ class SkillAdvisor:
                 if input_expanded:
                     total, _, _ = self.matcher.score(input_expanded, skill, stats)
                     max_score = max(max_score, total)
-            
+
             is_covered = max_score >= self.THRESHOLD_WEAK
             if is_covered:
                 covered += 1
-            
+
             results.append({
                 "name": skill["name"],
                 "category": skill.get("category", ""),
@@ -317,7 +315,7 @@ class SkillAdvisor:
                 "max_score": round(max_score, 1),
                 "covered": is_covered,
             })
-        
+
         return {
             "total": len(skills),
             "covered": covered,
