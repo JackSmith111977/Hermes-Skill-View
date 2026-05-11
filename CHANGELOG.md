@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.4.0] — 2026-05-11
+
+### 🚀 Added
+
+- **CI 发布流程重构**: 绕过 setuptools-scm 的 tag 发现机制，改为 CI 中从 GITHUB_REF_NAME 显式提取版本号
+  - 新增 `scripts/set_version.py` — 构建时替换 `pyproject.toml` 中的动态版本为静态版本
+  - `release.yml` 新增 Set version from tag 步骤 — 写 `_version.py` + 设置环境变量
+  - 修复了因轻量标签/CI git describe 不一致导致 setuptools-scm 解析为 `0.0.0.dev0` 的问题
+
+### 🛠️ Changed
+
+- **release.yml**: 显式版本控制替代 setuptools-scm 动态版本检测
+- **docs/VERSIONING.md**: 版本声明位置从 `__init__.py` 改为 CI 工作流从 git tag 自动推导
+
 ## [1.3.0] — 2026-05-11
 
 ### 🚀 Added

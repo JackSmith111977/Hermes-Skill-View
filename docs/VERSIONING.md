@@ -1,6 +1,6 @@
 # SRA 技术版本规约
 
-> **版本:** v1.0 | **更新:** 2026-05-10
+> **版本:** v1.1 | **更新:** 2026-05-11
 
 ---
 
@@ -18,16 +18,18 @@ MAJOR.MINOR.PATCH
   └──────────────── 不兼容的 API 变更
 ```
 
-**当前版本**: `1.3.0`（`__init__.py` 为唯一真实来源）
+**当前版本**: `1.4.0`（从 git tag 自动推导）
 
 ### 1.2 版本声明位置
 
 | 位置 | 用途 | 同步方式 |
 |:---|:---|:---:|
-| `skill_advisor/__init__.py` | **唯一真实来源** | 手动修改 |
-| `pyproject.toml` | pip 包版本 | 与 `__init__.py` 保持一致 |
-| `setup.py` | 自动读取 `__init__.py` | 自动同步 |
-| `CHANGELOG.md` | 版本变更日志 | 每次发布时更新 |
+| `pyproject.toml` | pip 包元数据 | 构建时由 `scripts/set_version.py` 自动替换 |
+| `skill_advisor/_version.py` | 运行时版本导出 | CI 构建时自动生成 |
+| `skill_advisor/__init__.py` | 运行时适配 | 通过 `from ._version import version` 自动读取 |
+| `CHANGELOG.md` | 版本变更日志 | 每次发布时手动更新 |
+
+> **⚠️ v1.4.0 变更**：版本号不再手动写在 `__init__.py` 中，而是在 CI 发布流程中从 git tag 自动推导。
 
 ### 1.3 版本分支策略
 
@@ -47,12 +49,43 @@ v1.1-enhance    v1.2-quality  hotfix-xx   v2.0-enforcement
 
 ### 1.4 发布标签
 
+**必须使用附注标签（annotated tag）：**
+
 ```bash
-git tag -a v1.2.1 -m "Release v1.2.1 — 中文匹配精度修复"
-git push origin v1.2.1
+git tag -a v1.4.0 -m "Release v1.4.0 — 版本说明"
+git push origin v1.4.0
 ```
 
 标签格式：`v{MAJOR}.{MINOR}.{PATCH}`
+
+> **⚠️ 不要使用轻量标签（`git tag v1.4.0`）**：
+> - 轻量标签在 CI 中可能被 `setuptools-scm` 忽略
+> - 历史版本 `v1.2.1`、`v1.3.0` 均为附注标签
+
+### 1.5 发布流程（CI 自动化）
+
+推送 tag 后，GitHub Actions 自动执行 `release.yml` 工作流：
+
+```
+你: git tag -a v1.4.0 -m "..."
+    git push origin v1.4.0
+                    ↓
+GitHub Actions (release.yml):
+  1. Set version from tag
+     → 从 GITHUB_REF_NAME 提取版本号 (v1.4.0 → 1.4.0)
+     → 写入 skill_advisor/_version.py
+     → 设置 SETUPTOOLS_SCM_PRETEND_VERSION 环境变量
+  2. 运行测试 (pytest)
+  3. 构建 wheel + sdist
+     → scripts/set_version.py 替换 pyproject.toml 为静态版本
+  4. 发布到 PyPI (Trusted Publishing)
+  5. 创建 GitHub Release
+```
+
+**为什么不用 `setuptools-scm` 自动检测 tag？**
+- CI 环境中 `git describe`（默认，不包含 `--tags`）有时无法正确识别附注标签
+- `SETUPTOOLS_SCM_PRETEND_VERSION` 在 `python -m build` 的隔离环境中可能不被继承
+- 改为显式从 `GITHUB_REF_NAME` 提取版本号 + 写 `_version.py` + 替换 `pyproject.toml`，三保险确保版本正确
 
 ---
 
@@ -65,8 +98,8 @@ git push origin v1.2.1
 | 3.8 | ✅ 兼容 | 最低要求（`pyproject.toml` 中 `requires-python = ">=3.8"`） |
 | 3.9 | ✅ 兼容 | |
 | 3.10 | ✅ 兼容 | |
-| 3.11 | ✅ 推荐 | 当前开发环境 |
-| 3.12 | ✅ 兼容 | 当前运行环境 |
+| 3.11 | ✅ 兼容 | 当前开发环境 |
+| 3.12 | ✅ 兼容 | |
 | 3.13+ | ⚠️ 未测试 | 预计兼容，待验证 |
 
 ### 2.2 Python 版本特性使用规范
@@ -121,7 +154,7 @@ git push origin v1.2.1
 | 工具 | 版本 | 用途 |
 |:---|:---|:---|
 | `pytest` | ≥7.0 | 测试框架 |
-| `flake8` | ≥5.0（推荐） | 代码风格检查 |
+| `ruff` | — | 代码风格检查（替代 flake8） |
 | `mypy` | ≥1.0（推荐） | 类型检查 |
 | `git` | ≥2.0 | 版本控制 |
 | `python` | ≥3.8 | 运行环境 |
@@ -162,14 +195,12 @@ git push origin v1.2.1
 
 ### 6.1 发布检查清单
 
-- [ ] 更新 `__init__.py` 中的 `__version__`
 - [ ] 更新 `CHANGELOG.md`（按 [Keep a Changelog](https://keepachangelog.com/) 格式）
-- [ ] 确认 `pyproject.toml` 中的 `version` 与 `__init__.py` 一致
+- [ ] 更新文档（README、API-REFERENCE——如有变更）
 - [ ] 运行完整测试套件：`python3 -m pytest tests/ -v`
-- [ ] 确认覆盖率检测通过
-- [ ] 更新文档（README、API-REFERENCE）
-- [ ] 创建 git tag：`git tag -a v{version} -m "Release v{version}"`
-- [ ] 推送 tag：`git push origin v{version}`
+- [ ] **创建附注标签**：`git tag -a v{version} -m "Release v{version} — 版本说明"`
+- [ ] **推送 tag**：`git push origin v{version}`
+- [ ] CI 自动完成：构建 → 测试 → PyPI 发布 → GitHub Release
 
 ### 6.2 版本号速查
 
