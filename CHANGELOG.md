@@ -24,6 +24,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 📋 pending | SRA 契约机制 (SRA-003-05) | 🟡 P1 | 2天 |
 | 📋 pending | **运行时力度体系 (SRA-003-06)** | 🟡 P1 | 3天 |
 
+#### 🔧 Sprint 1 中间修复
+
+| 修复 | 问题 | 修复方案 |
+|:----|:-----|:---------|
+| **sra-dep.conf `Requires=` → `Wants=`** | `Requires=srad.service` 导致 `srad.service` 不存在时 Gateway 启动失败（exit 5, `Unit srad.service not found`） | 改为 `Wants=` 软依赖；SRA 存在时按序启动，不存在时 Gateway 不受影响 |
+| **Drop-in 生命周期管理 (SRA-003-17)** | SRA 迁移/卸载后 `sra-dep.conf` 成为孤儿配置 | 新增 Story 17：`install.sh --uninstall` + `check-sra.py` 健康检查 + `sra dep-check` 命令 |
+
 See [EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者](docs/EPIC-003-v2-enforcement-layer.md)
 
 | 优先级 | 故事 | 描述 |
