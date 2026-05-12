@@ -26,6 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 新增 `scripts/set_version.py` — 构建时替换 `pyproject.toml` 中的动态版本为静态版本
   - `release.yml` 新增 Set version from tag 步骤 — 写 `_version.py` + 设置环境变量
   - 修复了因轻量标签/CI git describe 不一致导致 setuptools-scm 解析为 `0.0.0.dev0` 的问题
+- **SRA-003-16: 架构优化** — 并发安全 + 路由统一
+  - `_update_status()` 加锁保护（复用 `self._lock`）
+  - `memory.py` 跨进程文件锁（`fcntl.flock`）
+  - `_last_refresh` + `_stats` 原子化读写
+  - 提取统一路由表 `ROUTER`（11 个 action→handler 映射）
+  - Socket `_handle_request` + HTTP `do_POST` 共用同一路由
+  - 新增端点只需在 `ROUTER` 注册一次
+  - 新增 8 个并发安全测试：状态写入/统计精度/文件锁/路由一致性
 
 ### 🛠️ Changed
 

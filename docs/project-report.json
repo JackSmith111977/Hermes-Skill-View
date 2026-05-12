@@ -131,23 +131,23 @@
         {"id": "SRA-003-19", "name": "质量修复 Sprint 2", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
         {"id": "SRA-003-20", "name": "质量修复 Sprint 3", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
         {"id": "SRA-003-15", "name": "质量增强（Schema/日志/魔法数字）", "pri": "P1", "status": "completed", "sprint": "Sprint 3"},
-        {"id": "SRA-003-16", "name": "架构优化（并发安全/路由统一）", "pri": "P1", "status": "pending", "sprint": ""},
+        {"id": "SRA-003-16", "name": "架构优化（并发安全/路由统一）", "pri": "P1", "status": "completed", "sprint": "Sprint 3"},
         {"id": "SRA-003-21", "name": "分支同步与 v1.3.0 发布", "pri": "P0", "status": "completed", "sprint": "Sprint 3"},
         {"id": "SRA-003-22", "name": "os.fork()→subprocess.Popen (A-8)", "pri": "P0", "status": "completed", "sprint": "Sprint 3"}
       ]
     }
   ],
   "tests": {
-    "passing": 304,
-    "total": 304,
+    "passing": 312,
+    "total": 312,
     "duration_seconds": 25,
     "coverage_pct": null,
-    "files": ["test_matcher.py", "test_indexer.py", "test_coverage.py", "test_benchmark.py", "test_daemon.py", "test_cli.py", "test_api_integration.py", "test_dropin.py", "test_adapters.py", "test_singleton.py", "test_skill_map.py", "test_contract.py", "test_force.py", "test_validate.py", "test_daemon_http.py", "test_memory.py", "test_config.py"]
+    "files": ["test_matcher.py", "test_indexer.py", "test_coverage.py", "test_benchmark.py", "test_daemon.py", "test_cli.py", "test_api_integration.py", "test_dropin.py", "test_adapters.py", "test_singleton.py", "test_skill_map.py", "test_contract.py", "test_force.py", "test_validate.py", "test_daemon_http.py", "test_memory.py", "test_config.py", "test_concurrency.py"]
   },
   "sprint_history": [
     {"sprint": "Sprint 1", "version": "v2.0-alpha", "date": "2026-05-09", "stories_completed": 7, "tests_growth": "38→103"},
     {"sprint": "Sprint 2", "version": "v1.3.0", "date": "2026-05-11", "stories_completed": 11, "tests_growth": "174→290"},
-    {"sprint": "Sprint 3 (completed)", "version": "v1.4.0-dev", "date": "2026-05-12", "stories_completed": 1, "tests_growth": "290→304"}
+    {"sprint": "Sprint 3 (completed)", "version": "v1.4.0-dev", "date": "2026-05-12", "stories_completed": 2, "tests_growth": "290→312"}
   ],
   "footer": "由 generate-project-report.py 数据驱动自动生成"
 }
