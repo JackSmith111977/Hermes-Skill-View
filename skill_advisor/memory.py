@@ -4,6 +4,7 @@
 v2: 扩展了技能轨迹追踪（view/use/skip）+ 遵循率统计
 """
 
+import fcntl
 import json
 import os
 import threading
@@ -61,13 +62,18 @@ class SceneMemory:
         }
 
     def save(self):
-        """保存场景记忆"""
+        """保存场景记忆（线程安全 + 跨进程文件锁）"""
         with self._lock:
             if self._cache is None:
                 return
             os.makedirs(os.path.dirname(self.stats_file), exist_ok=True)
-            with open(self.stats_file, 'w') as f:
+            with open(self.stats_file, 'a') as f:
+                # 跨进程文件锁：防止多实例交叉写入
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                f.truncate(0)
                 json.dump(self._cache, f, indent=2, ensure_ascii=False)
+                f.flush()
+                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
 
     # ── 推荐记录（原有） ──────────────────────────────────────────
 

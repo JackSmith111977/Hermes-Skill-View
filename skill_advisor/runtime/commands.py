@@ -76,10 +76,17 @@ def cmd_start(args=None) -> None:
 
         # 初始化日志
         cfg = load_config()
+        from logging.handlers import RotatingFileHandler
+        log_file = os.path.join(os.path.expanduser("~/.sra"), "logs", "srad.log")
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
         logging.basicConfig(
             level=getattr(logging, cfg.get("log_level", "INFO")),
-            format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            handlers=[logging.StreamHandler(sys.stdout)],
+            format="%(asctime)s [%(levelname)s] [%(name)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+            handlers=[
+                RotatingFileHandler(log_file, maxBytes=10*1024*1024, backupCount=5),
+                logging.StreamHandler(sys.stdout),
+            ],
         )
 
         daemon = SRaDDaemon()

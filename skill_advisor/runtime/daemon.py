@@ -345,45 +345,20 @@ class SRaDDaemon:
                     count = self.daemon.advisor.refresh_index()
                     self._send_json({"status": "ok", "count": count})
                 elif self.path == "/validate":
-                    from .endpoints.validate import handle_validate
-                    # 注入力度等级信息
-                    force = self.daemon.force_manager
-                    data["_force_level"] = force.get_level()
-                    data["_monitored_tools"] = force.get_monitored_tools()
-                    result = handle_validate(data)
+                    result = self.daemon._handle_validate(data)
                     self._send_json(result)
                 elif self.path == "/force":
-                    level = data.get("level", "").lower()
-                    if not level:
-                        self._send_json({
-                            "status": "ok",
-                            "current_level": self.daemon.force_manager.get_summary(),
-                            "available_levels": list(FORCE_LEVELS.keys()),
-                        })
-                        return
-                    if level not in FORCE_LEVELS:
-                        self._send_json({
-                            "error": f"无效的力度等级: {level}",
-                            "available": list(FORCE_LEVELS.keys()),
-                        }, 400)
-                        return
-                    success = self.daemon.force_manager.set_level(level)
-                    if success:
-                        self._send_json({
-                            "status": "ok",
-                            "message": f"力度等级已切换为 {level}",
-                            "current_level": self.daemon.force_manager.get_summary(),
-                        })
-                    else:
-                        self._send_json({"error": "设置力度等级失败"}, 500)
+                    result = self.daemon._handle_force(data)
+                    self._send_json(result)
                 elif self.path == "/recheck":
-                    summary = data.get("conversation_summary", "")
-                    if not summary:
-                        self._send_json({"error": "missing conversation_summary"}, 400)
-                        return
-                    loaded_skills = data.get("loaded_skills", [])
-                    result = self.daemon.advisor.recheck(summary, loaded_skills)
-                    self._send_json({"status": "ok", "recheck": result})
+                    result = self.daemon._handle_recheck(data)
+                    self._send_json(result)
+                elif self.path == "/stats":
+                    result = self.daemon._handle_stats({})
+                    self._send_json(result)
+                elif self.path == "/stats/compliance" or self.path == "/compliance":
+                    result = self.daemon._handle_stats_compliance({})
+                    self._send_json(result)
                 else:
                     self._send_json({"error": "not_found"}, 404)
 
@@ -436,7 +411,8 @@ class SRaDDaemon:
                     logger.info("定时刷新技能索引...")
                     count = self.advisor.refresh_index()
                     logger.info(f"索引刷新完成: {count} 个 skill")
-                    self._last_refresh = time.time()
+                    with self._lock:
+                        self._last_refresh = time.time()
                     last_timer_refresh = time.time()
                     # 刷新后更新校验和
                     last_checksum = self._compute_skills_checksum()
@@ -451,7 +427,8 @@ class SRaDDaemon:
                     try:
                         count = self.advisor.refresh_index()
                         logger.info(f"变更刷新完成: {count} 个 skill")
-                        self._last_refresh = time.time()
+                        with self._lock:
+                            self._last_refresh = time.time()
                         last_checksum = current_checksum
                     except Exception as e:
                         logger.error(f"变更刷新失败: {e}")
@@ -486,109 +463,141 @@ class SRaDDaemon:
             logger.warning(f"计算技能目录校验和失败: {e}")
             return ""
 
+    # ── 统一路由表 ──────────────────────────────
+    # 所有 action → handler 映射在此注册
+    # Socket 和 HTTP 共用此路由
+    ROUTER = {
+        "recommend": "_handle_recommend",
+        "record": "_handle_record",
+        "refresh": "_handle_refresh",
+        "stats": "_handle_stats",
+        "ping": "_handle_ping",
+        "coverage": "_handle_coverage",
+        "stats/compliance": "_handle_stats_compliance",
+        "stop": "_handle_stop",
+        "validate": "_handle_validate",
+        "force": "_handle_force",
+        "recheck": "_handle_recheck",
+    }
+
     # ── 请求处理 ──────────────────────────────
 
     def _handle_request(self, request: dict) -> dict:
-        """处理 API 请求"""
+        """处理 API 请求（通过 ROUTER 分发）"""
         with self._lock:
             self._stats["total_requests"] += 1
 
         action = request.get("action", "")
         params = request.get("params", {})
 
-        if action == "recommend":
-            query = params.get("query", "")
-            if not query:
-                return {"error": "missing query"}
-            result = self.advisor.recommend(query)
-            with self._lock:
-                self._stats["total_recommendations"] += 1
-            return {"status": "ok", "result": result}
+        handler_name = self.ROUTER.get(action)
+        if handler_name:
+            handler = getattr(self, handler_name, None)
+            if handler:
+                return handler(params)
+            logger.warning("路由表中有 action '%s' 但方法 %s 不存在", action, handler_name)
 
-        elif action == "record":
-            skill = params.get("skill", "")
-            action_type = params.get("action", "")  # viewed/used/skipped
-            if action_type:
-                if action_type == "viewed":
-                    self.advisor.record_view(skill)
-                elif action_type == "used":
-                    self.advisor.record_use(skill)
-                elif action_type == "skipped":
-                    reason = params.get("reason", "")
-                    self.advisor.record_skip(skill, reason)
-                else:
-                    return {"error": f"unknown action: {action_type}"}
-                return {"status": "ok"}
-            # 旧式：记录推荐采纳
-            user_input = params.get("input", "")
-            accepted = params.get("accepted", True)
-            self.advisor.record_usage(skill, user_input, accepted)
+        return {"error": f"unknown action: {action}"}
+
+    def _handle_recommend(self, params: dict) -> dict:
+        """推荐处理"""
+        query = params.get("query", "")
+        if not query:
+            return {"error": "missing query"}
+        result = self.advisor.recommend(query)
+        with self._lock:
+            self._stats["total_recommendations"] += 1
+        return {"status": "ok", "result": result}
+
+    def _handle_record(self, params: dict) -> dict:
+        """记录处理"""
+        skill = params.get("skill", "")
+        action_type = params.get("action", "")  # viewed/used/skipped
+        if action_type:
+            if action_type == "viewed":
+                self.advisor.record_view(skill)
+            elif action_type == "used":
+                self.advisor.record_use(skill)
+            elif action_type == "skipped":
+                reason = params.get("reason", "")
+                self.advisor.record_skip(skill, reason)
+            else:
+                return {"error": f"unknown action: {action_type}"}
             return {"status": "ok"}
+        # 旧式：记录推荐采纳
+        user_input = params.get("input", "")
+        accepted = params.get("accepted", True)
+        self.advisor.record_usage(skill, user_input, accepted)
+        return {"status": "ok"}
 
-        elif action == "refresh":
-            count = self.advisor.refresh_index()
-            return {"status": "ok", "count": count}
+    def _handle_refresh(self, params: dict) -> dict:
+        """刷新索引"""
+        count = self.advisor.refresh_index()
+        return {"status": "ok", "count": count}
 
-        elif action == "stats":
-            return {"status": "ok", "stats": self.get_stats()}
+    def _handle_stats(self, params: dict) -> dict:
+        """统计信息"""
+        return {"status": "ok", "stats": self.get_stats()}
 
-        elif action == "ping":
-            return {"status": "ok", "pong": True}
+    def _handle_ping(self, params: dict) -> dict:
+        """心跳检测"""
+        return {"status": "ok", "pong": True}
 
-        elif action == "coverage":
-            result = self.advisor.analyze_coverage()
-            return {"status": "ok", "result": result}
+    def _handle_coverage(self, params: dict) -> dict:
+        """覆盖率分析"""
+        result = self.advisor.analyze_coverage()
+        return {"status": "ok", "result": result}
 
-        elif action == "stats/compliance":
-            stats = self.advisor.get_compliance_stats()
-            return {"status": "ok", "compliance": stats}
+    def _handle_stats_compliance(self, params: dict) -> dict:
+        """遵循率统计"""
+        stats = self.advisor.get_compliance_stats()
+        return {"status": "ok", "compliance": stats}
 
-        elif action == "stop":
-            # 远程停止
-            t = threading.Thread(target=self.stop, daemon=True)
-            t.start()
-            return {"status": "ok", "message": "stopping"}
+    def _handle_stop(self, params: dict) -> dict:
+        """远程停止"""
+        t = threading.Thread(target=self.stop, daemon=True)
+        t.start()
+        return {"status": "ok", "message": "stopping"}
 
-        elif action == "validate":
-            from .endpoints.validate import handle_validate
-            # 注入力度等级信息
-            force = self.force_manager
-            params["_force_level"] = force.get_level()
-            params["_monitored_tools"] = force.get_monitored_tools()
-            return {"status": "ok", "result": handle_validate(params)}
+    def _handle_validate(self, params: dict) -> dict:
+        """工具调用前技能校验"""
+        from .endpoints.validate import handle_validate
+        force = self.force_manager
+        params["_force_level"] = force.get_level()
+        params["_monitored_tools"] = force.get_monitored_tools()
+        return {"status": "ok", "result": handle_validate(params)}
 
-        elif action == "force":
-            level = params.get("level", "")
-            if not level:
-                return {
-                    "status": "ok",
-                    "current_level": self.force_manager.get_summary(),
-                    "available_levels": list(FORCE_LEVELS.keys()),
-                }
-            if level not in FORCE_LEVELS:
-                return {
-                    "error": f"无效的力度等级: {level}",
-                    "available": list(FORCE_LEVELS.keys()),
-                }
-            success = self.force_manager.set_level(level)
-            if success:
-                return {
-                    "status": "ok",
-                    "message": f"力度等级已切换为 {level}",
-                    "current_level": self.force_manager.get_summary(),
-                }
-            return {"error": "设置力度等级失败"}
+    def _handle_force(self, params: dict) -> dict:
+        """力度管理"""
+        level = params.get("level", "")
+        if not level:
+            return {
+                "status": "ok",
+                "current_level": self.force_manager.get_summary(),
+                "available_levels": list(FORCE_LEVELS.keys()),
+            }
+        if level not in FORCE_LEVELS:
+            return {
+                "error": f"无效的力度等级: {level}",
+                "available": list(FORCE_LEVELS.keys()),
+            }
+        success = self.force_manager.set_level(level)
+        if success:
+            return {
+                "status": "ok",
+                "message": f"力度等级已切换为 {level}",
+                "current_level": self.force_manager.get_summary(),
+            }
+        return {"error": "设置力度等级失败"}
 
-        elif action == "recheck":
-            summary = params.get("conversation_summary", "")
-            if not summary:
-                return {"error": "missing conversation_summary"}
-            loaded_skills = params.get("loaded_skills", [])
-            result = self.advisor.recheck(summary, loaded_skills)
-            return {"status": "ok", "recheck": result}
-
-        else:
-            return {"error": f"unknown action: {action}"}
+    def _handle_recheck(self, params: dict) -> dict:
+        """长任务上下文漂移重检"""
+        summary = params.get("conversation_summary", "")
+        if not summary:
+            return {"error": "missing conversation_summary"}
+        loaded_skills = params.get("loaded_skills", [])
+        result = self.advisor.recheck(summary, loaded_skills)
+        return {"status": "ok", "recheck": result}
 
     # ── 状态管理 ──────────────────────────────
 
@@ -620,14 +629,15 @@ class SRaDDaemon:
             }
 
     def _update_status(self, status: str) -> None:
-        """更新状态文件"""
+        """更新状态文件（线程安全）"""
         ensure_sra_home()
         try:
-            with open(STATUS_FILE, 'w') as f:
-                json.dump({
-                    "status": status,
-                    "pid": os.getpid(),
-                    "updated_at": datetime.now().isoformat(),
-                }, f)
+            with self._lock:
+                with open(STATUS_FILE, 'w') as f:
+                    json.dump({
+                        "status": status,
+                        "pid": os.getpid(),
+                        "updated_at": datetime.now().isoformat(),
+                    }, f)
         except OSError as e:
             logger.warning("状态文件写入失败: %s", e)

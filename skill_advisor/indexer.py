@@ -172,6 +172,7 @@ class SkillIndexer:
                 "skills": index,
             }, f, indent=2, ensure_ascii=False)
 
+        logger.debug("build | 构建完成: %d 个技能已索引", len(index))
         return len(index)
 
     def load_or_build(self) -> List[Dict]:
@@ -188,8 +189,7 @@ class SkillIndexer:
                     if self._skills:
                         return list(self._skills)
                 except Exception:
-                    import logging
-                    logging.getLogger("sra.indexer").debug("索引缓存加载失败，重新构建")
+                    logger.debug("索引缓存加载失败，重新构建")
             self.build()
             return list(self._skills)
 
