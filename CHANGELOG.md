@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.4] — 2026-05-12
+
+### 🚀 Added
+
+- **AC 审计脚本**: `scripts/ac-audit.py` — check/sync/dashboard 三模式自动验证 Epic 文档验收标准
+  - check 模式: 分析 AC 完成率，检测代码已实现但文档未勾选的项
+  - sync 模式: 自动勾选可验证的 AC（文件/函数/测试/CLI/端点存在性）
+  - dashboard 模式: 输出 Story 维度完成率表格
+- **sra-dev-workflow 门禁增强**: Phase 3/Sprint 结束/最终验证三步均新增 AC 审计步骤
+- **sdd-workflow 门禁增强**: 铁律 #6 + 开发流程 AC 同步 + 使用示例更新
+
+### 📝 Documentation
+
+- **全面文档对齐**: EPIC-003 文档 13 个 Story 的验收标准与代码实际完成状态同步
+  - 新增 69 个 [x] 标记，从 ~40% 对齐至 ~95%
+  - ROADMAP.md v2.0 表格添加状态列
+- **根因分析文档化**: 五层根因链分析（行为层→工具层→流程层→门禁层→哲学层）
+
 ## [2.0.3] — 2026-05-12
 
 ### 🚀 Added
