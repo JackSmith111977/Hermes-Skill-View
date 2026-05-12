@@ -19,8 +19,19 @@ Function scope (每次测试独立):
   - advisor_from_fixtures     → 使用 fixture 数据初始化的 SkillAdvisor
   - advisor_with_memory       → 带场景记忆的 SkillAdvisor
 
+== pytest markers (QA 工作流) ==
+
+unit:         单元测试，快速执行 (< 3s)
+integration:  集成测试，需多模块配合
+slow:         慢速测试 (> 5s)
+flaky:        已知不稳定测试（当前: test_serve_forever_in_thread）
+smoke:        冒烟测试，版本发布前快速验证
+concurrency:  并发安全测试
+benchmark:    性能基准测试
+
 == 历史 ==
 2026-05-11: 创建 — 解决 test_contract.py 绕过 fixture 直接使用 ~/.hermes/skills 的问题
+2026-05-12: 添加 pytest markers 定义 — 对齐 QA 工作流 L0-L4 分类
 """
 import json
 import os
@@ -30,6 +41,20 @@ import pytest
 
 # 确保包在 sys.path 中
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+
+def pytest_configure(config):
+    """注册 QA 工作流相关的 pytest markers"""
+    config.addinivalue_line("markers", "unit: 单元测试，快速执行 (< 3s)")
+    config.addinivalue_line("markers", "integration: 集成测试，需多模块配合")
+    config.addinivalue_line("markers", "slow: 慢速测试 (> 5s)")
+    config.addinivalue_line("markers", "flaky: 已知不稳定测试，失败不阻断CI")
+    config.addinivalue_line("markers", "smoke: 冒烟测试，版本发布前验证")
+    config.addinivalue_line("markers", "concurrency: 并发安全测试")
+    config.addinivalue_line("markers", "benchmark: 性能基准测试")
+
+
+# ── 常量 ────────────────────────────────────────────────
 
 # ── 常量 ────────────────────────────────────────────────
 
