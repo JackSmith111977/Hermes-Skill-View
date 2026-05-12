@@ -3,7 +3,7 @@
     "icon": "🔮",
     "name": "SRA — Skill Runtime Advisor",
     "package": "sra-agent",
-    "version": "1.4.0-dev",
+    "version": "2.0.0",
     "description": "让 AI Agent 知道自己有什么能力，以及什么时候该用什么能力",
     "long_description": "是一个运行在 AI Agent 旁的守护进程，在 Agent 收到用户消息时自动分析语义、推荐最匹配的 Hermes Skill，并通过 <code>pre_tool_call</code> 钩子系统在校验工具调用前检查技能遵循度。<br><br>⚠️ 版本由 setuptools-scm 从 git tag 自动推导（<code>__init__.py</code> 含多级 fallback，静态 regex 不可靠）。当前 dev 版，正式版见 git tag。",
     "author": "Emma (SRA Team), Kei",
@@ -147,7 +147,7 @@
   "sprint_history": [
     {"sprint": "Sprint 1", "version": "v2.0-alpha", "date": "2026-05-09", "stories_completed": 7, "tests_growth": "38→103"},
     {"sprint": "Sprint 2", "version": "v1.3.0", "date": "2026-05-11", "stories_completed": 11, "tests_growth": "174→290"},
-    {"sprint": "Sprint 3 (completed)", "version": "v1.4.0-dev", "date": "2026-05-12", "stories_completed": 2, "tests_growth": "290→312"}
+    {"sprint": "Sprint 3 (completed)", "version": "v2.0.0", "date": "2026-05-12", "stories_completed": 2, "tests_growth": "290→312"}
   ],
   "footer": "由 generate-project-report.py 数据驱动自动生成"
 }
