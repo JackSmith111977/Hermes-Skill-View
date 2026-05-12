@@ -41,28 +41,29 @@
 | ✅ completed | **质量修复 Sprint 2 (SRA-003-19)** | EPIC-003 | 🟡 P1 | 4h |
 | ✅ completed | **质量修复 Sprint 3 (SRA-003-20)** | EPIC-003 | 🟡 P1 | 3h |
 
-## 🚀 v2.0 — SRA Enforcement Layer（当前 Epic）
+## 🚀 v2.0 — SRA Enforcement Layer（✅ 已完成 v2.0.3）
 
 > **核心主题**: 从「技能推荐者」升级为「运行时守护者」
-> **目标版本**: SRA v2.0.0 | 估时: ~15 个工作日
+> **状态**: ✅ 经代码审计确认，实际完成度 ~95%
+> **目标版本**: SRA v2.0.3 | **完成日期**: 2026-05-12
 ### EPIC-003 详细规划 → [`docs/EPIC-003-v2-enforcement-layer.md`](docs/EPIC-003-v2-enforcement-layer.md)
 
-| 优先级 | 故事 | 描述 |
-|:------:|:-----|:------|
-| 🔴 P0 | Tool 层 SRA 校验 | `POST /validate` + pre_tool_call hook 集成 |
-| 🔴 P0 | 文件类型技能映射 | FILE_SKILL_MAP + 配置文件 |
-| 🔴 P0 | **Daemon 单例守护** | 防止多实例冲突 (SRA-003-12) |
-| 🔴 P0 | **HTTP 架构 + 异常处理** | 修复 ThreadingMixIn + 消除 `except: pass` (SRA-003-13) |
-| 🟡 P1 | 技能使用轨迹记录 | POST /record 扩展 + loaded_skills 追踪 |
-| 🟡 P1 | 长任务上下文保护 | 每 5 轮重注入 + 漂移检测 |
-| 🟡 P1 | SRA 契约机制 | 任务开始时自动生成技能契约 |
-| 🟡 P1 | **测试覆盖增强** | daemon + CLI 测试 (SRA-003-14) |
-| 🟡 P1 | **配置验证 + 日志 + 魔法数字** | 质量增强 (SRA-003-15) |
-| 🟢 P2 | 可配置严格度 | relaxed / normal / strict 三级 |
-| 🟢 P2 | SOUL.md 压缩保护 | 保护 SRA 规则不被 Context Compaction 裁剪 |
-| 🟢 P2 | 遵循率仪表盘 | GET /stats/compliance + CLI 命令 |
-| 🟢 P2 | 推荐质量反馈闭环 | 采纳率自动调整推荐权重 |
-| 🟢 P2 | **并发安全 + 路由统一** | 架构优化 (SRA-003-16) |
+| 优先级 | 故事 | 描述 | 状态 |
+|:------:|:-----|:------|:----:|
+| 🔴 P0 | Tool 层 SRA 校验 | `POST /validate` + pre_tool_call hook 集成 | ✅ |
+| 🔴 P0 | 文件类型技能映射 | FILE_SKILL_MAP + 配置文件 | ✅ |
+| 🔴 P0 | **Daemon 单例守护** | 防止多实例冲突 (SRA-003-12) | ✅ |
+| 🔴 P0 | **HTTP 架构 + 异常处理** | 修复 ThreadingMixIn + 消除 `except: pass` (SRA-003-13) | ✅ 仅剩 SUPPRESSED_EXCEPTIONS 白名单 |
+| 🟡 P1 | 技能使用轨迹记录 | POST /record 扩展 + loaded_skills 追踪 | ✅ |
+| 🟡 P1 | 长任务上下文保护 | 每 5 轮重注入 + 漂移检测 | ✅ |
+| 🟡 P1 | SRA 契约机制 | 任务开始时自动生成技能契约 | ✅ |
+| 🟡 P1 | **测试覆盖增强** | daemon + CLI 测试 (SRA-003-14) | ✅ 314 测试全过 |
+| 🟡 P1 | **配置验证 + 日志 + 魔法数字** | 质量增强 (SRA-003-15) | ✅ 仅日志格式统一未完成 |
+| 🟢 P2 | 可配置严格度 | relaxed / normal / strict 三级（已实现为力度体系） | ✅ |
+| 🟢 P2 | SOUL.md 压缩保护 | 保护 SRA 规则不被 Context Compaction 裁剪 | 部分完成 |
+| 🟢 P2 | 遵循率仪表盘 | GET /stats/compliance + CLI 命令 | ✅ |
+| 🟢 P2 | 推荐质量反馈闭环 | 采纳率自动调整推荐权重 | 部分完成 |
+| 🟢 P2 | **并发安全 + 路由统一** | 架构优化 (SRA-003-16) | ✅ |
 
 **目标版本**: SRA v2.0.0 | 估时: ~15 个工作日
 

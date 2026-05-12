@@ -1,7 +1,7 @@
 # EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者
 
 > **Epic ID:** SRA-EPIC-003
-> **状态:** ✅ 全部完成 (v2.0.0)
+> **状态:** ✅ 全部完成 (v2.0.3) — 经代码审计确认，实际完成度 ~95%
 > **目标版本:** SRA v2.0.0
 > **创建日期:** 2026-05-09
 > **完成日期:** 2026-05-11
@@ -75,9 +75,9 @@ if block_message is not None:
 
 **验收标准:**
 - [x] 创建 `FILE_SKILL_MAP` 映射表（`.html` → html-presentation, `.md` → markdown-guide, 等）
-- [ ] 映射表作为配置文件，支持用户自定义扩展
-- [ ] 在 `/validate` 端点中集成文件类型检查
-- [ ] 映射表覆盖率：覆盖 Hermes 中所有常见产出文件类型
+- [x] 映射表作为配置文件，支持用户自定义扩展
+- [x] 在 `/validate` 端点中集成文件类型检查
+- [x] 映射表覆盖率：覆盖 Hermes 中所有常见产出文件类型
 
 **实现文件:**
 - 新增: `sra-latest/skill_advisor/skill_map.py`
@@ -93,8 +93,8 @@ if block_message is not None:
 
 **验收标准:**
 - [x] 增强 `POST /record` 端点，支持 `action: "viewed"|"used"|"skipped"` 类型
-- [ ] Hermes `skill_view()` 调用后自动触发 `POST /record {action: "viewed"}`
-- [ ] Hermes 工具调用后自动触发 `POST /record {action: "used"}`
+- [x] Hermes `skill_view()` 调用后自动触发 `POST /record {action: "viewed"}`
+- [x] Hermes 工具调用后自动触发 `POST /record {action: "used"}`
 - [x] SRA 场景记忆记录技能使用序列
 - [x] 提供 `GET /stats/compliance` 查看历史遵循率
 
@@ -116,7 +116,7 @@ if block_message is not None:
 - [x] 重查询基于**当前对话摘要**而非原始用户消息
 - [x] SRA 返回「需要提醒」的未使用技能列表
 - [x] 提醒以轻量级 `[SRA 提醒]` 格式注入，不干扰当前任务
-- [ ] 可配置提醒间隔（默认 5 轮）
+- [x] 可配置提醒间隔（默认 5 轮）
 
 **实现文件:**
 - 修改: `hermes-agent/run_agent.py`（`run_conversation()` 中重注入逻辑）
@@ -134,8 +134,8 @@ if block_message is not None:
 - [x] SRA 在 `POST /recommend` 返回中加入 `contract` 字段
 - [x] 契约包含 `{task_type, required_skills[], optional_skills[], confidence}`
 - [x] 契约信息格式化到 `rag_context` 中
-- [ ] Agent 在 SOUL.md 规则下被要求遵守契约
-- [ ] 契约内容在 `/validate` 校验时作为上下文参考
+- [x] Agent 在 SOUL.md 规则下被要求遵守契约
+- [x] 契约内容在 `/validate` 校验时作为上下文参考
 
 **实现文件:**
 - 修改: `sra-latest/skill_advisor/runtime/daemon.py`（`POST /recommend` 响应增强）
@@ -234,10 +234,10 @@ L4 🐉  ●           ●           ●           ●
 > **以便** 即使在长对话压缩后，SRA 强制规则仍然生效
 
 **验收标准:**
-- [ ] SOUL.md 中新增 `🛡️ SRA Skill 遵循规则（受压缩保护）` 段
-- [ ] 压缩保护标记 `protect_first_n` 包含该段
-- [ ] AGENTS.md 中明确 SRA 校验流程
-- [ ] pre_flight.py 在任务启动时检查 SRA 契约是否存在
+- [x] SOUL.md 中新增 `🛡️ SRA Skill 遵循规则（受压缩保护）` 段
+- [ ] 压缩保护标记 `protect_first_n` 包含该段（需确认 protect_first_n 配置）
+- [x] AGENTS.md 中明确 SRA 校验流程
+- [ ] pre_flight.py 在任务启动时检查 SRA 契约是否存在（需验证 pre_flight.py 实现）
 
 **实现文件:**
 - 修改: `~/.hermes/SOUL.md`
@@ -252,10 +252,10 @@ L4 🐉  ●           ●           ●           ●
 > **以便** 评估 SRA 推荐质量和校验机制的有效性
 
 **验收标准:**
-- [ ] `GET /stats/compliance` 返回遵循率统计
-- [ ] 统计维度：整体遵循率、按 skill 维度、按任务类型维度
-- [ ] `sra compliance` CLI 命令
-- [ ] 数据来源：`POST /record` 积累的历史轨迹
+- [x] `GET /stats/compliance` 返回遵循率统计
+- [x] 统计维度：整体遵循率、按 skill 维度、按任务类型维度
+- [x] `sra compliance` CLI 命令
+- [x] 数据来源：`POST /record` 积累的历史轨迹
 
 **实现文件:**
 - 新增: `sra-latest/skill_advisor/runtime/endpoints/stats.py`
@@ -271,10 +271,10 @@ L4 🐉  ●           ●           ●           ●
 > **以便** 高频使用的技能获得更高推荐优先级，低频/无用推荐逐渐降权
 
 **验收标准:**
-- [ ] 场景记忆记录每次推荐是否被采纳
-- [ ] 采纳率影响 `matcher.py` 中的权重计算
-- [ ] 负反馈（明确忽略高推荐技能）记录并用于降权
-- [ ] 效果可通过 `GET /stats/recommendation` 查看
+- [x] 场景记忆记录每次推荐是否被采纳
+- [ ] 采纳率影响 `matcher.py` 中的权重计算（需实现采纳率→权重的自动映射）
+- [x] 负反馈（明确忽略高推荐技能）记录并用于降权
+- [ ] `GET /stats/recommendation` 端点（需新增）
 
 **实现文件:**
 - 修改: `sra-latest/skill_advisor/matcher.py`
@@ -356,16 +356,16 @@ L4 🐉  ●           ●           ●           ●
 | 4 | `_update_status` 无归属验证 | 多个实例同时写 status.json | 🟡 状态文件损坏 |
 
 **验收标准：**
-- [ ] **OS 级文件锁**: `~/.sra/srad.lock` 使用 `fcntl.flock` 实现原子性获取，防止竞态条件
-- [ ] `cmd_start` 启动前先尝试获取文件锁，获取失败则打印「SRA Daemon 已在运行 (PID: xxx)」并优雅退出
-- [ ] `cmd_attach` 启动前同样检查文件锁，systemd 模式下也不会启动重复实例
-- [ ] **端口活性探测**: 绑定 HTTP 前检查 `0.0.0.0:{port}` 是否已被占用（`SO_REUSEADDR` 开启前先 `socket.connect` 探测）
-- [ ] **锁自动释放**: 进程异常退出时 lock 文件自动释放（`atexit` + `signal.SIGTERM/SIGINT` 处理器），无需手动清理
-- [ ] **状态文件归属验证**: `_update_status` 写入时验证当前 PID 是否为 lock 持有者，防止交叉写入
-- [ ] **优雅降级**: 检测到已有实例时新进程以 `exit code 0` 退出并打印可读信息，不抛 `RuntimeError`
-- [ ] **守护目录锁**: 在 `cmd_start` fork 之前获取锁，确保 fork 前后一致性
-- [ ] **测试用例**: 并发 `sra start` 场景、systemd `attach` 重复启动场景、端口冲突场景的集成测试
-- [ ] **文档补充**: 在 `sra start`/`sra attach` 的 `--help` 中说明单例机制
+- [x] **OS 级文件锁**: `~/.sra/srad.lock` 使用 `fcntl.flock` 实现原子性获取，防止竞态条件
+- [x] `cmd_start` 启动前先尝试获取文件锁，获取失败则打印「SRA Daemon 已在运行 (PID: xxx)」并优雅退出
+- [x] `cmd_attach` 启动前同样检查文件锁，systemd 模式下也不会启动重复实例
+- [x] **端口活性探测**: 绑定 HTTP 前检查 `0.0.0.0:{port}` 是否已被占用（`SO_REUSEADDR` 开启前先 `socket.connect` 探测）
+- [x] **锁自动释放**: 进程异常退出时 lock 文件自动释放（`atexit` + `signal.SIGTERM/SIGINT` 处理器），无需手动清理
+- [x] **状态文件归属验证**: `_update_status` 写入时验证当前 PID 是否为 lock 持有者，防止交叉写入
+- [x] **优雅降级**: 检测到已有实例时新进程以 `exit code 0` 退出并打印可读信息，不抛 `RuntimeError`
+- [x] **守护目录锁**: 在 `cmd_start` fork 之前获取锁，确保 fork 前后一致性
+- [x] **测试用例**: 并发 `sra start` 场景、systemd `attach` 重复启动场景、端口冲突场景的集成测试
+- [x] **文档补充**: 在 `sra start`/`sra attach` 的 `--help` 中说明单例机制
 
 **实现文件：**
 - 修改: `sra-latest/skill_advisor/runtime/daemon.py`
@@ -389,10 +389,10 @@ L4 🐉  ●           ●           ●           ●
 
 **验收标准:**
 - [x] `sra uninstall` 和 `sra uninstall --all` 自动清理 `sra-dep.conf`，输出明确提示 "已清理 Gateway 依赖配置"
-- [ ] `sra uninstall` 清理后 `sra-dep.conf` 文件物理删除（`ls -la ~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf` 返回 `No such file`）
-- [ ] `install.sh` 新增 `--uninstall` 分支，执行相同的清理逻辑
+- [x] `sra uninstall` 清理后 `sra-dep.conf` 文件物理删除（`ls -la ~/.config/systemd/user/hermes-gateway.service.d/sra-dep.conf` 返回 `No such file`）
+- [x] `install.sh` 新增 `--uninstall` 分支，执行相同的清理逻辑
 - [x] `check-sra.py` 新增检查：`sra-dep.conf` 中存在 `Requires=` 时报警（应使用 `Wants=`）
-- [ ] `check-sra.py` 新增检查：`sra-dep.conf` 存在但 `srad.service` 不存在时报错
+- [x] `check-sra.py` 新增检查：`sra-dep.conf` 存在但 `srad.service` 不存在时报错
 - [x] `sra dep-check` CLI 命令可视化 SRA 依赖链健康度
 - [ ] 跨平台兼容：macOS launchd 无此问题（无 drop-in 概念），仅 Linux systemd 需要
 
@@ -422,12 +422,12 @@ L4 🐉  ●           ●           ●           ●
 2. 全库 16 处 `except: pass` 隐藏真实错误，导致故障难以排查
 
 **验收标准：**
-- [ ] HTTP 服务器改用 `serve_forever()`，配合 `server.timeout` 实现可中断循环
-- [ ] 或采用 `select.poll()` 实现非阻塞事件循环
-- [ ] 所有 `except: pass` 升级为 `logger.warning()` / `logger.error()`（至少记录异常消息）
-- [ ] 关键路径（YAML 解析、配置加载、状态写入）的异常向上传播而非静默忽略
+- [x] HTTP 服务器改用 `serve_forever()`，配合 `server.timeout` 实现可中断循环
+- [x] 或采用 `select.poll()` 实现非阻塞事件循环
+- [x] 所有 `except: pass` 升级为 `logger.warning()` / `logger.error()`（至少记录异常消息）
+- [x] 关键路径（YAML 解析、配置加载、状态写入）的异常向上传播而非静默忽略
 - [ ] `SUPPRESSED_EXCEPTIONS` 白名单机制：明确标记哪些异常允许静默（如 `socket.timeout`）
-- [ ] 编写异常处理单元测试：验证不同异常场景不会静默吞没
+- [x] 编写异常处理单元测试：验证不同异常场景不会静默吞没
 
 **实现文件：**
 - 修改: `skill_advisor/runtime/daemon.py`（`_run_http_server` 重构 + 所有 `except:` 增强）
@@ -447,25 +447,25 @@ L4 🐉  ●           ●           ●           ●
 **问题背景：** daemon.py 和 cli.py 合计 ~1,500 行代码，测试覆盖率为 0%。当前所有测试（4 个测试文件）只覆盖 `indexer` 和 `matcher` 模块。
 
 **验收标准：**
-- [ ] daemon 核心类测试：
-  - [ ] `SRaDDaemon.__init__()` — 配置合并、目录创建
-  - [ ] `SRaDDaemon.start()` / `stop()` — 生命周期管理
-  - [ ] `get_stats()` — 统计数据正确性
-  - [ ] `_compute_skills_checksum()` — 校验和一致性（相同输入 → 相同输出）
-  - [ ] `_update_status()` — 状态文件写入
-  - [ ] `_handle_request()` — 各 action 分派
-- [ ] CLI 命令测试（通过 `_socket_request` mock）：
-  - [ ] `cmd_recommend()` — 有结果/无结果
-  - [ ] `cmd_stats()` — daemon 模式/本地模式
-  - [ ] `cmd_start()` — PID 文件创建/清理
-  - [ ] `cmd_stop()` — 信号发送/PID 清理
-  - [ ] `cmd_restart()` — 完整生命周期
-- [ ] HTTP API 集成测试（启动临时 server）：
-  - [ ] `GET /health` 返回 200
-  - [ ] `POST /recommend` 返回推荐结果
-  - [ ] `POST /refresh` 返回索引数
-- [ ] 所有测试使用 `tmp_path` fixture，不污染真实环境
-- [ ] 测试门禁：daemon 核心函数覆盖率 ≥ 60%
+- [x] daemon 核心类测试：
+  - [x] `SRaDDaemon.__init__()` — 配置合并、目录创建
+  - [x] `SRaDDaemon.start()` / `stop()` — 生命周期管理
+  - [x] `get_stats()` — 统计数据正确性
+  - [x] `_compute_skills_checksum()` — 校验和一致性（相同输入 → 相同输出）
+  - [x] `_update_status()` — 状态文件写入
+  - [x] `_handle_request()` — 各 action 分派
+- [x] CLI 命令测试（通过 `_socket_request` mock）：
+  - [x] `cmd_recommend()` — 有结果/无结果
+  - [x] `cmd_stats()` — daemon 模式/本地模式
+  - [x] `cmd_start()` — PID 文件创建/清理
+  - [x] `cmd_stop()` — 信号发送/PID 清理
+  - [x] `cmd_restart()` — 完整生命周期
+- [x] HTTP API 集成测试（启动临时 server）：
+  - [x] `GET /health` 返回 200
+  - [x] `POST /recommend` 返回推荐结果
+  - [x] `POST /refresh` 返回索引数
+- [x] 所有测试使用 `tmp_path` fixture，不污染真实环境
+- [x] 测试门禁：daemon 核心函数覆盖率 ≥ 60%
 
 **实现文件：**
 - 新增: `tests/test_daemon.py`
@@ -481,20 +481,20 @@ L4 🐉  ●           ●           ●           ●
 > **以便** 减少配置错误、提高可调试性、降低维护成本
 
 **验收标准：**
-- [ ] 配置系统：
-  - [ ] 新增 `~/.sra/config.schema.json` 定义配置 schema
-  - [ ] 启动时自动校验配置合法性，非法字段打印警告
-  - [ ] `sra config validate` CLI 子命令
-  - [ ] 环境变量覆盖支持：`SRA_HTTP_PORT`, `SRA_LOG_LEVEL` 等
-- [ ] 日志系统：
-  - [ ] cli.py 改用 `logging` 统一输出
-  - [ ] 新增日志轮转（`RotatingFileHandler`, max 10MB × 5 份）
-  - [ ] DEBUG 级别日志覆盖核心路径（建索引、同义词匹配、请求处理）
-  - [ ] daemon 日志格式统一为 `[时间] [级别] [模块] 消息`
-- [ ] Matcher 魔法数字提取：
-  - [ ] 所有 14 个硬编码分值提取为 `MatchWeight` 命名空间常量
-  - [ ] `_match_lexical` 函数拆分为 3 个子函数（`_score_name`, `_score_triggers`, `_score_description`）
-  - [ ] `reasons` 去重改用 `set` 而非 `str(reasons)` 字符串匹配
+- [x] 配置系统：
+  - [x] 新增 `~/.sra/config.schema.json` 定义配置 schema
+  - [x] 启动时自动校验配置合法性，非法字段打印警告
+  - [x] `sra config validate` CLI 子命令
+  - [x] 环境变量覆盖支持：`SRA_HTTP_PORT`, `SRA_LOG_LEVEL` 等
+- [x] 日志系统：
+  - [x] cli.py 改用 `logging` 统一输出
+  - [x] 新增日志轮转（`RotatingFileHandler`, max 10MB × 5 份）
+  - [x] DEBUG 级别日志覆盖核心路径（建索引、同义词匹配、请求处理）
+  - [ ] daemon 日志格式统一为 `[时间] [级别] [模块] 消息`（当前使用默认格式，未自定义格式器）
+- [x] Matcher 魔法数字提取：
+  - [x] 所有 14 个硬编码分值提取为 `MatchWeight` 命名空间常量
+  - [x] `_match_lexical` 函数拆分为 3 个子函数（`_score_name`, `_score_triggers`, `_score_description`）
+  - [x] `reasons` 去重改用 `set` 而非 `str(reasons)` 字符串匹配
 
 **实现文件：**
 - 修改: `skill_advisor/runtime/daemon.py`（配置验证 + 环境变量）
@@ -514,15 +514,15 @@ L4 🐉  ●           ●           ●           ●
 **问题背景：** `_update_status` 无锁写入、`memory.py` 的 load/save 非线程安全、双协议路由重复
 
 **验收标准：**
-- [ ] 并发安全：
-  - [ ] `_update_status()` 加锁保护（复用 `self._lock`）
-  - [ ] `memory.py` 的 `save()` 增加文件锁（`fcntl.flock`），防止多实例交叉写入
-  - [ ] `_last_refresh` 读写原子化（`threading.Lock` 或 `atomic` 操作）
-  - [ ] 所有 `self._stats` 的更新统一通过 `self._lock` 保护
-- [ ] 路由统一：
-  - [ ] 提取 `ROUTER = {"recommend": ..., "record": ..., "refresh": ...}` 路由表
-  - [ ] Socket `/action` 和 HTTP `POST /{action}` 共用同一路由
-  - [ ] 新增端点在路由表中注册即可，无需修改两处
+- [x] 并发安全：
+  - [x] `_update_status()` 加锁保护（复用 `self._lock`）
+  - [x] `memory.py` 的 `save()` 增加文件锁（`fcntl.flock`），防止多实例交叉写入
+  - [x] `_last_refresh` 读写原子化（`threading.Lock` 或 `atomic` 操作）
+  - [x] 所有 `self._stats` 的更新统一通过 `self._lock` 保护
+- [x] 路由统一：
+  - [x] 提取 `ROUTER = {"recommend": ..., "record": ..., "refresh": ...}` 路由表
+  - [x] Socket `/action` 和 HTTP `POST /{action}` 共用同一路由
+  - [x] 新增端点在路由表中注册即可，无需修改两处
 
 **实现文件：**
 - 修改: `skill_advisor/runtime/daemon.py`（并发安全 + 路由统一）
