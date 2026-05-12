@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.3] — 2026-05-12
+
+### 🚀 Added
+
+- **QA 工作流体系**: 建立 L0-L4 五层质量门禁体系（sra-qa-workflow + generic-qa-workflow）
+  - L0: 静态分析门禁（ruff + ast.parse + Python 3.9 语法兼容性检查）
+  - L1: 单元测试门禁（全量 pytest）
+  - L2: 集成测试门禁（HTTP/CLI/Adapter/Contract 测试）
+  - L3: 系统测试门禁（并发/跨版本/性能基线）
+  - L4: 发布门禁（版本/CHANGELOG/构建/冒烟测试）
+  - QA 集成到开发工作流: Phase 0.5 → 2.5 → 3.5
+  - 新增 `scripts/qa-status.py` QA 状态检查脚本
+  - 新增 `tests/conftest.py` pytest markers（unit/integration/slow/flaky/smoke/concurrency/benchmark）
+  - 新增 `generic-qa-workflow` skill（项目无关的通用 QA 工作流）
+- **CI syntax-check job**: 新增 Python 3.9 语法兼容性门禁
+  - `ast.parse` 验证所有 `.py` 文件可被 Python 3.9 解析
+  - `ruff --target-version py39` 双重验证 PEP 604 联合类型语法
+
+### 🐛 Fixed
+
+- **Python 3.9 兼容**: `dict | None` 联合类型语法（PEP 604，仅 3.10+）改为 `dict`，修复 CI 在 Python 3.9 上的 TypeError
+- **测试状态污染**: `test_env_precedence_over_file` 添加 `try/finally` 恢复模块级变量，防止污染下游测试
+
+## [2.0.2] — 2026-05-12
+
+### 🐛 Fixed
+
+- **Python 3.9 兼容**: `dict | None` 语法改为 `dict`（PEP 604 仅 3.10+）
+
+## [2.0.1] — 2026-05-12
+
+### 🐛 Fixed
+
+- **测试状态污染**: `test_env_precedence_over_file` 永久污染 `cfg_module.SRA_HOME/CONFIG_FILE/CONFIG_SCHEMA`，添加 `try/finally` 恢复
+
 ## [2.0.0] — 2026-05-12
 
 ### 🚀 Added
