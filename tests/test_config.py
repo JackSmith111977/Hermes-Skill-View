@@ -231,20 +231,31 @@ class TestEnvOverride:
         """环境变量优先级高于配置文件"""
         from skill_advisor.runtime import config as cfg_module
 
-        # 写入配置文件
-        os.environ["SRA_HOME"] = str(mock_sra_home)
-        cfg_module.SRA_HOME = str(mock_sra_home)
-        cfg_module.CONFIG_FILE = str(mock_sra_home / "config.json")
-        cfg_module.CONFIG_SCHEMA = str(mock_sra_home / "config.schema.json")
+        # 保存原始模块级变量以在 finally 中恢复
+        orig_home = cfg_module.SRA_HOME
+        orig_file = cfg_module.CONFIG_FILE
+        orig_schema = cfg_module.CONFIG_SCHEMA
 
-        test_config = {"http_port": 8080}
-        with open(cfg_module.CONFIG_FILE, "w") as f:
-            json.dump(test_config, f)
+        try:
+            # 写入配置文件到临时目录
+            cfg_module.SRA_HOME = str(mock_sra_home)
+            cfg_module.CONFIG_FILE = str(mock_sra_home / "config.json")
+            cfg_module.CONFIG_SCHEMA = str(mock_sra_home / "config.schema.json")
 
-        with patch.dict(os.environ, {"SRA_HTTP_PORT": "6666"}):
-            result = cfg_module.load_config()
-            assert result["http_port"] == 6666, \
-                f"环境变量 6666 应覆盖配置文件的 8080, 实际 {result['http_port']}"
+            os.environ["SRA_HOME"] = str(mock_sra_home)
+            test_config = {"http_port": 8080}
+            with open(cfg_module.CONFIG_FILE, "w") as f:
+                json.dump(test_config, f)
+
+            with patch.dict(os.environ, {"SRA_HTTP_PORT": "6666"}):
+                result = cfg_module.load_config()
+                assert result["http_port"] == 6666, \
+                    f"环境变量 6666 应覆盖配置文件的 8080, 实际 {result['http_port']}"
+        finally:
+            # 恢复原始模块级变量，避免污染后续测试
+            cfg_module.SRA_HOME = orig_home
+            cfg_module.CONFIG_FILE = orig_file
+            cfg_module.CONFIG_SCHEMA = orig_schema
 
 
 # ── config validate CLI 测试 ────────────────────────────
