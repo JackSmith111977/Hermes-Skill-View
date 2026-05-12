@@ -60,6 +60,63 @@ jobs:
       - name: Run ruff
         run: ruff check skill_advisor/ tests/
 
+  syntax-check:
+    name: 🔬 Python 3.9 syntax compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install ruff
+        run: pip install ruff
+      - name: 🔬 Check all .py files parseable by Python 3.9
+        run: |
+          python3 -c "
+          import ast, sys, os
+          errors = []
+          for root, dirs, files in os.walk('.'):
+              dirs[:] = [d for d in dirs if d not in ('.git', '__pycache__', 'build', 'dist', '.egg-info', '.mypy_cache', '.pytest_cache', '.ruff_cache', '.benchmarks', 'venv')]
+              for f in files:
+                  if f.endswith('.py'):
+                      path = os.path.join(root, f)
+                      try:
+                          with open(path) as fp:
+                              ast.parse(fp.read())
+                      except SyntaxError as e:
+                          errors.append((path, e))
+          if errors:
+              for p, e in errors:
+                  print(f'❌ {p}: {e}')
+              sys.exit(1)
+          print('✅ All .py files parseable by Python 3.9')
+          "
+      - name: 🔬 Check no PEP 604 union syntax (| requires 3.10+)
+        run: |
+          ruff check --target-version py39 --select UP --ignore UP035 skill_advisor/ tests/ 2>&1 || true
+          python3 -c "
+          import re, sys, os
+          errors = []
+          for root, dirs, files in os.walk('skill_advisor'):
+              dirs[:] = [d for d in dirs if d not in ('__pycache__',)]
+              for f in files:
+                  if f.endswith('.py'):
+                      path = os.path.join(root, f)
+                      with open(path) as fp:
+                          for i, line in enumerate(fp, 1):
+                              stripped = line.split('#')[0]
+                              # Match: -> type | type or : type | type  in annotations
+                              if re.search(r'(?<![\"\'a-zA-Z])->\s*\w[\w.]*\s+\|\s+\w[\w.]*', stripped) or \
+                                 re.search(r'(?<![\"\'a-zA-Z]):\s*\w[\w.]*\s+\|\s+\w[\w.]*(?=\s*[=)])', stripped):
+                                  errors.append(f'{path}:{i}: {line.rstrip()}')
+          if errors:
+              for e in errors:
+                  print(f'❌ PEP 604 (3.10+): {e}')
+              sys.exit(1)
+          print('✅ No PEP 604 union syntax in type annotations')
+          " 2>&1
+
   typecheck:
     name: 🔤 Mypy type check
     runs-on: ubuntu-latest
