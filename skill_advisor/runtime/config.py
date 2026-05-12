@@ -38,7 +38,7 @@ def ensure_sra_home() -> None:
     os.makedirs(os.path.join(SRA_HOME, "logs"), exist_ok=True)
 
 
-def _load_schema() -> dict | None:
+def _load_schema() -> dict:
     """加载配置 Schema，失败时返回 None（不阻断启动）"""
     if not os.path.exists(CONFIG_SCHEMA):
         return None
@@ -50,7 +50,7 @@ def _load_schema() -> dict | None:
         return None
 
 
-def validate_config(config: dict, schema: dict | None = None) -> list[str]:
+def validate_config(config: dict, schema: dict = None) -> list[str]:
     """校验配置合法性，返回违规字段列表（非阻断）"""
     if schema is None:
         schema = _load_schema()
