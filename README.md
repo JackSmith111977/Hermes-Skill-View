@@ -9,7 +9,7 @@
 > **为 Hermes Agent 解决技能发现痛点的运行时消息前置推理中间件。**  
 > 每次用户消息到达 Agent 之前，先经过 SRA Proxy 语义分析，自动注入最匹配技能（SKILL.md）的 RAG 上下文——让 Agent 永远知道当前任务该用什么能力。
 
-🌐 [English README](README_en.md) · 📖 [Runtime Design](./RUNTIME.md) · ⚡ [Quick Install](#安装) · 🩺 [Integration Guide](./docs/INTEGRATION.md)
+🌐 [English README](README_en.md) · 📖 [Runtime Design](./RUNTIME.md) · ⚡ [Quick Install](#安装) · 🩺 [Integration Guide](./docs/INTEGRATION.md) · 🏗️ [CAP Pack 集成](https://github.com/JackSmith111977/Hermes-Cap-Pack)
 
 ---
 
@@ -110,6 +110,8 @@ Hermes Agent 的技能库（`~/.hermes/skills/`）越来越大（60+），但 Ag
 4. **发现成本高** — Agent 需要遍历所有技能的 triggers 和 description 才能做出选择
 
 **SRA 的解决方案**：在消息路径上插入一个**语义感知层**，用 TF-IDF + 同义词 + 共现矩阵做实时匹配，把最相关的技能上下文在消息处理前就注入给 Agent。
+
+> 💡 **SRA + CAP Pack = 黄金搭档**：如果 SRA 解决"找得到技能"，那么 [Hermes Capability Pack](https://github.com/JackSmith111977/Hermes-Cap-Pack) 解决"技能组织得好不好"。CAP Pack 提供 18 模块分类体系、SQS 质量分和生命周期管理，SRA 消费这些数据让推荐更精准——质量高的技能优先推荐，分类清晰的技能更容易命中。详见 CAP Pack 的 [SPEC-007 适配方案](https://github.com/JackSmith111977/Hermes-Cap-Pack/blob/main/docs/SPEC-007-sra-adaptation.md)。
 
 ---
 
