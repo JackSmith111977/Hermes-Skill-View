@@ -9,9 +9,9 @@
 
 | 路径 | 类型 | 数量 | 说明 |
 |:-----|:-----|:----:|:-----|
-| `tests/fixtures/skills/` | SKILL.md 目录 | 317 个 | 从 Hermes Agent 真实 skill 提取的完整 SKILL.md |
+| `tests/fixtures/skills/` | SKILL.md 目录 | 318 个 | 从 Hermes Agent 真实 skill 提取的完整 SKILL.md |
 | `tests/fixtures/skills_yaml/` | YAML 原始文件 | 314 个 | 每个 skill 的 YAML frontmatter 单独文件 |
-| `tests/fixtures/skills_yaml/_all_yamls.json` | JSON 聚合 | 313 条 | 全部 skill 的结构化数据（含 category/triggers/tags） |
+| `tests/fixtures/skills_yaml/_all_yamls.json` | JSON 聚合 | 314 条 | 全部 skill 的结构化数据（含 category/triggers/tags） |
 
 ### 数据来源
 

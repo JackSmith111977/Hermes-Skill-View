@@ -6409,5 +6409,49 @@
     "category": "yuanbao",
     "_source_path": "yuanbao/SKILL.md",
     "_source_name": "yuanbao"
+  },
+  {
+    "name": "hermes-tweet",
+    "description": "Search Twitter/X, read tweet replies, look up users, monitor tweets, export followers, and gate X actions through Xquik.",
+    "version": "0.1.6",
+    "triggers": [
+      "hermes tweet",
+      "search Twitter/X",
+      "scrape/search tweets",
+      "read tweet replies",
+      "look up users",
+      "monitor tweets",
+      "export followers",
+      "post tweets",
+      "send DMs",
+      "tweet",
+      "tweets",
+      "replies",
+      "followers",
+      "dms"
+    ],
+    "author": "Xquik",
+    "license": "MIT",
+    "platforms": [
+      "linux",
+      "macos"
+    ],
+    "metadata": {
+      "hermes": {
+        "tags": [
+          "hermes-agent",
+          "xquik",
+          "twitter",
+          "x",
+          "social-media",
+          "automation"
+        ],
+        "homepage": "https://github.com/Xquik-dev/hermes-tweet",
+        "install": "hermes plugins install Xquik-dev/hermes-tweet --enable"
+      }
+    },
+    "category": "social-media",
+    "_source_path": "social-media/hermes-tweet/SKILL.md",
+    "_source_name": "hermes-tweet"
   }
 ]
