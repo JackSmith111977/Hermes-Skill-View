@@ -36,6 +36,9 @@ Documentation = "https://github.com/JackSmith111977/Hermes-Skill-View#readme"
 
 [project.optional-dependencies]
 dev = [
+chinese = [
+    "jieba>=0.42",
+]
     "pytest>=7.0",
     "pytest-benchmark>=4.0",
 ]
