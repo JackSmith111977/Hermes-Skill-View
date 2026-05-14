@@ -31,27 +31,37 @@ class SkillIndexer:
         self._synonyms = SYNONYMS
 
     def extract_keywords(self, text: str, min_len: int = 2) -> Set[str]:
-        """提取中英文关键词"""
+        """提取中英文关键词 — N-gram + jieba 分词双引擎"""
         words = set()
 
         # 英文单词
         eng = re.findall(r'[a-zA-Z][a-zA-Z0-9_-]{1,}', text.lower())
         words.update(eng)
 
-        # 中文词组（2-4 字）—— 改进：减少噪声词
+        # 中文词组（2-4 字）—— N-gram 引擎（保持原有逻辑）
         chinese = re.findall(r'[\u4e00-\u9fff]+', text)
         for ch in chinese:
             if len(ch) >= min_len:
                 words.add(ch.lower())
-            # 只提取从开头/结尾开始的 n-gram，避免中间切分产生无意义词
-            # 如 "设计数据库" 提取 "设计"、"数据库"、"设计数"、"计数据库"
-            # 但不会提取中间无意义的 "计数"、"据库"
             for i in range(len(ch)):
                 for j in range(2, min(5, len(ch) - i + 1)):
                     sub = ch[i:i+j]
-                    # 只保留从词首或到词尾的 n-gram
                     if i == 0 or i + j == len(ch):
                         words.add(sub.lower())
+
+        # ── jieba 分词引擎（追加，不替换 N-gram）──
+        try:
+            import jieba
+            jieba.setLogLevel(logging.WARNING)  # 抑制 jieba 初始化日志
+            for ch in chinese:
+                for w in jieba.cut(ch):
+                    w = w.strip()
+                    if len(w) >= min_len:
+                        words.add(w.lower())
+        except ImportError:
+            pass  # jieba 未安装时静默降级
+        except Exception as e:
+            logger.debug("jieba 分词异常，降级到 N-gram: %s", e)
 
         return words
 
