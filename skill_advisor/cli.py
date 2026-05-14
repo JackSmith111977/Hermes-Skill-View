@@ -467,6 +467,62 @@ def cmd_install(args: List[str]):
         print("可用类型: hermes, claude, codex, opencode, generic")
 
 
+
+def cmd_verify(args: List[str]):
+    """验证 Hermes 集成状态"""
+    import os
+    
+    hermes_home = os.environ.get("HERMES_HOME", os.path.expanduser("~/.hermes"))
+    run_agent = os.path.join(hermes_home, "hermes-agent", "run_agent.py")
+    
+    print("📋 SRA Hermes 集成状态检查")
+    print("=" * 50)
+    
+    # 1. 检查 run_agent.py 是否存在
+    if not os.path.exists(run_agent):
+        print(f"❌ 未找到 Hermes Agent: {run_agent}")
+        print("   请确保 Hermes Agent 已安装")
+        return
+    
+    print(f"✅ Hermes Agent: {run_agent}")
+    
+    # 2. 检查 SRA 代码是否注入
+    with open(run_agent, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    has_func = '_query_sra_context' in content
+    has_inject = 'SRA Context Injection' in content
+    
+    print(f"{'✅' if has_func else '❌'} _query_sra_context 函数: {'已注入' if has_func else '未注入'}")
+    print(f"{'✅' if has_inject else '❌'} run_conversation 注入点: {'已注入' if has_inject else '未注入'}")
+    
+    if has_func and has_inject:
+        print()
+        print("✅ SRA 集成完整！")
+    else:
+        print()
+        print("⚠️  SRA 集成不完整")
+        print("   运行: bash scripts/install-hermes-integration.sh --install")
+    
+    # 3. 检查 SRA Daemon 状态
+    print()
+    print("📋 SRA Daemon 状态:")
+    try:
+        import urllib.request
+        import json
+        
+        req = urllib.request.Request("http://127.0.0.1:8536/health")
+        with urllib.request.urlopen(req, timeout=2.0) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        
+        print(f"✅ Daemon 运行中 (v{data.get('version', 'unknown')})")
+        print(f"   技能数量: {data.get('skills_count', 0)}")
+        print(f"   运行时间: {data.get('uptime_seconds', 0)}秒")
+    except Exception as e:
+        print(f"❌ Daemon 未运行或连接失败: {e}")
+        print("   运行: sra start")
+
+
 def cmd_version(args: List[str]):
     """版本信息"""
     from . import __version__
@@ -813,6 +869,7 @@ COMMANDS = {
     "upgrade": cmd_upgrade,
     "uninstall": cmd_uninstall,
     "dep-check": cmd_dep_check,
+    "verify": cmd_verify,
     "version": cmd_version,
     "help": lambda a: print_help(),
 }
@@ -852,6 +909,7 @@ def print_help():
     print("  dep-check                   检查 Gateway 依赖链健康度")
     print()
     print("其他:")
+    print("  verify                验证 Hermes 集成状态")
     print("  version               版本信息")
     print("  help                  显示本帮助")
     print()
