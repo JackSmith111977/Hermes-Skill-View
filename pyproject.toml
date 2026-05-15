@@ -39,6 +39,9 @@ dev = [
     "pytest>=7.0",
     "pytest-benchmark>=4.0",
 ]
+chinese = [
+    "jieba>=0.42",
+]
 
 [project.scripts]
 sra = "skill_advisor.cli:main"
