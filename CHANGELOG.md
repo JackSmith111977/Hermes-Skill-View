@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.2] — 2026-05-15
+
+### 🐛 Fixed
+
+- **CI 构建失败（P0）**: `setup.py` 用正则从 `__init__.py` 提取版本号，新代码改为 `__version__ = _resolve_version()` 函数调用后正则匹配返回 `None` → `'NoneType' object has no attribute 'group'` → 所有 pip install 全炸
+  - 简化 `setup.py`，移除正则解析，版本由 `pyproject.toml` + `setuptools-scm` 接管
+
 ## [2.1.1] — 2026-05-15
 
 ### 🐛 Fixed
