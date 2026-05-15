@@ -208,7 +208,8 @@ echo
 
 # 检查 Python 版本
 PY_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-if [[ $(echo "$PY_VERSION < 3.8" | bc) -eq 1 ]]; then
+# 版本比较：使用 python3 避免 bc 的十进制比较 bug（3.11 < 3.8 问题）
+if ! python3 -c "import sys; v=sys.version_info; sys.exit(0 if (3,8) <= (v.major, v.minor) else 1)"; then
     error "需要 Python >= 3.8，当前: $PY_VERSION"
     exit 1
 fi
@@ -219,11 +220,18 @@ if [[ "$SKIP_PIP" != "true" ]]; then
     info "尝试方式 1/3: 源码安装（最稳定）..."
     
     # 检查是否在源码目录
-    if [[ -f "setup.py" ]]; then
+    if [[ -f "setup.py" ]] || [[ -f "pyproject.toml" ]]; then
         info "检测到源码目录，使用 editable install..."
-        pip install --user -e . || pip install -e . || {
+        # PEP 668 兼容：先用 --user，失败后加 --break-system-packages
+        pip install --user -e . 2>/dev/null || \
+        pip install --user --break-system-packages -e . 2>/dev/null || \
+        pip install -e . 2>/dev/null || \
+        pip install --break-system-packages -e . || {
             warn "editable install 失败，尝试普通安装"
-            pip install --user . || pip install . || {
+            pip install --user . 2>/dev/null || \
+            pip install --user --break-system-packages . 2>/dev/null || \
+            pip install . 2>/dev/null || \
+            pip install --break-system-packages . || {
                 error "Python 包安装失败，请检查 pip 和 Python 版本"
                 exit 1
             }
