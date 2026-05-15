@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.1] — 2026-05-15
+
+### 🐛 Fixed
+
+- **版本解析基础设施彻底重建** — 解决「版本发布与实际下载不一致」的根因（EPIC-005）
+  - `__init__.py`: 版本解析链改为 `git describe` → `importlib.metadata` → `_version.py` 三层降级
+  - `pyproject.toml`: 修复 `tag_regex` 双重转义导致所有 tag 匹配失败的 Bug（表现为 `v2.1.0` → ❌）
+  - `pyproject.toml`: 新增 `version_scheme = "post-release"` + `local_scheme = "no-local-version"`
+  - `pyproject.toml`: `version_file` → `write_to`（兼容 setuptools-scm 10+ API）
+  - `pyproject.toml`: 新增 `write_to_template` 支持
+  - `.gitignore`: 新增 `_version.py`（不再提交 build 产物到 git）
+  - 移除 git 跟踪的旧 `_version.py`（内容固化在 `2.0.3` 跨越 3 个版本未更新）
+- **`scripts/install.sh`**: 修复 `bc` 版本比较 Bug（Python 3.11 被误判为 < 3.8）
+- **`scripts/install.sh`**: 修复 PEP 668（externally-managed-environment）导致 pip 安装失败
+
+### 🧹 Housekeeping
+
+- 依赖: 新增 `setuptools-scm>=10` + `vcs-versioning` 显式依赖声明
+
 ## [2.0.4] — 2026-05-12
 
 ### 🚀 Added

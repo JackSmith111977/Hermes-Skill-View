@@ -48,9 +48,14 @@ srad = "skill_advisor.runtime.commands:cmd_start"
 include = ["skill_advisor", "skill_advisor.*"]
 
 [tool.setuptools_scm]
-version_file = "skill_advisor/_version.py"
 # 从 git tag 解析版本，tag 格式: v1.2.3 (v前缀可选)
-tag_regex = "^(?:[\\w-]+-)?v?(?P<version>[\\d\\.a-b]{3,}(?:rc\\d+)?)$"
+# 使用 TOML 单引号字符串（literal string）避免转义地狱
+tag_regex = '^(?:[\w-]+-)?v?(?P<version>[\d\.a-b]{3,}(?:rc\d+)?)$'
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+# _version.py 由 setuptools-scm 自动生成（.gitignore 忽略，不提交到 git）
+write_to = "skill_advisor/_version.py"
+write_to_template = "__version__ = '{version}'\nversion = '{version}'\n"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
