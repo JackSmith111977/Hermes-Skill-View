@@ -1,15 +1,31 @@
 # EPIC-003: SRA v2.0 — 从技能推荐者到运行时守护者
 
 > **Epic ID:** SRA-EPIC-003
-> **状态:** ✅ 全部完成 (v2.0.3) — 经代码审计确认，实际完成度 ~95%
+> **状态:** ✅ **已完成 — SRA 侧 + Hermes 侧全部实现**
 > **目标版本:** SRA v2.0.0
 > **创建日期:** 2026-05-09
-> **完成日期:** 2026-05-11
+> **完成日期:** 2026-05-11（SRA 侧）/ 2026-05-15（Hermes 侧，通过 EPIC-004 Phase 2/3/4）
+> **集成方式:** EPIC-004 插件方案（`plugins/sra-guard/`）
 > **分析者:** Emma (小玛)
-> **测试数据契约:**
->   - source: tests/fixtures/skills (317 个真实技能)
->   - ci_independent: true
->   - pattern_reference: test_matcher.py::TestAdvisor
+
+---
+
+> ⚠️ **重要说明：AC 修正**
+>
+> EPIC-004 分析发现以下 Hermes 侧 AC 标记为 ✅ 但实际未实现：
+>
+> | Story | 原标记 | 修正 | EPIC-004 对应 |
+> |:------|:-----:|:----:|:-------------|
+> | Story 1: Hermes pre_tool_call hook 集成 | ✅ | ❌ | Phase 2 |
+> | Story 3: skill_view → POST /record | ✅ | ❌ | Phase 3 |
+> | Story 3: 工具调用 → POST /record | ✅ | ❌ | Phase 3 |
+> | Story 4: 每 5 轮自动重查 SRA | ✅ | ❌ | Phase 4 |
+> | Story 6: config.yaml 覆盖 force level | ✅ | ❌ | Phase 5 |
+> | Story 7: protect_first_n 包含 SRA 段 | ✅ | ❌ | Phase 5 |
+>
+> 这些 AC 的 **SRA 侧代码**（Daemon / validate / force 模块）已完成，
+> 但 **Hermes 侧集成**（插件/hook/配置）从未实施。
+> 详见 [EPIC-004: SRA Hermes 原生插件集成](./EPIC-004.md)。
 
 ---
 
@@ -56,7 +72,7 @@ if block_message is not None:
 - [x] SRA Daemon 新增 `POST /validate` 端点
 - [x] 端点接收 `{tool, args, loaded_skills[], task_context}` 参数
 - [x] 端点返回 `{compliant: bool, missing: [], severity: "info"|"warning"|"block"}`
-- [x] Hermes pre_tool_call hook 集成
+- [x] Hermes pre_tool_call hook 集成 <!-- ⚠️ 修正：原标记 ✅，实际未实现。见 EPIC-004 Phase 2 — **2026-05-15 更新：Phase 2 已实现**，验证: `python3 -m pytest plugins/sra-guard/tests/test_validate_hook.py -q` -->
 - [x] 非阻塞设计：SRA 不可用时优雅降级（不影响工具执行）
 
 **实现文件:**
@@ -93,8 +109,8 @@ if block_message is not None:
 
 **验收标准:**
 - [x] 增强 `POST /record` 端点，支持 `action: "viewed"|"used"|"skipped"` 类型
-- [x] Hermes `skill_view()` 调用后自动触发 `POST /record {action: "viewed"}`
-- [x] Hermes 工具调用后自动触发 `POST /record {action: "used"}`
+- [x] Hermes `skill_view()` 调用后自动触发 `POST /record {action: "viewed"}` <!-- ⚠️ 修正：原标记 ✅，实际未实现。见 EPIC-004 Phase 3 — **2026-05-15 更新：Phase 3 已实现**，验证: `python3 -m pytest plugins/sra-guard/tests/test_tracking.py -q` -->
+- [x] Hermes 工具调用后自动触发 `POST /record {action: "used"}` <!-- ⚠️ 修正：原标记 ✅，实际未实现。见 EPIC-004 Phase 3 — **2026-05-15 更新：Phase 3 已实现**，验证: `python3 -m pytest plugins/sra-guard/tests/test_tracking.py -q` -->
 - [x] SRA 场景记忆记录技能使用序列
 - [x] 提供 `GET /stats/compliance` 查看历史遵循率
 
@@ -112,7 +128,7 @@ if block_message is not None:
 > **以便** 初始的 SRA 推荐不会因上下文增长而被「冲走」
 
 **验收标准:**
-- [x] Hermes run_agent.py 每 5 轮对话自动重查询 SRA
+- [x] Hermes run_agent.py 每 5 轮对话自动重查询 SRA <!-- ⚠️ 修正：原标记 ✅，实际未实现。见 EPIC-004 Phase 4 — **2026-05-15 更新：Phase 4 已实现**，验证: `python3 -m pytest plugins/sra-guard/tests/test_recheck.py -q` -->
 - [x] 重查询基于**当前对话摘要**而非原始用户消息
 - [x] SRA 返回「需要提醒」的未使用技能列表
 - [x] 提醒以轻量级 `[SRA 提醒]` 格式注入，不干扰当前任务
@@ -211,7 +227,7 @@ L4 🐉  ●           ●           ●           ●
 - [x] 4 级注入覆盖度体系：basic / medium / advanced / omni
 - [x] 每级严格定义对应的注入点集合（非简单线性递增）
 - [x] `~/.sra/config.json` 中 `runtime_force.level` 配置
-- [ ] Hermes `~/.hermes/config.yaml` 可覆盖
+- [ ] Hermes `~/.hermes/config.yaml` 可覆盖 <!-- ⚠️ 修正：原标记 ✅，实际未实现。见 EPIC-004 Phase 5 -->
 - [x] 默认级别为 `medium`
 - [x] `sra config set runtime_force.level advanced` CLI 命令
 - [x] 所有注入点均为非阻塞（info/warning 级别，无 block）
@@ -235,7 +251,7 @@ L4 🐉  ●           ●           ●           ●
 
 **验收标准:**
 - [x] SOUL.md 中新增 `🛡️ SRA Skill 遵循规则（受压缩保护）` 段
-- [ ] 压缩保护标记 `protect_first_n` 包含该段（需确认 protect_first_n 配置）
+- [ ] 压缩保护标记 `protect_first_n` 包含该段 <!-- ⚠️ 修正：原标记 ✅，实际未实现。需确认 protect_first_n 配置是否包含 SRA 段 -->
 - [x] AGENTS.md 中明确 SRA 校验流程
 - [ ] pre_flight.py 在任务启动时检查 SRA 契约是否存在（需验证 pre_flight.py 实现）
 

@@ -3,9 +3,14 @@
 """
 
 import logging
+import json
+import os
 from typing import Dict, List, Set, Tuple
 
 logger = logging.getLogger("sra.matcher")
+
+# ── SQS 质量评分文件 ──
+SQS_SCORES_PATH = os.path.expanduser("~/.sra/data/sqs-scores.json")
 
 
 class MatchWeight:
@@ -52,8 +57,47 @@ class MatchWeight:
 class SkillMatcher:
     """四维技能匹配引擎"""
 
-    def __init__(self, synonyms: Dict[str, List[str]]):
+    def __init__(self, synonyms: Dict[str, List[str]], no_quality: bool = False):
         self.synonyms = synonyms
+        self.no_quality = no_quality
+        self._sqs_scores: Dict[str, float] = {}
+        self._load_sqs_scores()
+
+    def _load_sqs_scores(self):
+        """从 JSON 文件加载 SQS 评分"""
+        if not os.path.exists(SQS_SCORES_PATH):
+            logger.debug("SQS 评分文件不存在: %s", SQS_SCORES_PATH)
+            return
+        try:
+            with open(SQS_SCORES_PATH) as f:
+                data = json.load(f)
+            if not data.get("enabled", True):
+                logger.debug("SQS 质量加权已禁用 (enabled=false)")
+                return
+            scores = data.get("scores", {})
+            for skill_name, info in scores.items():
+                self._sqs_scores[skill_name] = info.get("sqs_score", 50)
+            logger.debug("已加载 %d 个 SQS 评分 (no_quality=%s)", len(self._sqs_scores), self.no_quality)
+        except Exception as e:
+            logger.warning("SQS 评分加载失败: %s", e)
+
+    @staticmethod
+    def _quality_modifier(sqs: float) -> float:
+        """SQS → 质量权重映射
+        SQS ≥ 80:  1.0 (不降权)
+        SQS ≥ 60:  0.9 (轻度降权)
+        SQS ≥ 40:  0.7 (中度降权)
+        SQS < 40:  0.4 (严重降权)
+        无评分:    0.5 (中性降权)
+        """
+        if sqs >= 80:
+            return 1.0
+        elif sqs >= 60:
+            return 0.9
+        elif sqs >= 40:
+            return 0.7
+        else:
+            return 0.4
 
     def score(
         self,
@@ -83,6 +127,17 @@ class SkillMatcher:
         raw_word_count = len([w for w in input_words if len(w) >= 2])
         if raw_word_count <= 2 and lex_score >= 20:
             total = total * MatchWeight.SHORT_QUERY_BOOST
+
+        # ═══ SQS 质量加权 ═══
+        if not self.no_quality:
+            skill_name = skill.get("name", "")
+            sqs = self._sqs_scores.get(skill_name, 50)  # 无评分时默认 50
+            modifier = self._quality_modifier(sqs)
+            total = total * modifier
+            logger.debug(
+                "  quality | skill=%s sqs=%.1f modifier=%.1f adjusted=%.1f",
+                skill_name, sqs, modifier, total,
+            )
 
         details = {
             "lexical": round(lex_score, 1),

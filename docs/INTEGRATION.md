@@ -1,6 +1,7 @@
-# SRA Hermes 原生集成指南
+# SRA Hermes 插件集成指南（EPIC-004）
 
-> **SRA v1.1.0+** 支持直接注入 Hermes Agent 的消息管道，在每次用户消息进入 LLM 前自动触发 SRA 获取技能推荐，**不需要手动 curl 调用**，**不依赖 AGENTS.md 或 SOUL.md 的"劝告"**。
+> ⚠️ **旧版补丁方案已废弃。本文档描述 EPIC-004 的插件方案。**
+> 旧方案见 `patches/hermes-sra-integration.patch`（DEPRECATED）。
 
 ---
 
@@ -8,164 +9,109 @@
 
 - [原理](#-原理)
 - [前提条件](#-前提条件)
-- [一键安装](#-一键安装)
-- [手动安装（打补丁）](#-手动安装打补丁)
+- [安装](#-安装)
 - [验证集成](#-验证集成)
 - [卸载](#-卸载)
 - [效果演示](#-效果演示)
 - [降级行为](#-降级行为)
-- [工作原理详解](#-工作原理详解)
-- [与其他方案的对比](#-与其他方案的对比)
-- [常见问题](#-常见问题)
+- [插件方案 vs 补丁方案](#-插件方案-vs-补丁方案)
 
 ---
 
 ## 🎯 原理
 
+SRA 通过 **Hermes 插件系统** 集成，不修改 Hermes 核心代码：
+
 ```
 用户消息
     ↓
-Hermes AIAgent.run_conversation()
-    ↓
-_query_sra_context(user_message)  ← 自动触发（每次消息都会）
-    ↓                      ┌──────────────────┐
-    ├── HTTP POST ────────→│    SRA Daemon     │
-    │   :8536/recommend    │  (:8536)          │
-    │   ← rag_context      │  ┌─────────────┐  │
-    │                      │  │四维匹配引擎   │  │
-    │                      │  │词法/语义/场景 │  │
-    │                      │  │/类别 推荐     │  │
-    │                      │  └─────────────┘  │
-    │                      └──────────────────┘
-    ↓ 注入到用户消息前
-[SRA] Skill Runtime Advisor 推荐:
-── [SRA Skill 推荐] ──────────────────────────
-  ⭐ [high] architecture-diagram (90.0分) — ...
-── ──────────────────────────────────────────
-
+Hermes 消息处理 → pre_llm_call hook
+    ↓                          ┌──────────────────┐
+sra-guard 插件  ──HTTP POST──→│    SRA Daemon     │
+POST /recommend                │  (:8536)          │
+    ← rag_context              │  ┌─────────────┐  │
+    ↓                          │  │四维匹配引擎   │  │
+注入到 user_message 前         │  │推荐          │  │
+    ↓                          │  └─────────────┘  │
+[SRA] Skill Runtime Advisor    └──────────────────┘
+推荐: ...
 用户消息原文...
     ↓
-LLM 感知推荐 → 自动加载 skill → 回复
+LLM 感知推荐 → 处理
 ```
 
-### 与"文档式"方案的区别
+### 与旧补丁方案的区别
 
-| 方式 | 可靠性 | 说明 |
-|------|--------|------|
-| **AGENTS.md 写规则** | ❌ 低 | 劝告式，模型可能忽略，上下文压缩后丢失 |
-| **SOUL.md 写前置推理** | ❌ 低 | 同上，依赖模型遵循自然语言指令 |
-| **✅ 代码层注入** | ✅ 极高 | 修改 `run_agent.py`，每次消息**强制调 SRA**，100% 拦截 |
+| 方式 | 可靠性 | 维护成本 | 说明 |
+|:-----|:------:|:--------:|:-----|
+| **❌ 旧：补丁方案** (patches/) | 低 | 高 | `sed -i` 修改 `run_agent.py`，每次 Hermes 升级覆盖 |
+| **✅ 新：插件方案** (EPIC-004) | 极高 | 低 | 利用 Hermes 插件 API，零侵入，自动保留 |
 
 ---
 
 ## ✅ 前提条件
 
 1. **Hermes Agent** 已安装（Gateway 或 CLI 模式均可）
-2. **SRA v1.1.0+** 已安装并启动 Daemon
+2. **SRA v2.0+** 已安装并启动 Daemon
 
 ```bash
-# 启动 SRA Daemon
-cd /path/to/sra-agent
-python3 -m skill_advisor.runtime.daemon attach
-# 或用 CLI
-sra start
-```
-
-3. 健康检查通过
-
-```bash
+# 检查 SRA Daemon
 curl http://127.0.0.1:8536/health
-# 返回: {"status":"ok","sra_version":"1.1.0"}
+# → {"status":"running","version":"2.0.3",...}
 ```
+
+3. **sra-guard 插件** 已安装
 
 ---
 
-## 🚀 一键安装
+## 🚀 安装
 
 ```bash
-# 从 SRA 仓库目录运行
-bash scripts/install-hermes-integration.sh
+# 在 SRA 项目目录中运行
+cd /path/to/sra
+bash scripts/install-hermes-plugin.sh install
 
-# 输出示例：
+# 输出：
 # ==============================================
-#   SRA Hermes 集成 v1.1.0
+#   sra-guard 插件安装
 # ==============================================
-# [OK] Hermes Agent 已发现: /home/eragon/.hermes/hermes-agent/run_agent.py
-# [OK] 已备份: /home/eragon/.hermes/hermes-agent/run_agent.py.sra-backup
-# [OK] SRA Hermes 集成安装完成！
-# ...
-# [OK] SRA Daemon 运行中 (127.0.0.1:8536)
+# [OK] 源目录完整
+# [OK] 文件已复制到: ~/.hermes/hermes-agent/plugins/sra-guard/
+# [OK] sra-guard 插件安装完成！
 ```
 
 ### 安装脚本做了什么？
 
-1. **备份** `run_agent.py` → `run_agent.py.sra-backup`
-2. **注入** `_query_sra_context()` 函数（模块级，在 `class AIAgent` 前）
-3. **注入** SRA 调用点（在 `run_conversation()` 的 `# Add user message` 前）
+1. 从 `plugins/sra-guard/` 复制所有文件
+2. 验证目标目录完整性
+3. Hermes 下次启动时自动加载插件
 
 ### 环境变量
 
 | 变量 | 默认值 | 说明 |
-|------|--------|------|
+|:-----|:-------|:------|
 | `HERMES_HOME` | `~/.hermes` | Hermes Agent 家目录 |
-| `SRA_PROXY_URL` | `http://127.0.0.1:8536` | SRA Daemon 地址 |
-
----
-
-## 🔧 手动安装（打补丁）
-
-如果一键脚本因环境差异无法使用，可以手动打补丁：
-
-```bash
-# 1. 备份原文件
-cp ~/.hermes/hermes-agent/run_agent.py ~/.hermes/hermes-agent/run_agent.py.bak
-
-# 2. 进入目录
-cd ~/.hermes/hermes-agent
-
-# 3. 打补丁（补丁文件在 SRA 源码中）
-patch -p1 < /path/to/sra-agent/patches/hermes-sra-integration.patch
-```
-
-### 补丁内容说明
-
-补丁文件 `patches/hermes-sra-integration.patch` 包含两处改动：
-
-**1. 新增 `_query_sra_context()` 函数**（约 60 行）
-
-在 `run_agent.py` 的 `class AIAgent` 定义前插入。功能：
-- 接收用户消息 → HTTP POST 到 SRA Daemon
-- 解析返回的 `rag_context`、`should_auto_load`、`top_skill`
-- 格式化加 `[SRA]` 前缀
-- 模块级缓存（MD5 hash）避免相同消息重复请求
-- 2 秒超时 + 异常捕获，绝不影响主流程
-
-**2. 在 `run_conversation()` 中注入调用点**（~10 行）
-
-在 `# Add user message` 之前加入：
-```python
-_sra_ctx = _query_sra_context(user_message)
-if _sra_ctx:
-    user_message = f"{_sra_ctx}\n\n{user_message}"
-```
 
 ---
 
 ## ✅ 验证集成
 
 ```bash
-# 1. 确认 SRA Daemon 运行
+# 1. 确认插件文件已安装
+ls ~/.hermes/hermes-agent/plugins/sra-guard/
+# → client.py  __init__.py  plugin.yaml  tests/
+
+# 2. 确认 SRA Daemon 运行
 curl http://127.0.0.1:8536/health
-# → {"status":"ok","sra_version":"1.1.0"}
+# → {"status":"running"}
 
-# 2. 确认 run_agent.py 已被修改
-grep -n "_query_sra_context" ~/.hermes/hermes-agent/run_agent.py
-# → 出现行号说明注入成功
-
-# 3. 重启 Hermes（如果是 Gateway 模式）
+# 3. 重启 Hermes Gateway
 hermes gateway restart
 
-# 4. 发一条消息，回复开头会看到 [SRA] 标记
+# 4. 确认插件被加载
+# 检查日志中有 "sra-guard 插件已注册" 条目
+
+# 5. 发一条消息，回复开头应看到 [SRA] 标记
 # 例如：用户说"帮我画个架构图"
 # 回复开头：[SRA] Skill Runtime Advisor 推荐: ...
 ```
@@ -174,23 +120,10 @@ hermes gateway restart
 
 ## ♻️ 卸载
 
-### 从备份恢复
-
 ```bash
-bash scripts/install-hermes-integration.sh --uninstall
-```
-
-### 手动恢复
-
-```bash
-cp ~/.hermes/hermes-agent/run_agent.py.bak ~/.hermes/hermes-agent/run_agent.py
-```
-
-### 从 git 恢复
-
-```bash
-cd ~/.hermes/hermes-agent
-git checkout -- run_agent.py
+# 在 SRA 项目目录中运行
+bash scripts/install-hermes-plugin.sh uninstall
+# → [OK] sra-guard 插件已卸载
 ```
 
 ---
@@ -202,30 +135,16 @@ git checkout -- run_agent.py
 ```
 你: 帮我画个架构图
 
-思考过程 (自动触发 SRA):
-  POST :8536/recommend → {"message": "帮我画个架构图"}
-  ← {"rag_context": "── [SRA Skill 推荐] ─── ...", 
-     "should_auto_load": true, 
-     "top_skill": "architecture-diagram"}
+思考过程 (sra-guard 插件自动触发):
+  pre_llm_call hook → POST /recommend → rag_context
 
 回复:
 [SRA] Skill Runtime Advisor 推荐:
 ── [SRA Skill 推荐] ──────────────────────────────
-  ⭐ [high] architecture-diagram (90.0分) — 
-     Generate dark-themed SVG diagrams...
-  ⚡ 强推荐自动加载: architecture-diagram
+  ⭐ [medium] architecture-diagram (42.5分) — ...
 ── ──────────────────────────────────────────────
 
-好的喵～boku 来帮你画架构图！先加载 architecture-diagram skill...
-```
-
-### 无匹配时的表现
-
-```
-你: 今天天气怎么样
-
-回复: (无 [SRA] 标记，正常回复)
-今天天气不错喵～boku 查一下...
+好的喵～boku 来帮你画架构图！
 ```
 
 ---
@@ -233,89 +152,45 @@ git checkout -- run_agent.py
 ## 🛡️ 降级行为
 
 | 状况 | 行为 |
-|------|------|
+|:-----|:------|
 | SRA Daemon 正常运行 | 注入推荐上下文到每次消息 |
 | 连接超时（>2秒） | 完全静默降级，不阻塞消息 |
-| 连接被拒绝（Daemon 未启动） | try/except 捕获，静默跳转 |
-| 返回空推荐 | 正常执行，无 RAG 注入 |
-| 相同消息重试 | MD5 缓存避免重复 HTTP 调用 |
+| 连接被拒绝（Daemon 未启动） | try/except 捕获，返回 None |
+| 返回空推荐 | 正常执行，无上下文注入 |
+| 相同消息重试 | 模块级缓存避免重复 HTTP 调用 |
 
 **核心原则：SRA 是增强型插件，不是阻塞式依赖。**
 
 ---
 
-## 🔍 工作原理详解
+## ⚖️ 插件方案 vs 补丁方案
 
-### `_query_sra_context()` 函数
-
-```python
-def _query_sra_context(user_message: str) -> str:
-    """Query SRA Daemon for skill recommendations.
-    
-    调用链: run_conversation() → _query_sra_context()
-    1. 计算消息的 MD5 hash
-    2. 如果 hash 命中缓存 → 直接返回缓存结果
-    3. 如果未命中 → HTTP POST :8536/recommend
-    4. 格式化返回为 [SRA] 前缀文本
-    5. 更新缓存
-    6. 异常或超时 → 返回空字符串
-    """
-```
-
-### 注入点位置
-
-在 `run_agent.py` 的 `AIAgent.run_conversation()` 方法中：
-
-```python
-def run_conversation(self, user_message, ...):
-    ...
-    # ── SRA Context Injection ─────────────────
-    _sra_ctx = _query_sra_context(user_message)
-    if _sra_ctx:
-        user_message = f"{_sra_ctx}\n\n{user_message}"
-    # ──────────────────────────────────────────
-    
-    # Add user message (原代码)
-    self.messages.append({"role": "user", "content": user_message})
-    ...
-```
-
-### 为什么不是 Hook 方案？
-
-Hermes 已有的 Hook 系统（`hooks.emit("agent:start")`）是**异步非阻塞**的——错误被捕获但永不阻断流程。Hook 可以"看到"消息，但不能修改 system prompt 或消息内容。因此最终方案是直接改 `run_agent.py` 的核心方法。
-
----
-
-## ⚖️ 与其他方案的对比
-
-| 方案 | 侵入性 | 可靠性 | 维护成本 | 实现难度 |
-|------|--------|--------|----------|----------|
-| **AGENTS.md 写规则** | 无 | ❌ 低 | 无 | 极低 |
-| **SOUL.md 写前置流程** | 无 | ❌ 低 | 无 | 极低 |
-| **Hook 拦截** | 低 | ❌ 中（非阻塞） | 中 | 中 |
-| **✅ run_agent.py 注入** | 中 | ✅ 极高 | 低 | 中 |
-| **改写 prompt_builder** | 中 | ✅ 高 | 低 | 中 |
+| 维度 | 旧：补丁方案 ❌ | 新：插件方案 ✅ |
+|:-----|:---------------|:---------------|
+| 侵入性 | 修改 Hermes 核心代码（`run_agent.py`） | 零侵入（标准插件 API） |
+| 升级维护 | 每次 Hermes 升级需重新打补丁 | 自动保留，升级不影响 |
+| 安装方式 | `sed -i` 依赖行号 | 复制到 `plugins/` 目录 |
+| 通信库 | `urllib.request` | `httpx`（与 Hermes 一致） |
+| 错误处理 | `except Exception: pass` | `logger.warning` + 返回 None |
+| 自动化测试 | 无 | 19 个单元测试 |
+| 源码管理 | 补丁文件在 SRA 项目 | 插件源码在 SRA 项目（版本管理） |
 
 ---
 
 ## ❓ 常见问题
 
-### Q: 修改 `run_agent.py` 会被 Hermes 升级覆盖吗？
+### Q: 插件方式需要修改 run_agent.py 吗？
 
-A: 会。升级 Hermes 后需要重新运行 `install-hermes-integration.sh` 重新注入。
+A: **不需要。** Hermes 的插件系统会自动发现 `plugins/sra-guard/` 目录并加载插件。零侵入。
+
+### Q: Hermes 升级后会丢失吗？
+
+A: **不会。** Hermes 升级时 `plugins/` 目录下的用户插件会被保留。（升级脚本不删除用户插件）
 
 ### Q: Gateway 和 CLI 模式都能生效吗？
 
-A: 都能！修改的是 `run_agent.py` 的 `run_conversation()` 方法，Gateway 和 CLI 都通过这个方法处理消息。
-
-### Q: AGENTS.md 中还有 SRA 规则，需要删掉吗？
-
-A: 不需要删，但可以简化。代码层的拦截 100% 可靠，AGENTS.md 的规则作为冗余备份保留即可。推荐保留但标记为"冗余"。
+A: **都能。** `pre_llm_call` hook 在 Gateway 和 CLI 模式下都会触发。
 
 ### Q: SRA 响应慢会影响用户体验吗？
 
-A: 不会。`_query_sra_context()` 有 2 秒超时，超时或异常都会立即返回空字符串，不阻塞消息流程。
-
-### Q: 多个 session 之间会共享 SRA 缓存吗？
-
-A: 当前是模块级缓存（`_SRA_CACHE` 字典），仅在同一个进程内共享。不同工作进程的缓存不共享，但这是可接受的——缓存只是为了避免同一消息在 API 重试时的重复调用。
+A: **不会。** `SraClient` 有 2 秒超时，超时或异常立即返回空字符串，不阻塞消息流程。

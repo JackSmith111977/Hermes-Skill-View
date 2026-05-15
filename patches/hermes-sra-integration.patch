@@ -1,3 +1,18 @@
+# =============================================================================
+# DEPRECATED — 此补丁方案已被 EPIC-004 的插件方案取代
+# =============================================================================
+# 此补丁通过 sed -i 修改 Hermes 的 run_agent.py，存在以下问题：
+# 1. 从未在目标环境执行（EPIC-001 的 AC 为虚假 ✅）
+# 2. Hermes 升级后补丁被覆盖
+# 3. sed -i 依赖行号定位，脆弱
+# 4. except Exception: pass 静默吞异常
+# 5. 使用 urllib.request 而非 Hermes 标准的 httpx
+#
+# 取代方案：
+#   plugins/sra-guard/ — Hermes 插件，零侵入，自动发现
+#   安装: bash scripts/install-hermes-plugin.sh install
+#   详见: docs/EPIC-004.md
+# =============================================================================
 diff --git a/run_agent.py b/run_agent.py
 index dbdb6db..74170b0 100644
 --- a/run_agent.py

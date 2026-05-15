@@ -59,7 +59,7 @@ class TestMatcher:
     """匹配引擎测试"""
 
     def setup_method(self):
-        self.matcher = SkillMatcher(SYNONYMS)
+        self.matcher = SkillMatcher(SYNONYMS, no_quality=True)
 
     def _make_skill(self, name, triggers=None, tags=None, desc="", category="general"):
         return {

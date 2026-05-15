@@ -22,13 +22,14 @@ class SkillAdvisor:
     THRESHOLD_STRONG = 80  # 强推荐：自动加载
     THRESHOLD_WEAK = 40    # 弱推荐：附加提示
 
-    def __init__(self, skills_dir: str = None, data_dir: str = None):
+    def __init__(self, skills_dir: str = None, data_dir: str = None, no_quality: bool = False):
         """
         初始化 SRA 引擎
 
         Args:
             skills_dir: 技能目录路径。默认为 ~/.hermes/skills
             data_dir: 数据持久化目录。默认为 ~/.sra/data
+            no_quality: 禁用 SQS 质量加权
         """
         self.skills_dir = skills_dir or os.path.expanduser("~/.hermes/skills")
         self.data_dir = data_dir or os.path.expanduser(
@@ -40,7 +41,7 @@ class SkillAdvisor:
 
         # 初始化子模块
         self.indexer = SkillIndexer(self.skills_dir, self.data_dir)
-        self.matcher = SkillMatcher(SYNONYMS)
+        self.matcher = SkillMatcher(SYNONYMS, no_quality=no_quality)
         self.memory = SceneMemory(self.data_dir)
 
         # 懒加载索引
@@ -106,29 +107,21 @@ class SkillAdvisor:
             "summary": summary,
         }
 
-    def recommend(self, query: str, top_k: int = 3) -> Dict:
+    def recommend(self, query: str, top_k: int = 3, no_quality: bool = False) -> Dict:
         """
         推荐匹配技能
 
         Args:
             query: 用户输入
             top_k: 返回 top-k 结果
+            no_quality: 禁用 SQS 质量加权
 
         Returns:
-            {
-                "recommendations": [...],
-                "processing_ms": float,
-                "skills_scanned": int,
-                "query": str,
-                "contract": {            # 🆕 契约机制
-                    "task_type": str,
-                    "required_skills": [str],
-                    "optional_skills": [str],
-                    "confidence": str,
-                    "summary": str,
-                }
-            }
+            {recommendations, processing_ms, skills_scanned, query, contract}
         """
+        if no_quality:
+            self.matcher.no_quality = True
+
         self._ensure_index()
         start = time.time()
 

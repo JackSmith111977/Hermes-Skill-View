@@ -1,0 +1,6 @@
+name: sra-guard
+version: 0.1.0
+description: "SRA Skill Runtime Advisor — 实时技能推荐与工具校验插件。在每次 LLM 调用前自动注入技能推荐上下文，在工具调用前校验技能加载。"
+author: "Emma (小玛)"
+hooks:
+  - pre_llm_call

@@ -280,18 +280,25 @@ curl -s -X POST http://127.0.0.1:8536/recommend \
 }
 ```
 
-### 5. 集成到 Hermes Agent
+### 5. 集成到 Hermes Agent（插件方案，推荐）
 
-在 SOUL.md 或 AGENTS.md 中添加消息前置推理规则：
+SRA 通过 **Hermes 插件系统** 集成（[EPIC-004](docs/EPIC-004.md)），
+零侵入、自动发现、升级保留：
 
-```yaml
-# 每条用户消息到达 Agent 前，先调 SRA
-pre_process:
-  - curl -s -X POST http://127.0.0.1:8536/recommend
-    -H "Content-Type: application/json"
-    -d '{"message": "<用户消息原文>"}'
-  - 将返回的 rag_context 注入到 Agent 的系统提示中
+```bash
+# 安装 sra-guard 插件
+bash scripts/install-hermes-plugin.sh install
+
+# 验证安装
+ls ~/.hermes/hermes-agent/plugins/sra-guard/
+# → plugin.yaml  __init__.py  client.py
+
+# 重启 Hermes Gateway 后自动加载
+hermes gateway restart
 ```
+
+> ⚠️ 旧版集成方式（在 SOUL.md/AGENTS.md 中写 curl 规则）已不再推荐。
+> 插件方案更可靠、零侵入、支持自动降级。详见 [集成指南](docs/INTEGRATION.md)。
 
 ---
 

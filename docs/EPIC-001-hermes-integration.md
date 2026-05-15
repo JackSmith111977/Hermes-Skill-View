@@ -1,14 +1,25 @@
-# Epic: SRA v1.1.0 — Hermes 原生集成（已实现 ✅）
+# Epic: SRA v1.1.0 — Hermes 原生集成（已废弃 ⚠️）
 
 > **Epic ID:** SRA-EPIC-001
-> **状态:** ✅ **已实现 (v1.1.0)**
-> **实现版本:** SRA v1.1.0 + Hermes 集成补丁
+> **状态:** ⚠️ **已废弃 — 被 EPIC-004 取代**
+> **实现版本:** 从未实际完成（补丁方案从未执行）
+> **取代方案:** [EPIC-004: SRA Hermes 原生插件集成](./EPIC-004.md)
+
+---
+
+> ⚠️ **重要说明**
+>
+> 本 Epic 描述的 `sed -i` 补丁方案 **从未在 Hermes 端实际执行**。
+> `_query_sra_context()` 函数从未存在于 `run_agent.py` 中。
+> 集成方案已从「补丁方案」重构为「插件方案」，详见 **EPIC-004**。
+>
+> 本文档保留作为历史记录，不删除。
+
+---
 
 ## 概述
 
-将 SRA (Skill Runtime Advisor) 从"独立运行的 API 服务"升级为"Hermes Agent 的原生消息前置推理层"——每次用户消息自动触发 SRA 推荐，**代码层强制拦截，不依赖 AGENTS.md 或 SOUL.md 的自然语言指令**。
-
-## 最终架构（实现方案）
+将 SRA (Skill Runtime Advisor) 从"独立运行的 API 服务"升级为"Hermes Agent 的原生消息前置推理层"——每次用户消息自动触发 SRA 推荐。
 
 ```
 用户消息

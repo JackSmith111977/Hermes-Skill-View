@@ -10,148 +10,755 @@
     "repo": "github.com/JackSmith111977/Hermes-Skill-View",
     "license": "MIT",
     "python": "≥ 3.8",
-    "dependencies": ["pyyaml"],
+    "dependencies": [
+      "pyyaml"
+    ],
     "entry_cli": "sra / srad",
     "daemon_port": "HTTP :8536 + Unix Socket ~/.sra/srad.sock",
     "overview_cards": [
-      {"label": "名称", "value": "SRA Agent", "sub": "sra-agent"},
-      {"label": "版本", "value": "1.4.0-dev", "sub": "MIT License"},
-      {"label": "Python", "value": "≥ 3.8", "sub": "依赖: pyyaml"}
+      {
+        "label": "名称",
+        "value": "SRA Agent",
+        "sub": "sra-agent"
+      },
+      {
+        "label": "版本",
+        "value": "1.4.0-dev",
+        "sub": "MIT License"
+      },
+      {
+        "label": "Python",
+        "value": "≥ 3.8",
+        "sub": "依赖: pyyaml"
+      }
     ],
     "info_table": [
-      {"attr": "作者", "value": "Emma (SRA Team), Kei"},
-      {"attr": "仓库", "value": "<code>github.com/JackSmith111977/Hermes-Skill-View</code>"},
-      {"attr": "入口 CLI", "value": "<code>sra</code> / <code>srad</code>"},
-      {"attr": "守护端口", "value": "HTTP <code>:8536</code> + Unix Socket <code>~/.sra/srad.sock</code>"},
-      {"attr": "技能来源", "value": "<code>~/.hermes/skills/**/SKILL.md</code> (YAML frontmatter)"},
-      {"attr": "数据持久化", "value": "<code>~/.sra/data/</code>"}
+      {
+        "attr": "作者",
+        "value": "Emma (SRA Team), Kei"
+      },
+      {
+        "attr": "仓库",
+        "value": "<code>github.com/JackSmith111977/Hermes-Skill-View</code>"
+      },
+      {
+        "attr": "入口 CLI",
+        "value": "<code>sra</code> / <code>srad</code>"
+      },
+      {
+        "attr": "守护端口",
+        "value": "HTTP <code>:8536</code> + Unix Socket <code>~/.sra/srad.sock</code>"
+      },
+      {
+        "attr": "技能来源",
+        "value": "<code>~/.hermes/skills/**/SKILL.md</code> (YAML frontmatter)"
+      },
+      {
+        "attr": "数据持久化",
+        "value": "<code>~/.sra/data/</code>"
+      }
     ]
   },
   "architecture": {
     "layers": [
       {
         "name": "Layer 3 — 接口层 Interface",
-        "modules": ["CLI (sra)", "HTTP API (:8536)", "Unix Socket (~/.sra/srad.sock)"],
+        "modules": [
+          "CLI (sra)",
+          "HTTP API (:8536)",
+          "Unix Socket (~/.sra/srad.sock)"
+        ],
         "direction": "delegate"
       },
       {
         "name": "Layer 2 — 业务逻辑层 Service",
-        "modules": ["SRaDDaemon (daemon.py)", "SkillAdvisor (advisor.py)", "SkillMatcher (matcher.py)", "SkillIndexer (indexer.py)", "ForceLevelManager (force.py)", "SceneMemory (memory.py)", "Synonyms (synonyms.py)"],
+        "modules": [
+          "SRaDDaemon (daemon.py)",
+          "SkillAdvisor (advisor.py)",
+          "SkillMatcher (matcher.py)",
+          "SkillIndexer (indexer.py)",
+          "ForceLevelManager (force.py)",
+          "SceneMemory (memory.py)",
+          "Synonyms (synonyms.py)"
+        ],
         "direction": "read-write"
       },
       {
         "name": "Layer 1 — 数据层 Data",
-        "modules": ["~/.hermes/skills/", "~/.sra/data/", "~/.sra/config.json"],
+        "modules": [
+          "~/.hermes/skills/",
+          "~/.sra/data/",
+          "~/.sra/config.json"
+        ],
         "direction": null
       }
     ],
     "module_table": [
-      {"module": "SkillAdvisor", "file": "advisor.py", "desc": "推荐引擎主入口，Facade 封装", "methods": ["recommend()", "recheck()", "record_view/use/skip()", "analyze_coverage()", "build_contract()"]},
-      {"module": "SRaDDaemon", "file": "runtime/daemon.py", "desc": "守护进程，HTTP + Socket 双协议", "methods": ["start()", "stop()", "_handle_request()", "get_stats()"]},
-      {"module": "SkillMatcher", "file": "matcher.py", "desc": "四维匹配引擎（词法/语义/场景/类别）", "methods": ["score()"]},
-      {"module": "SkillIndexer", "file": "indexer.py", "desc": "技能扫描、索引构建、关键词提取", "methods": ["build()", "load_or_build()", "get_skills()", "extract_keywords()"]},
-      {"module": "SceneMemory", "file": "memory.py", "desc": "场景记忆 + 技能轨迹追踪 + 遵循率统计", "methods": ["record_view/use/skip()", "get_compliance_stats()"]},
-      {"module": "ForceLevelManager", "file": "runtime/force.py", "desc": "力度等级引擎", "methods": ["get_level()", "set_level()", "is_injection_point_active()"], "new_in": "v1.3.0"},
-      {"module": "Validate", "file": "runtime/endpoints/validate.py", "desc": "工具调用前技能校验", "methods": ["handle_validate()"]},
-      {"module": "SkillMap", "file": "skill_map.py", "desc": "文件扩展名→技能映射注册表", "methods": ["get_required_skills()"]},
-      {"module": "CLI", "file": "cli.py", "desc": "命令行接口 + 降级策略", "methods": ["cmd_*() + _socket_request()"]},
-      {"module": "Lock", "file": "runtime/lock.py", "desc": "OS 级文件锁（fcntl.flock 单例保障）", "methods": ["acquire_lock()"]}
+      {
+        "module": "SkillAdvisor",
+        "file": "advisor.py",
+        "desc": "推荐引擎主入口，Facade 封装",
+        "methods": [
+          "recommend()",
+          "recheck()",
+          "record_view/use/skip()",
+          "analyze_coverage()",
+          "build_contract()"
+        ]
+      },
+      {
+        "module": "SRaDDaemon",
+        "file": "runtime/daemon.py",
+        "desc": "守护进程，HTTP + Socket 双协议",
+        "methods": [
+          "start()",
+          "stop()",
+          "_handle_request()",
+          "get_stats()"
+        ]
+      },
+      {
+        "module": "SkillMatcher",
+        "file": "matcher.py",
+        "desc": "四维匹配引擎（词法/语义/场景/类别）",
+        "methods": [
+          "score()"
+        ]
+      },
+      {
+        "module": "SkillIndexer",
+        "file": "indexer.py",
+        "desc": "技能扫描、索引构建、关键词提取",
+        "methods": [
+          "build()",
+          "load_or_build()",
+          "get_skills()",
+          "extract_keywords()"
+        ]
+      },
+      {
+        "module": "SceneMemory",
+        "file": "memory.py",
+        "desc": "场景记忆 + 技能轨迹追踪 + 遵循率统计",
+        "methods": [
+          "record_view/use/skip()",
+          "get_compliance_stats()"
+        ]
+      },
+      {
+        "module": "ForceLevelManager",
+        "file": "runtime/force.py",
+        "desc": "力度等级引擎",
+        "methods": [
+          "get_level()",
+          "set_level()",
+          "is_injection_point_active()"
+        ],
+        "new_in": "v1.3.0"
+      },
+      {
+        "module": "Validate",
+        "file": "runtime/endpoints/validate.py",
+        "desc": "工具调用前技能校验",
+        "methods": [
+          "handle_validate()"
+        ]
+      },
+      {
+        "module": "SkillMap",
+        "file": "skill_map.py",
+        "desc": "文件扩展名→技能映射注册表",
+        "methods": [
+          "get_required_skills()"
+        ]
+      },
+      {
+        "module": "CLI",
+        "file": "cli.py",
+        "desc": "命令行接口 + 降级策略",
+        "methods": [
+          "cmd_*() + _socket_request()"
+        ]
+      },
+      {
+        "module": "Lock",
+        "file": "runtime/lock.py",
+        "desc": "OS 级文件锁（fcntl.flock 单例保障）",
+        "methods": [
+          "acquire_lock()"
+        ]
+      },
+      {
+        "module": "sra-guard Plugin",
+        "file": "plugins/sra-guard/__init__.py",
+        "desc": "Hermes 插件入口 + hook 注册",
+        "methods": [
+          "register()",
+          "_on_pre_llm_call()",
+          "_on_pre_tool_call()"
+        ]
+      },
+      {
+        "module": "SraClient",
+        "file": "plugins/sra-guard/client.py",
+        "desc": "SRA Daemon 通信客户端",
+        "methods": [
+          "recommend()",
+          "validate()"
+        ]
+      },
+      {
+        "module": "ContextFormatter",
+        "file": "plugins/sra-guard/formatter.py",
+        "desc": "SRA 上下文格式化",
+        "methods": [
+          "format_context()",
+          "format_skills_block()"
+        ]
+      }
     ]
   },
   "api_endpoints": {
     "http_port": 8536,
     "http": [
-      {"method": "GET", "path": "/health", "desc": "健康检查 + 基本统计", "sprint": "v1.x"},
-      {"method": "GET", "path": "/status", "desc": "引擎状态 + 配置 + 力度等级", "sprint": "v1.x"},
-      {"method": "GET", "path": "/stats", "desc": "运行统计详情", "sprint": "v1.x"},
-      {"method": "GET", "path": "/stats/compliance", "desc": "技能遵循率统计", "sprint": "Sprint 2 🆕"},
-      {"method": "GET", "path": "/recommend?q=...", "desc": "技能推荐（GET 方式）", "sprint": "v1.x"},
-      {"method": "POST", "path": "/recommend", "desc": "技能推荐（POST + rag_context + contract）", "sprint": "v1.x"},
-      {"method": "POST", "path": "/record", "desc": "记录使用/查看/跳过", "sprint": "Sprint 2 🆕"},
-      {"method": "POST", "path": "/refresh", "desc": "刷新技能索引", "sprint": "v1.x"},
-      {"method": "POST", "path": "/validate", "desc": "工具调用前技能校验", "sprint": "Sprint 1 🆕"},
-      {"method": "POST", "path": "/force", "desc": "运行时力度管理（查看/切换等级）", "sprint": "v1.3.0 🆕"},
-      {"method": "POST", "path": "/recheck", "desc": "长任务上下文漂移重检", "sprint": "Sprint 2 🆕"}
+      {
+        "method": "GET",
+        "path": "/health",
+        "desc": "健康检查 + 基本统计",
+        "sprint": "v1.x"
+      },
+      {
+        "method": "GET",
+        "path": "/status",
+        "desc": "引擎状态 + 配置 + 力度等级",
+        "sprint": "v1.x"
+      },
+      {
+        "method": "GET",
+        "path": "/stats",
+        "desc": "运行统计详情",
+        "sprint": "v1.x"
+      },
+      {
+        "method": "GET",
+        "path": "/stats/compliance",
+        "desc": "技能遵循率统计",
+        "sprint": "Sprint 2 🆕"
+      },
+      {
+        "method": "GET",
+        "path": "/recommend?q=...",
+        "desc": "技能推荐（GET 方式）",
+        "sprint": "v1.x"
+      },
+      {
+        "method": "POST",
+        "path": "/recommend",
+        "desc": "技能推荐（POST + rag_context + contract）",
+        "sprint": "v1.x"
+      },
+      {
+        "method": "POST",
+        "path": "/record",
+        "desc": "记录使用/查看/跳过",
+        "sprint": "Sprint 2 🆕"
+      },
+      {
+        "method": "POST",
+        "path": "/refresh",
+        "desc": "刷新技能索引",
+        "sprint": "v1.x"
+      },
+      {
+        "method": "POST",
+        "path": "/validate",
+        "desc": "工具调用前技能校验",
+        "sprint": "Sprint 1 🆕"
+      },
+      {
+        "method": "POST",
+        "path": "/force",
+        "desc": "运行时力度管理（查看/切换等级）",
+        "sprint": "v1.3.0 🆕"
+      },
+      {
+        "method": "POST",
+        "path": "/recheck",
+        "desc": "长任务上下文漂移重检",
+        "sprint": "Sprint 2 🆕"
+      }
     ],
     "socket_actions": [
-      {"action": "recommend", "params": "{query, top_k?}", "desc": "技能推荐", "sprint": "v1.x"},
-      {"action": "record", "params": "{skill, action?, input?}", "desc": "记录使用/查看/跳过", "sprint": "Sprint 2 🆕"},
-      {"action": "refresh", "params": "{}", "desc": "刷新索引", "sprint": "v1.x"},
-      {"action": "stats", "params": "{}", "desc": "获取统计", "sprint": "v1.x"},
-      {"action": "stats/compliance", "params": "{}", "desc": "遵循率统计", "sprint": "Sprint 2 🆕"},
-      {"action": "coverage", "params": "{}", "desc": "覆盖率分析", "sprint": "v1.x"},
-      {"action": "validate", "params": "{tool, args, loaded_skills?}", "desc": "工具调用校验", "sprint": "Sprint 1 🆕"},
-      {"action": "force", "params": "{level?}", "desc": "查看/设置力度等级", "sprint": "v1.3.0 🆕"},
-      {"action": "recheck", "params": "{conversation_summary, loaded_skills?}", "desc": "漂移重检", "sprint": "Sprint 2 🆕"},
-      {"action": "ping", "params": "{}", "desc": "心跳检测", "sprint": "v1.x"},
-      {"action": "stop", "params": "{}", "desc": "远程停止守护进程", "sprint": "v1.x"}
+      {
+        "action": "recommend",
+        "params": "{query, top_k?}",
+        "desc": "技能推荐",
+        "sprint": "v1.x"
+      },
+      {
+        "action": "record",
+        "params": "{skill, action?, input?}",
+        "desc": "记录使用/查看/跳过",
+        "sprint": "Sprint 2 🆕"
+      },
+      {
+        "action": "refresh",
+        "params": "{}",
+        "desc": "刷新索引",
+        "sprint": "v1.x"
+      },
+      {
+        "action": "stats",
+        "params": "{}",
+        "desc": "获取统计",
+        "sprint": "v1.x"
+      },
+      {
+        "action": "stats/compliance",
+        "params": "{}",
+        "desc": "遵循率统计",
+        "sprint": "Sprint 2 🆕"
+      },
+      {
+        "action": "coverage",
+        "params": "{}",
+        "desc": "覆盖率分析",
+        "sprint": "v1.x"
+      },
+      {
+        "action": "validate",
+        "params": "{tool, args, loaded_skills?}",
+        "desc": "工具调用校验",
+        "sprint": "Sprint 1 🆕"
+      },
+      {
+        "action": "force",
+        "params": "{level?}",
+        "desc": "查看/设置力度等级",
+        "sprint": "v1.3.0 🆕"
+      },
+      {
+        "action": "recheck",
+        "params": "{conversation_summary, loaded_skills?}",
+        "desc": "漂移重检",
+        "sprint": "Sprint 2 🆕"
+      },
+      {
+        "action": "ping",
+        "params": "{}",
+        "desc": "心跳检测",
+        "sprint": "v1.x"
+      },
+      {
+        "action": "stop",
+        "params": "{}",
+        "desc": "远程停止守护进程",
+        "sprint": "v1.x"
+      }
     ]
   },
   "cli_commands": [
-    {"cmd": "sra start", "desc": "启动守护进程（后台）", "section": "daemon"},
-    {"cmd": "sra stop", "desc": "停止守护进程", "section": "daemon"},
-    {"cmd": "sra restart", "desc": "重启守护进程", "section": "daemon"},
-    {"cmd": "sra status", "desc": "查看运行状态", "section": "daemon"},
-    {"cmd": "sra attach", "desc": "前台运行（调试用）", "section": "daemon"},
-    {"cmd": "sra recommend <query>", "desc": "技能推荐", "section": "query"},
-    {"cmd": "sra query <query>", "desc": "同 recommend", "section": "query"},
-    {"cmd": "sra stats", "desc": "查看统计", "section": "query"},
-    {"cmd": "sra coverage", "desc": "覆盖率分析", "section": "query"},
-    {"cmd": "sra compliance", "desc": "技能遵循率统计", "section": "query"},
-    {"cmd": "sra refresh", "desc": "刷新索引", "section": "query"},
-    {"cmd": "sra record <skill> <input>", "desc": "记录使用", "section": "management"},
-    {"cmd": "sra force [set <level>|list]", "desc": "运行时力度管理", "section": "management", "new": true},
-    {"cmd": "sra config [show|set|reset]", "desc": "配置管理", "section": "management"},
-    {"cmd": "sra install <agent>", "desc": "安装到 Agent", "section": "management"},
-    {"cmd": "sra upgrade [-V <version>]", "desc": "升级 SRA", "section": "management"},
-    {"cmd": "sra uninstall [--all]", "desc": "卸载 SRA", "section": "management"},
-    {"cmd": "sra dep-check", "desc": "检查 Gateway 依赖链健康度", "section": "management"},
-    {"cmd": "sra version", "desc": "版本信息", "section": "management"},
-    {"cmd": "sra adapters", "desc": "列出 Agent 适配器", "section": "management"},
-    {"cmd": "sra help", "desc": "帮助信息", "section": "management"}
+    {
+      "cmd": "sra start",
+      "desc": "启动守护进程（后台）",
+      "section": "daemon"
+    },
+    {
+      "cmd": "sra stop",
+      "desc": "停止守护进程",
+      "section": "daemon"
+    },
+    {
+      "cmd": "sra restart",
+      "desc": "重启守护进程",
+      "section": "daemon"
+    },
+    {
+      "cmd": "sra status",
+      "desc": "查看运行状态",
+      "section": "daemon"
+    },
+    {
+      "cmd": "sra attach",
+      "desc": "前台运行（调试用）",
+      "section": "daemon"
+    },
+    {
+      "cmd": "sra recommend <query>",
+      "desc": "技能推荐",
+      "section": "query"
+    },
+    {
+      "cmd": "sra query <query>",
+      "desc": "同 recommend",
+      "section": "query"
+    },
+    {
+      "cmd": "sra stats",
+      "desc": "查看统计",
+      "section": "query"
+    },
+    {
+      "cmd": "sra coverage",
+      "desc": "覆盖率分析",
+      "section": "query"
+    },
+    {
+      "cmd": "sra compliance",
+      "desc": "技能遵循率统计",
+      "section": "query"
+    },
+    {
+      "cmd": "sra refresh",
+      "desc": "刷新索引",
+      "section": "query"
+    },
+    {
+      "cmd": "sra record <skill> <input>",
+      "desc": "记录使用",
+      "section": "management"
+    },
+    {
+      "cmd": "sra force [set <level>|list]",
+      "desc": "运行时力度管理",
+      "section": "management",
+      "new": true
+    },
+    {
+      "cmd": "sra config [show|set|reset]",
+      "desc": "配置管理",
+      "section": "management"
+    },
+    {
+      "cmd": "sra install <agent>",
+      "desc": "安装到 Agent",
+      "section": "management"
+    },
+    {
+      "cmd": "sra upgrade [-V <version>]",
+      "desc": "升级 SRA",
+      "section": "management"
+    },
+    {
+      "cmd": "sra uninstall [--all]",
+      "desc": "卸载 SRA",
+      "section": "management"
+    },
+    {
+      "cmd": "sra dep-check",
+      "desc": "检查 Gateway 依赖链健康度",
+      "section": "management"
+    },
+    {
+      "cmd": "sra version",
+      "desc": "版本信息",
+      "section": "management"
+    },
+    {
+      "cmd": "sra adapters",
+      "desc": "列出 Agent 适配器",
+      "section": "management"
+    },
+    {
+      "cmd": "sra help",
+      "desc": "帮助信息",
+      "section": "management"
+    }
   ],
   "epics": [
     {
       "id": "SRA-EPIC-003",
       "name": "EPIC-003: v2.0 Enforcement Layer",
       "stories": [
-        {"id": "SRA-003-01", "name": "Tool 层 SRA 校验", "pri": "P0", "status": "completed", "sprint": "Sprint 1"},
-        {"id": "SRA-003-02", "name": "文件类型技能映射", "pri": "P0", "status": "completed", "sprint": "Sprint 1"},
-        {"id": "SRA-003-10", "name": "systemd 自启动部署", "pri": "P2", "status": "completed", "sprint": "Sprint 1"},
-        {"id": "SRA-003-11", "name": "安装脚本自动配置", "pri": "P2", "status": "completed", "sprint": "Sprint 1"},
-        {"id": "SRA-003-12", "name": "Daemon 单例守护", "pri": "P0", "status": "completed", "sprint": "Sprint 1"},
-        {"id": "SRA-003-13", "name": "HTTP 架构 + 异常处理", "pri": "P0", "status": "completed", "sprint": "Sprint 1"},
-        {"id": "SRA-003-03", "name": "技能使用轨迹记录", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-04", "name": "长任务上下文漂移保护", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-14", "name": "测试覆盖增强", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-05", "name": "SRA 契约机制", "pri": "P1", "status": "completed", "sprint": "v1.3.0"},
-        {"id": "SRA-003-06", "name": "运行时力度体系", "pri": "P1", "status": "completed", "sprint": "v1.3.0"},
-        {"id": "SRA-003-17", "name": "Drop-in 生命周期管理", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-18", "name": "质量修复 Sprint 1", "pri": "P0", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-19", "name": "质量修复 Sprint 2", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-20", "name": "质量修复 Sprint 3", "pri": "P1", "status": "completed", "sprint": "Sprint 2"},
-        {"id": "SRA-003-15", "name": "质量增强（Schema/日志/魔法数字）", "pri": "P1", "status": "completed", "sprint": "Sprint 3"},
-        {"id": "SRA-003-16", "name": "架构优化（并发安全/路由统一）", "pri": "P1", "status": "completed", "sprint": "Sprint 3"},
-        {"id": "SRA-003-21", "name": "分支同步与 v1.3.0 发布", "pri": "P0", "status": "completed", "sprint": "Sprint 3"},
-        {"id": "SRA-003-22", "name": "os.fork()→subprocess.Popen (A-8)", "pri": "P0", "status": "completed", "sprint": "Sprint 3"}
+        {
+          "id": "SRA-003-01",
+          "name": "Tool 层 SRA 校验",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 1"
+        },
+        {
+          "id": "SRA-003-02",
+          "name": "文件类型技能映射",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 1"
+        },
+        {
+          "id": "SRA-003-10",
+          "name": "systemd 自启动部署",
+          "pri": "P2",
+          "status": "completed",
+          "sprint": "Sprint 1"
+        },
+        {
+          "id": "SRA-003-11",
+          "name": "安装脚本自动配置",
+          "pri": "P2",
+          "status": "completed",
+          "sprint": "Sprint 1"
+        },
+        {
+          "id": "SRA-003-12",
+          "name": "Daemon 单例守护",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 1"
+        },
+        {
+          "id": "SRA-003-13",
+          "name": "HTTP 架构 + 异常处理",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 1"
+        },
+        {
+          "id": "SRA-003-03",
+          "name": "技能使用轨迹记录",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-04",
+          "name": "长任务上下文漂移保护",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-14",
+          "name": "测试覆盖增强",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-05",
+          "name": "SRA 契约机制",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "v1.3.0"
+        },
+        {
+          "id": "SRA-003-06",
+          "name": "运行时力度体系",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "v1.3.0"
+        },
+        {
+          "id": "SRA-003-17",
+          "name": "Drop-in 生命周期管理",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-18",
+          "name": "质量修复 Sprint 1",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-19",
+          "name": "质量修复 Sprint 2",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-20",
+          "name": "质量修复 Sprint 3",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 2"
+        },
+        {
+          "id": "SRA-003-15",
+          "name": "质量增强（Schema/日志/魔法数字）",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 3"
+        },
+        {
+          "id": "SRA-003-16",
+          "name": "架构优化（并发安全/路由统一）",
+          "pri": "P1",
+          "status": "completed",
+          "sprint": "Sprint 3"
+        },
+        {
+          "id": "SRA-003-21",
+          "name": "分支同步与 v1.3.0 发布",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 3"
+        },
+        {
+          "id": "SRA-003-22",
+          "name": "os.fork()→subprocess.Popen (A-8)",
+          "pri": "P0",
+          "status": "completed",
+          "sprint": "Sprint 3"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-004",
+      "name": "EPIC-004: SRA Hermes 原生插件集成",
+      "stories": [
+        {
+          "id": "SPEC-4-1",
+          "name": "Phase 0: 插件框架 (5 stories)",
+          "pri": "P0",
+          "status": "completed"
+        },
+        {
+          "id": "SPEC-4-2",
+          "name": "Phase 1: 消息注入 (3 stories)",
+          "pri": "P0",
+          "status": "completed"
+        },
+        {
+          "id": "SPEC-4-3",
+          "name": "Phase 2: 工具校验 (3 stories)",
+          "pri": "P1",
+          "status": "completed"
+        },
+        {
+          "id": "SPEC-4-4",
+          "name": "Phase 3: 轨迹追踪 (3 stories)",
+          "pri": "P1",
+          "status": "completed"
+        },
+        {
+          "id": "SPEC-4-5",
+          "name": "Phase 4: 周期重注入 (3 stories)",
+          "pri": "P2",
+          "status": "completed"
+        },
+        {
+          "id": "SPEC-4-6",
+          "name": "Phase 5: 文档漂移修复 (2 stories)",
+          "pri": "P1",
+          "status": "completed"
+        },
+        {
+          "id": "SPEC-4-7",
+          "name": "Phase 6: 端到端+CI (3 stories)",
+          "pri": "P1",
+          "status": "completed"
+        }
       ]
     }
   ],
   "tests": {
-    "passing": 314,
-    "total": 314,
+    "passing": 407,
+    "total": 407,
     "duration_seconds": 32,
     "known_flaky": 1,
     "flaky_test": "test_daemon_http.py::TestHTTPServerCore::test_serve_forever_in_thread — HTTP 400 竞态条件",
     "coverage_pct": null,
-    "files": ["test_matcher.py", "test_indexer.py", "test_coverage.py", "test_benchmark.py", "test_daemon.py", "test_cli.py", "test_daemon_http.py", "test_dropin.py", "test_adapters.py", "test_singleton.py", "test_skill_map.py", "test_contract.py", "test_force.py", "test_validate.py", "test_memory.py", "test_config.py", "test_concurrency.py"]
+    "files": [
+      "test_matcher.py",
+      "test_indexer.py",
+      "test_coverage.py",
+      "test_benchmark.py",
+      "test_daemon.py",
+      "test_cli.py",
+      "test_daemon_http.py",
+      "test_dropin.py",
+      "test_adapters.py",
+      "test_singleton.py",
+      "test_skill_map.py",
+      "test_contract.py",
+      "test_force.py",
+      "test_validate.py",
+      "test_memory.py",
+      "test_config.py",
+      "test_concurrency.py",
+      "test_cache.py",
+      "test_client.py",
+      "test_formatter.py",
+      "test_injection.py",
+      "test_plugin.py",
+      "test_validate_hook.py",
+      "test_e2e.py"
+    ]
   },
   "sprint_history": [
-    {"sprint": "Sprint 1", "version": "v2.0-alpha", "date": "2026-05-09", "stories_completed": 7, "tests_growth": "38→103"},
-    {"sprint": "Sprint 2", "version": "v1.3.0", "date": "2026-05-11", "stories_completed": 11, "tests_growth": "174→290"},
-    {"sprint": "Sprint 3", "version": "v2.0.0", "date": "2026-05-12", "stories_completed": 19, "tests_growth": "290→312"},
-    {"sprint": "Hotfix (v2.0.1-v2.0.2)", "version": "v2.0.2", "date": "2026-05-12", "stories_completed": 0, "tests_growth": "312→314"},
-    {"sprint": "Sprint 4 — 文档对齐+工作流改进", "version": "v2.0.4", "date": "2026-05-12", "stories_completed": 4, "tests_growth": "314→314"}
+    {
+      "sprint": "Sprint 1",
+      "version": "v2.0-alpha",
+      "date": "2026-05-09",
+      "stories_completed": 7,
+      "tests_growth": "38→103"
+    },
+    {
+      "sprint": "Sprint 2",
+      "version": "v1.3.0",
+      "date": "2026-05-11",
+      "stories_completed": 11,
+      "tests_growth": "174→290"
+    },
+    {
+      "sprint": "Sprint 3",
+      "version": "v2.0.0",
+      "date": "2026-05-12",
+      "stories_completed": 19,
+      "tests_growth": "290→312"
+    },
+    {
+      "sprint": "Hotfix (v2.0.1-v2.0.2)",
+      "version": "v2.0.2",
+      "date": "2026-05-12",
+      "stories_completed": 0,
+      "tests_growth": "312→314"
+    },
+    {
+      "sprint": "Sprint 4 — 文档对齐+工作流改进",
+      "version": "v2.0.4",
+      "date": "2026-05-12",
+      "stories_completed": 4,
+      "tests_growth": "314→314"
+    },
+    {
+      "sprint": "Sprint 5 — Plugin集成 (EPIC-004 Phase 0-2)",
+      "version": "v2.1.0-dev",
+      "date": "2026-05-15",
+      "stories_completed": 11,
+      "tests_growth": "314→369"
+    },
+    {
+      "sprint": "Sprint 6 — 轨迹追踪 (EPIC-004 Phase 3)",
+      "version": "v2.1.0-dev",
+      "date": "2026-05-15",
+      "stories_completed": 3,
+      "tests_growth": "369→381"
+    },
+    {
+      "sprint": "Sprint 7 — 周期重注入 (EPIC-004 Phase 4)",
+      "version": "v2.1.0-dev",
+      "date": "2026-05-15",
+      "stories_completed": 3,
+      "tests_growth": "381→397"
+    },
+    {
+      "sprint": "Sprint 8 — 文档漂移修复 (EPIC-004 Phase 5)",
+      "version": "v2.1.0-dev",
+      "date": "2026-05-15",
+      "stories_completed": 2,
+      "tests_growth": "397→397"
+    },
+    {
+      "sprint": "Sprint 9 — 端到端+CI收尾 (EPIC-004 Phase 6)",
+      "version": "v2.1.0-dev",
+      "date": "2026-05-15",
+      "stories_completed": 3,
+      "tests_growth": "397→407"
+    }
   ],
   "footer": "由 generate-project-report.py 数据驱动自动生成"
 }
