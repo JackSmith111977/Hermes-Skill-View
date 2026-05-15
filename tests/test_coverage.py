@@ -1,4 +1,4 @@
-"""SRA 技能覆盖率测试 — 使用全部 313 个真实技能
+"""SRA 技能覆盖率测试 - 使用全部 314 个真实技能
 
 每个测试都验证真实技能的识别能力。
 """
@@ -65,7 +65,7 @@ def get_real_skill_test_queries():
 
 
 class TestSkillCoverage:
-    """技能识别覆盖率测试 — 基于全部 313 个真实技能"""
+    """技能识别覆盖率测试 - 基于全部 314 个真实技能"""
 
     @classmethod
     def setup_class(cls):
@@ -182,6 +182,8 @@ class TestCoverageWithCommonQueries:
         ("数据库设计", "sql"),
         ("AI 生图", "image"),
         ("番剧推荐", "bangumi"),
+        ("read tweet replies", "hermes-tweet"),
+        ("export followers", "hermes-tweet"),
         ("网页搜索", "web"),
         ("联网查资料", "web"),
         ("金融数据分析", "stock"),

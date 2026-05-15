@@ -1,0 +1,37 @@
+_source_name: hermes-tweet
+_source_path: social-media/hermes-tweet/SKILL.md
+author: Xquik
+category: social-media
+description: Search Twitter/X, read tweet replies, look up users, monitor tweets, export followers, and gate X actions through Xquik.
+license: MIT
+metadata:
+  hermes:
+    homepage: https://github.com/Xquik-dev/hermes-tweet
+    install: hermes plugins install Xquik-dev/hermes-tweet --enable
+    tags:
+    - hermes-agent
+    - xquik
+    - twitter
+    - x
+    - social-media
+    - automation
+name: hermes-tweet
+platforms:
+- linux
+- macos
+triggers:
+- hermes tweet
+- search Twitter/X
+- scrape/search tweets
+- read tweet replies
+- look up users
+- monitor tweets
+- export followers
+- post tweets
+- send DMs
+- tweet
+- tweets
+- replies
+- followers
+- dms
+version: 0.1.6
