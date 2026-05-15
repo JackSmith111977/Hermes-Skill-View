@@ -4,6 +4,8 @@
 
 # ⚠️ 版本号由 git tag 驱动，优先从 git 或 importlib 实时获取
 # 不要手动修改！版本来源见 pyproject.toml [tool.setuptools_scm]
+
+
 def _resolve_version() -> str:
     """三层版本解析：
     1. git describe（开发环境 / editable install — 源头活水）
@@ -58,9 +60,11 @@ __version__ = _resolve_version()
 
 __author__ = "Emma (SRA Team), Kei"
 
-from .adapters import get_adapter, list_adapters
-from .advisor import SkillAdvisor
-from .runtime.daemon import SRaDDaemon
+# 模块级导入放在版本定义之后（避免循环引用 — daemon.py 会 import __version__）
+# ruff: noqa: E402
+from .adapters import get_adapter, list_adapters  # noqa: E402
+from .advisor import SkillAdvisor  # noqa: E402
+from .runtime.daemon import SRaDDaemon  # noqa: E402
 
 __all__ = [
     "SkillAdvisor",

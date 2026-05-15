@@ -2,8 +2,8 @@
 四维匹配引擎 — 词法 + 语义 + 场景 + 类别
 """
 
-import logging
 import json
+import logging
 import os
 from typing import Dict, List, Set, Tuple
 

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **CI 构建失败（P0）**: `setup.py` 用正则从 `__init__.py` 提取版本号，新代码改为 `__version__ = _resolve_version()` 函数调用后正则匹配返回 `None` → `'NoneType' object has no attribute 'group'` → 所有 pip install 全炸
   - 简化 `setup.py`，移除正则解析，版本由 `pyproject.toml` + `setuptools-scm` 接管
+- **循环导入（P0）**: `__init__.py` 顶层 import `runtime.daemon`，但 daemon.py 又 import `__version__` → 循环引用崩溃
+  - 模块级导入移到 `__version__` 定义之后，加 `# noqa: E402` 抑制 lint
+- **Lint E402**: `__init__.py` 模块级 import 不在顶层 → 调整导入顺序后修复
 
 ## [2.1.1] — 2026-05-15
 
